@@ -5,14 +5,16 @@
 
 class Matrix{
 private:
-  int rowSize = 0;
-  int colSize = 0;
+  int rows= 0;
+  int cols = 0;
   int** mat;
 
 public:
-  Matrix(int rowSize, int colSize) : rowSize(rowSize), colSize(colSize) { }
+  Matrix(int rowSize, int cols) : rows(rows), cols(cols) { 
+    this -> mat = genMatrix(this -> rows, this -> cols);
+  }
   ~Matrix();
-  int** genMatrix(int rowSize, colSize);
+  int** genMatrix(int rowSize, int cols);
   void populateMatrix(int* src, int size);
   void printMatrix();
   void tran();
@@ -22,5 +24,7 @@ public:
   void div(Matrix& m);
   int getValueAt(int i, int j);
 };
+
+#include "matrix.cpp"
 
 #endif
