@@ -10,7 +10,7 @@ private:
   int** mat;
 
 public:
-  Matrix(int rowSize, int cols) : rows(rows), cols(cols) { 
+  Matrix(int rows, int cols) : rows(rows), cols(cols) { 
     this -> mat = genMatrix(this -> rows, this -> cols);
   }
   ~Matrix();
@@ -22,7 +22,10 @@ public:
   void sub(Matrix & m);
   void mult(Matrix& m);
   void div(Matrix& m);
+
   int getValueAt(int i, int j);
+  int getNumRows();
+  int getNumCols();
 };
 
 #include "matrix.cpp"
