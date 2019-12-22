@@ -14,7 +14,7 @@ public:
     this -> mat = genMatrix(this -> rows, this -> cols);
   }
   ~Matrix();
-  float** genMatrix(int rowSize, int cols);
+  float** genMatrix(int rows, int cols);
   void populateMatrix(std::vector<float>&, int size);
   void printMatrix();
   void tran();
