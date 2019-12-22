@@ -1,8 +1,33 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 #include "matrix.h"
 
-int main(){
 
+bool store(std::string fileName, std::vector<float> & vecOfFloatX, std::vector<float> & vecOfFloatY){
+  std::ifstream inFile;
+  inFile.open(fileName);
+  if(!inFile){
+    std::cerr << "Cannot open the file: " << fileName << std::endl;
+    return false;
+  }
+  else{
+    float xVal = 0;
+		float yVal = 0;
+    for (int i = 0; i < 100; i++){
+				inFile >> xVal;
+        inFile >> yVal;
+				vecOfFloatX.push_back(xVal);
+        vecOfFloatY.push_back(yVal);
+      }
+      inFile.close();
+      return true;
+      }
+    }
+
+int main(){
+	/*
 	// First Matrix
 	int sourceA[] = {1, 2, 3, 4, 5, 6};
 	Matrix matA(2,3);
@@ -94,7 +119,7 @@ int main(){
 
 	// Sixth Matrix
 	int sourceF[] = {1, 2, 3, 4, 5, 6};
-	Matrix matF(3, 2);
+	Matrix matF(3,2);
 	matF.populateMatrix(sourceF, 6);
 
 	std::cout << "Printing Matrix E" << std::endl;
@@ -111,5 +136,51 @@ int main(){
 	matE.mult(matF);
 	std::cout << std::endl;
 	matE.printMatrix();
+	std::cout << std::endl;
+
+	int sourceG[] = {1, 2, 3, 4, 5, 6,};
+	Matrix matG(2,3);
+	matG.populateMatrix(sourceG, 6);
+
+	std::cout << "Printing Matrix G" << std::endl;
+	std::cout << std::endl;
+	matG.printMatrix();
+	std::cout << std::endl;
+	std::cout << "Scalar multiplication by 2 on Matrix G" << std::endl;
+	matG.scalarMult(matG, 2);
+	std::cout << std::endl;
+	std::cout << "Printing Matrix G" << std::endl;
+	std::cout << std::endl;
+	matG.printMatrix();
+	std::cout << std::endl;
+
+
+
+
+
+	*/
+	std::vector<float> vecOfFloatX;
+	std::vector<float> vecOfFloatY;
+	bool result = store("points100.txt", vecOfFloatX, vecOfFloatY);
+	if(result)
+	{
+		//for(float & line : vecOfFloat)
+			//std::cout<<line<<std::endl;
+	}
+  else{
+    std::cout << "Error occured" << std::endl;
+  }
+	Matrix matAlpha(10,10);
+	matAlpha.populateMatrix(vecOfFloatX, 100);
+	std::cout << "Printing Matrix of X-Values" << std::endl;
+	std::cout << std::endl;
+	matAlpha.printMatrix();
+	std::cout << std::endl;
+
+	Matrix matBeta(10,10);
+	matBeta.populateMatrix(vecOfFloatY, 100);
+	std::cout << "Printing Matrix of Y-Values" << std::endl;
+	std::cout << std::endl;
+	matBeta.printMatrix();
 	std::cout << std::endl;
 }

@@ -1,5 +1,7 @@
 #include "matrix.h"
 #include <iostream>
+#include <vector>
+#include <iterator>
 
 Matrix::~Matrix(){
   for(int i = 0; i < this -> rows; i++){
@@ -8,11 +10,11 @@ Matrix::~Matrix(){
   delete[] this -> mat;
 }
 
-int **Matrix::genMatrix(int rows, int cols){
-  int **tempMat = new int*[rows];
+float **Matrix::genMatrix(int rows, int cols){
+  float **tempMat = new float*[rows];
 
   for (int i = 0; i < rows; ++i){
-    tempMat[i] = new int[cols];
+    tempMat[i] = new float[cols];
   }
 
   return tempMat;
@@ -28,7 +30,7 @@ void Matrix::printMatrix(){
 }
 
 void Matrix::tran(){
-  int **temp = genMatrix(this -> cols, this -> rows);
+  float **temp = genMatrix(this -> cols, this -> rows);
 
   for (int i = 0; i < this -> cols; ++i){
     for (int j = 0; j < this -> rows; ++j){
@@ -39,25 +41,25 @@ void Matrix::tran(){
   for (int i = 0; i < this -> rows; ++i){
     delete[] this -> mat[i];
   }
-  //delete[] this -> mat;
 
   this -> mat = temp;
-
   int tmp = this -> rows;
   this -> rows = this -> cols;
   this -> cols = tmp;
   std::cout << "Transpose complete!" << std::endl;
 }
 
-void Matrix::populateMatrix(int* src, int size){
+void Matrix::populateMatrix(std::vector<float>& vecOfFloat, int size){
   if (rows * cols != size){
     std::cout << "Size of Matrix is not equal to size of source array!" << std::endl;
     return;
   }
-  int pos = 0;
+  std::vector<float>::iterator it;
+  it = vecOfFloat.begin();
   for (int i = 0; i < rows; ++i){
     for (int j = 0; j < cols; ++j){
-      this -> mat[i][j] = src[pos++];
+      this -> mat[i][j] = *it;
+      it++;
     }
   }
 }
@@ -91,7 +93,7 @@ void Matrix::mult(Matrix& m){
     std::cout << "ERROR: Can not multiply these matrices" << std::endl;
   }
 
-  int** result = genMatrix(this -> rows, m.getNumCols());
+  float** result = genMatrix(this -> rows, m.getNumCols());
   for (int i = 0; i < this -> rows; ++i){
     for (int j = 0; j < m.getNumCols(); ++j){
       result[i][j] = 0;
@@ -115,9 +117,21 @@ void Matrix::mult(Matrix& m){
   std::cout << "Multiplication of Matrices complete!" << std::endl;
 }
 
-/*
-void Matrix::div(Matrix& m){
+void Matrix::scalarMult(Matrix& m, int k){
+  for (int i = 0; i < this -> rows; ++i){
+    for (int j = 0; j < this -> cols; ++j){
+      mat[i][j] = mat[i][j] * k;
+    }
+  }
+  std::cout << "Scalar multiplication on Matrix complete!" << std::endl;
+}
 
+/*
+void Matrix::inverse(Matrix& m){
+  float determinant = 0;
+  for (int i = 0; i < this -> rows; ++i){
+
+  }
 }
 */
 
