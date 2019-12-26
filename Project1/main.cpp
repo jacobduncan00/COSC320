@@ -154,22 +154,10 @@ int main(){
 	matG.printMatrix();
 	std::cout << std::endl;
 
-
-
-
-
 	*/
 	std::vector<float> vecOfFloatX;
 	std::vector<float> vecOfFloatY;
 	bool result = store("points100.txt", vecOfFloatX, vecOfFloatY);
-	if(result)
-	{
-		//for(float & line : vecOfFloat)
-			//std::cout<<line<<std::endl;
-	}
-  else{
-    std::cout << "Error occured" << std::endl;
-  }
 	Matrix matAlpha(10,10);
 	matAlpha.populateMatrix(vecOfFloatX, 100);
 	std::cout << "Printing Matrix of X-Values" << std::endl;

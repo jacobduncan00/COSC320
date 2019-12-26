@@ -1,26 +1,8 @@
 #include <iostream>
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
 
-bool getFileContent(std::string fileName, std::vector<std::string> & vecOfStrs)
-{
-	std::ifstream in(fileName.c_str());
-	if(!in)
-	{
-		std::cerr << "Cannot open the File : "<<fileName<<std::endl;
-		return false;
-	}
-	std::string str;
-	while (std::getline(in, str))
-	{
-		if(str.size() > 0)
-			vecOfStrs.push_back(str);
-	}
-	in.close();
-	return true;
-}
 
 bool store(std::string fileName, std::vector<float> & vecOfFloat){
   std::ifstream inFile;
