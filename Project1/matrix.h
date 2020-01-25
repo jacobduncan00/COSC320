@@ -5,31 +5,31 @@
 
 class Matrix{
 private:
-  int rows = 0;
-  int cols = 0;
+  unsigned long int rows = 0;
+  unsigned long int cols = 0;
   float** mat;
 
 public:
-  Matrix(int rows, int cols) : rows(rows), cols(cols) {
-    this -> mat = genMatrix(this -> rows, this -> cols);
-  }
+  Matrix();
+  Matrix(unsigned long int, unsigned long int);
+  Matrix(const Matrix&);
   ~Matrix();
-  float** genMatrix(int rows, int cols);
-  void populateMatrix(std::vector<float>&, int size);
-  void printMatrix();
-  void tran();
-  void add(Matrix& m);
-  void sub(Matrix & m);
-  void mult(Matrix& m);
-  void scalarMult(Matrix& m, int k);
-  void div(Matrix& m);
-  void inverse(Matrix& m);
-
-  int getValueAt(int i, int j);
-  int getNumRows();
-  int getNumCols();
+  void insert(int, int, float);
+  float GetVal(int,int);
+  void Determinant();
+  Matrix& inverse();
+  void TwoDRegression(std::string);
+  void ThreeDRegression(std::string);
+  void identityMatrix();
+  void diagonalMatrix();
+  void triangularMatrix(bool);
+  void operator= (const Matrix&);
+  friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix);
+	friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);
+	friend Matrix operator- (const Matrix& matrixa, const Matrix& matrixb);
+	friend Matrix operator* (const Matrix& matrixa, const Matrix& matrixb);
+	friend Matrix operator* (const float& c, const Matrix& matrixa);
+	friend Matrix operator^ (const Matrix& m, const char& exp);
 };
-
-#include "matrix.cpp"
 
 #endif
