@@ -93,13 +93,36 @@ void Matrix::Determinant(){
 }
 
 void Matrix::TwoDRegression(std::string fileName){
-  int datasize;
-	std::cout << "Enter the size of the data: ";
-	std::cin >> datasize;
   std::ifstream infile(fileName);
   if(!infile.is_open()){
       	std::cout << "File Opening Error.\n";
       	exit (1);
+  }
+  int datasize;
+  if(fileName == "points100.dat"){
+    datasize = 100;
+  }
+  else if(fileName == "points500.dat"){
+    datasize = 500;
+  }
+  else if(fileName == "points1000.dat"){
+    datasize = 1000;
+  }
+  else if(fileName == "points5000.dat"){
+    datasize = 5000;
+  }
+  else if(fileName == "points10000.dat"){
+    datasize = 10000;
+  }
+  else if(fileName == "points50000.dat"){
+    datasize = 50000;
+  }
+  else if(fileName == "points100000.dat"){
+    datasize = 100000;
+  }
+  else{
+    std::cout << "Data Size could not be calculated!" << std::endl;
+    return;
   }
   float c1, c2;
   Matrix *A = new Matrix(datasize, 2);
@@ -121,13 +144,36 @@ void Matrix::TwoDRegression(std::string fileName){
 }
 
 void Matrix::ThreeDRegression(std::string fileName){
-  int size;
-  std::cout << "Enter the size of the data: ";
-  std::cin >> size;
   std::ifstream inFile(fileName);
   if(!inFile.is_open()){
       	std::cout << "File Opening Error.\n";
       	exit (1);
+  }
+  int datasize;
+  if(fileName == "points100-3d.dat"){
+    datasize = 100;
+  }
+  else if(fileName == "points500-3d.dat"){
+    datasize = 500;
+  }
+  else if(fileName == "points1000-3d.dat"){
+    datasize = 1000;
+  }
+  else if(fileName == "points5000-3d.dat"){
+    datasize = 5000;
+  }
+  else if(fileName == "points10000-3d.dat"){
+    datasize = 10000;
+  }
+  else if(fileName == "points50000-3d.dat"){
+    datasize = 50000;
+  }
+  else if(fileName == "points10000-3d.dat"){
+    datasize = 100000;
+  }
+  else{
+    std::cout << "Data Size could not be calculated!" << std::endl;
+    return;
   }
   float c1, c2, c3;
   Matrix *A = new Matrix(100,3);
