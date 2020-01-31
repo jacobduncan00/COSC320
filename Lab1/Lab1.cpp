@@ -4,8 +4,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <iomanip>
+#include <fstream>
 
-void fillArray(int* arr, int n){
+void swap(int &a, int &b){
+    int temp = a;
+    a = b;
+    b = temp;
+}
+
+void genRandomArray(int* arr, int n){
     srand(time(NULL));
     for (int i = 0; i < n+1; i++){
         int random = (rand()%9);
@@ -13,38 +20,51 @@ void fillArray(int* arr, int n){
     }
 }
 
-int* genBackwardsArray(int n){
+void genBackwardsArray(int* arr, int n){
 	srand(time(NULL));
-	int* rtn = new int[n];
 	for(int i = 0; i < n; i++){
-		rtn[i] = (rand()%9);
+		arr[i] = (rand()%9);
 	}
 	int flag = 1;
 	int temp;
 	for(int j = 0; (j <= n) && flag; j++){
 		flag = 0;
 		for (int k = 0; k < n-1; k++){
-			if(rtn[k+1] > rtn[k]){
-				temp = rtn[k];	
-				rtn[k] = rtn[k+1];
-				rtn[k+1] = temp;
+			if(arr[k+1] > arr[k]){
+				swap(arr[k+1], arr[k]);
 				flag = 1;
 			}
 		}
 	}
-	return rtn;
 }
 
-int* genSortedArray(int n){
+void genSortedArray(int* arr, int n){
 	srand(time(NULL));
-	int* rtn = new int[n];
 	for(int i = 0; i < n; i++){
-		rtn[i] = i;
+		arr[i] = i;
 	}
-	return rtn;
+}
+
+void genDuplicatedElementArray(int* arr, int n){
+    srand(time(NULL));
+    for(int i = 0; i < n; i++){
+        if(i < n/25){
+            arr[i] = (rand()%9);
+        }
+        else if (i > n/25 && i < n/50){
+            arr[i] = (rand()%5);
+        }
+        else{
+            arr[i] = (rand()%3);
+        }
+    }
 }
 
 void bubbleSort(int* arr, int n){
+    if(n == 0){
+        std::cout << "Cannot Bubble Sort an empty array!" << std::endl;
+        return;
+    }
     bool swapped = true;
     int counter = 0;
     while(swapped){
@@ -52,7 +72,7 @@ void bubbleSort(int* arr, int n){
             swapped = false;
             for (int j = 0; j < n - i - 1; j++){
                 if (arr[j] > arr[j+1]){
-                    std::swap(arr[j], arr[j+1]);
+                    swap(arr[j], arr[j+1]);
                     counter++;
                     swapped = true;
                 }
@@ -66,22 +86,30 @@ void bubbleSort(int* arr, int n){
 }
 
 void insertionSort(int* arr, int n){
-	int temp, j;
-	int counter = 0;
-	for(int i = 0; i < n; i++){
-		temp = arr[i];
-		j = i - 1;
-		while(j >= 0 && arr[j] > temp){
-			arr[j+1] = arr[j];
-			j = j - 1;
-			counter++;
-		}
-		arr[j+1] = temp;
-	}
-	std::cout << "-> Swaps: " << counter << std::endl;
+    if(n == 0){
+        std::cout << "Cannot Insertion Sort an empty array!" << std::endl;
+        return;
+    }
+    int temp, j;
+    int counter = 0;
+    for(int i = 0; i < n; i++){
+      temp = arr[i];
+      j = i - 1;
+      while(j >= 0 && arr[j] > temp){
+       arr[j+1] = arr[j];
+       j = j - 1;
+       counter++;
+   }
+   arr[j+1] = temp;
+}
+std::cout << "-> Swaps: " << counter << std::endl;
 }
 
 void selectionSort(int* arr, int n){
+    if(n == 0){
+        std::cout << "Cannot Selection Sort an empty array!" << std::endl;
+        return;
+    }
     int min, counter = 0;
     for(int i = 0; i <= n-1; i++){
         min = i;
@@ -90,19 +118,37 @@ void selectionSort(int* arr, int n){
                 min = j;
             }
         }
-        std::swap(arr[min], arr[i]);
+        swap(arr[min], arr[i]);
         counter++;
     } 
     std::cout << "-> Swaps: " << counter << std::endl; 
 }
 
-void testSort(void(*sort)(int*, int), int* arr, int n){ // TODO - Figure out timing
+void testSort(void(*sort)(int*, int), int* arr, int n){ 
+    std::ofstream bubbleOut;
+    bubbleOut.open("bubble.dat", std::ios_base::app);
+    std::ofstream insertionOut;
+    insertionOut.open("insertion.dat", std::ios_base::app);
+    std::ofstream selectionOut;
+    selectionOut.open("selection.dat", std::ios_base::app);
     auto start = std::chrono::system_clock::now(); // starts time
     sort(arr, n);
     auto end = std::chrono::system_clock::now(); // ends time
     std::chrono::duration<double>elapsed_seconds = end-start;
     std::cout << std::setprecision(8);
-    std::cout << std::setw(18) << "-> Sort took " << elapsed_seconds.count() << " s" << std::endl;
+    std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
+    if(sort == bubbleSort){
+        bubbleOut << elapsed_seconds.count() << "\n";
+        bubbleOut.close();
+    }
+    else if(sort == insertionSort){
+        insertionOut << elapsed_seconds.count() << "\n";
+        insertionOut.close();
+    }
+    else if(sort == selectionSort){
+        selectionOut << elapsed_seconds.count() << "\n";
+        selectionOut.close();
+    }
 }
 
 void printArray(int* arr, int n){
@@ -140,30 +186,109 @@ void isSorted(int* arr, int n){
 	return;
 }
 
-int main(){
-	std::cout << "ms = microseconds" << std::endl;
-	std::cout << std::endl;
-    int N = 101;
-    int* arr = new int[N];
-    std::cout << "Bubble Sort" << std::endl;
-    fillArray(arr, N);
-    void (*sort)(int*, int);
-    sort = bubbleSort;
-    testSort(bubbleSort, arr, N);
-    isSorted(arr, N);
+int main(){ // Make files for each sort and copy paste that to microsoft excel
+    int it = 10000;
+    int* arr = new int[it];
+    void(*sort)(int*, int);
+    for(int i = 0; i < 16; i++){
+        if (i < 5){
+            sort = bubbleSort;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+            std::cout << "~~~Bubble Sort with " << it << " elements~~~" << std::endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Random Array" << std::endl;
+            genRandomArray(arr, it);
+            testSort(bubbleSort, arr, it);
+            isSorted(arr, it);
 
-    std::cout << "Insertion Sort" << std::endl;
-    fillArray(arr, N);
-    void(*sort1)(int*, int);
-    sort1 = insertionSort;
-    testSort(insertionSort, arr, N);
-    isSorted(arr, N);
+            std::cout << "Already Sorted Array" << std::endl;
+            genSortedArray(arr, it);
+            testSort(bubbleSort, arr, it);
+            isSorted(arr, it);
+            
+            std::cout << "Backwards Sorted Array" << std::endl;
+            genBackwardsArray(arr, it);
+            testSort(bubbleSort, arr, it);
+            isSorted(arr, it);
 
-    std::cout << "Selection Sort" << std::endl;
-    fillArray(arr, N);
-    void (*sort2)(int*, int);
-    sort2 = selectionSort;
-    testSort(selectionSort, arr, N);
-    isSorted(arr, N);
+            std::cout << "Duplicate Element Array" << std::endl;
+            genDuplicatedElementArray(arr, it);
+            testSort(bubbleSort, arr, it);
+            isSorted(arr, it);
+            delete[] arr;
+            it += 10000;
+            arr = new int[it];
+        }
+        if (i == 5){
+            delete[] arr;
+            it = 10000;
+            arr = new int[it];
+        }
+        if (i > 5 && i <= 10){
+            sort = insertionSort;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+            std::cout << "~~~Insertion Sort with " << it << " elements~~~" << std::endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Random Array" << std::endl;
+            genRandomArray(arr, it);
+            testSort(insertionSort, arr, it);
+            isSorted(arr, it);
+
+            std::cout << "Already Sorted Array" << std::endl;
+            genSortedArray(arr, it);
+            testSort(insertionSort, arr, it);
+            isSorted(arr, it);
+
+            std::cout << "Backwards Sorted Array" << std::endl;
+            genBackwardsArray(arr, it);
+            testSort(insertionSort, arr, it);
+            isSorted(arr, it);
+
+            std::cout << "Duplicate Element Array" << std::endl;
+            genDuplicatedElementArray(arr, it);
+            testSort(insertionSort, arr, it);
+            isSorted(arr, it);
+            delete[] arr;
+            it += 10000;
+            arr = new int[it];
+        }
+        if (i == 10){
+            delete[] arr;
+            it = 10000;
+            arr = new int[it];
+        }
+        if(i > 10 && i <= 16){
+            sort = selectionSort;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+            std::cout << "~~~Selection Sort with " << it << " elements~~~" << std::endl;
+            std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+            std::cout << std::endl;
+            std::cout << "Random Array" << std::endl;
+            genRandomArray(arr, it);
+            testSort(selectionSort, arr, it);
+            isSorted(arr, it);
+
+            std::cout << "Already Sorted Array" << std::endl;
+            genSortedArray(arr, it);
+            testSort(selectionSort, arr, it);
+            isSorted(arr, it);
+
+            std::cout << "Backwards Sorted Array" << std::endl;
+            genBackwardsArray(arr, it);
+            testSort(selectionSort, arr, it);
+            isSorted(arr, it);
+           
+            std::cout << "Duplicate Element Array" << std::endl;
+            genDuplicatedElementArray(arr, it);
+            testSort(selectionSort, arr, it);
+            isSorted(arr, it);
+            delete[] arr;
+            it += 10000;
+            arr = new int[it];
+        }
+    }
+    delete[] arr;
     return 0;
 }
