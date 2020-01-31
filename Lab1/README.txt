@@ -1,3 +1,5 @@
+Questions for Lab 1:
+
 (a) What is the theoretical time complexity of your sorting algorithms (best and worst case), in terms
 of the array size?
 
