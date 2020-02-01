@@ -15,7 +15,7 @@ void swap(int &a, int &b){
 void genRandomArray(int* arr, int n){
     srand(time(NULL));
     for (int i = 0; i < n+1; i++){
-        int random = (rand()%9);
+        int random = (rand()%n);
         arr[i] = random;
     }
 }
@@ -23,7 +23,7 @@ void genRandomArray(int* arr, int n){
 void genBackwardsArray(int* arr, int n){
 	srand(time(NULL));
 	for(int i = 0; i < n; i++){
-		arr[i] = (rand()%9);
+		arr[i] = (rand()%n);
 	}
 	int flag = 1;
 	int temp;
