@@ -6,6 +6,18 @@
 #include <iomanip>
 #include <fstream>
 
+void resetFiles(){
+  std::ofstream bubble;
+  bubble.open("bubble.dat", std::ofstream::out | std::ofstream::trunc);
+  bubble.close();
+  std::ofstream insertion;
+  insertion.open("insertion.dat", std::ofstream::out | std::ofstream::trunc);
+  insertion.close();
+  std::ofstream selection;
+  selection.open("selection.dat", std::ofstream::out | std::ofstream::trunc);
+  selection.close();
+}
+
 void swap(int &a, int &b){
     int temp = a;
     a = b;
@@ -49,15 +61,15 @@ void genDuplicatedElementArray(int* arr, int n){
     srand(time(NULL));
     for(int i = 0; i < n; i++){
         if(i < n/25){
-            arr[i] = (rand()%9);
+            arr[i] = (rand()%10);
         }
         else if (i > n/25 && i < n/50){
+        }
+    }
             arr[i] = (rand()%5);
         }
         else{
             arr[i] = (rand()%3);
-        }
-    }
 }
 
 void bubbleSort(int* arr, int n){
@@ -66,7 +78,7 @@ void bubbleSort(int* arr, int n){
         return;
     }
     bool swapped = true;
-    int counter = 0;
+    double counter = 0;
     while(swapped){
         for(int i = 0; i < n-1; i++){
             swapped = false;
@@ -91,7 +103,7 @@ void insertionSort(int* arr, int n){
         return;
     }
     int temp, j;
-    int counter = 0;
+    double counter = 0;
     for(int i = 0; i < n; i++){
       temp = arr[i];
       j = i - 1;
@@ -110,7 +122,8 @@ void selectionSort(int* arr, int n){
         std::cout << "Cannot Selection Sort an empty array!" << std::endl;
         return;
     }
-    int min, counter = 0;
+    int min = 0;
+    double counter = 0;
     for(int i = 0; i <= n-1; i++){
         min = i;
         for (int j = i+1; j < n; j++){
@@ -120,11 +133,11 @@ void selectionSort(int* arr, int n){
         }
         swap(arr[min], arr[i]);
         counter++;
-    } 
-    std::cout << "-> Swaps: " << counter << std::endl; 
+    }
+    std::cout << "-> Swaps: " << counter << std::endl;
 }
 
-void testSort(void(*sort)(int*, int), int* arr, int n){ 
+void testSort(void(*sort)(int*, int), int* arr, int n){
     std::ofstream bubbleOut;
     bubbleOut.open("bubble.dat", std::ios_base::app);
     std::ofstream insertionOut;
@@ -187,11 +200,12 @@ void isSorted(int* arr, int n){
 }
 
 int main(){ // Make files for each sort and copy paste that to microsoft excel
-    int it = 10000;
+    resetFiles();
+    int it = 100;
     int* arr = new int[it];
     void(*sort)(int*, int);
-    for(int i = 0; i < 16; i++){
-        if (i < 5){
+    for(int i = 0; i < 13; i++){
+        if (i < 4){
             sort = bubbleSort;
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << "~~~Bubble Sort with " << it << " elements~~~" << std::endl;
@@ -206,7 +220,7 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             genSortedArray(arr, it);
             testSort(bubbleSort, arr, it);
             isSorted(arr, it);
-            
+
             std::cout << "Backwards Sorted Array" << std::endl;
             genBackwardsArray(arr, it);
             testSort(bubbleSort, arr, it);
@@ -217,15 +231,15 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             testSort(bubbleSort, arr, it);
             isSorted(arr, it);
             delete[] arr;
-            it += 10000;
+            it *= 10;
             arr = new int[it];
         }
-        if (i == 5){
+        if (i == 4){
             delete[] arr;
-            it = 10000;
+            it = 100;
             arr = new int[it];
         }
-        if (i > 5 && i <= 10){
+        if (i > 4 && i <= 8){
             sort = insertionSort;
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << "~~~Insertion Sort with " << it << " elements~~~" << std::endl;
@@ -251,15 +265,15 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             testSort(insertionSort, arr, it);
             isSorted(arr, it);
             delete[] arr;
-            it += 10000;
+            it *= 10;
             arr = new int[it];
         }
-        if (i == 10){
+        if (i == 8){
             delete[] arr;
-            it = 10000;
+            it = 100;
             arr = new int[it];
         }
-        if(i > 10 && i <= 16){
+        if(i > 8 && i <= 13){
             sort = selectionSort;
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << "~~~Selection Sort with " << it << " elements~~~" << std::endl;
@@ -279,13 +293,13 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             genBackwardsArray(arr, it);
             testSort(selectionSort, arr, it);
             isSorted(arr, it);
-           
+
             std::cout << "Duplicate Element Array" << std::endl;
             genDuplicatedElementArray(arr, it);
             testSort(selectionSort, arr, it);
             isSorted(arr, it);
             delete[] arr;
-            it += 10000;
+            it *= 10;
             arr = new int[it];
         }
     }
