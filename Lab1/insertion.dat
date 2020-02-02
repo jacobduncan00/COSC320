@@ -1,16 +1,48 @@
-1.1266e-05
-3.094e-06
-1.5506e-05
-8.714e-06
-0.000615332
-6.282e-06
-0.00125907
-0.000455347
-0.0637724
-3.629e-05
-0.129015
-0.0480714
-6.40836
-0.000318061
-12.6429
-4.68714
+Random Array with 100 elements: 1.8e-05
+PreSorted Array with 100 elements: 2.6e-05
+Backward Array with 100 elements: 2.7e-05
+Duplicate Array with 100 elements4.7e-05
+Random Array with 1000 elements: 0.001204
+PreSorted Array with 1000 elements: 1e-05
+Backward Array with 1000 elements: 0.001363
+Duplicate Array with 1000 elements0.000566
+Random Array with 10000 elements: 0.069083
+PreSorted Array with 10000 elements: 6.3e-05
+Backward Array with 10000 elements: 0.139806
+Duplicate Array with 10000 elements0.055533
+Random Array with 20000 elements: 0.273976
+PreSorted Array with 20000 elements: 0.000147
+Backward Array with 20000 elements: 0.556429
+Duplicate Array with 20000 elements0.212096
+Random Array with 30000 elements: 0.634733
+PreSorted Array with 30000 elements: 0.000397
+Backward Array with 30000 elements: 1.23544
+Duplicate Array with 30000 elements0.449727
+Random Array with 40000 elements: 1.09803
+PreSorted Array with 40000 elements: 0.000175
+Backward Array with 40000 elements: 2.1874
+Duplicate Array with 40000 elements0.810735
+Random Array with 50000 elements: 1.7142
+PreSorted Array with 50000 elements: 0.000262
+Backward Array with 50000 elements: 3.39571
+Duplicate Array with 50000 elements1.25807
+Random Array with 60000 elements: 2.44484
+PreSorted Array with 60000 elements: 0.000327
+Backward Array with 60000 elements: 4.89009
+Duplicate Array with 60000 elements1.80425
+Random Array with 70000 elements: 3.33255
+PreSorted Array with 70000 elements: 0.000369
+Backward Array with 70000 elements: 6.66094
+Duplicate Array with 70000 elements2.45925
+Random Array with 80000 elements: 4.3852
+PreSorted Array with 80000 elements: 0.000465
+Backward Array with 80000 elements: 8.79266
+Duplicate Array with 80000 elements3.2098
+Random Array with 90000 elements: 5.49132
+PreSorted Array with 90000 elements: 0.000395
+Backward Array with 90000 elements: 11.0664
+Duplicate Array with 90000 elements4.06032
+Random Array with 100000 elements: 6.84772
+PreSorted Array with 100000 elements: 0.000337
+Backward Array with 100000 elements: 13.5845
+Duplicate Array with 100000 elements5.01487

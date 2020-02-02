@@ -1,16 +1,28 @@
-0.000192664
-2.2056e-05
-0.00014591
-0.000120972
-0.00260689
-4.179e-06
-0.00277697
-0.00158741
-0.278794
-4.8847e-05
-0.253052
-0.231846
-31.5456
-0.000196213
-26.2982
-28.0575
+Random Array with 100 elements: 9.3e-05
+PreSorted Array with 100 elements: 5e-06
+Backward Array with 100 elements: 3.9e-05
+Duplicate Array with 100 elements: 2.9e-05
+Random Array with 1000 elements: 0.002494
+PreSorted Array with 1000 elements: 8e-06
+Backward Array with 1000 elements: 0.003641
+Duplicate Array with 1000 elements: 0.001604
+Random Array with 10000 elements: 0.289297
+PreSorted Array with 10000 elements: 5.8e-05
+Backward Array with 10000 elements: 0.264783
+Duplicate Array with 10000 elements: 0.252584
+Random Array with 20000 elements: 1.21182
+PreSorted Array with 20000 elements: 7.6e-05
+Backward Array with 20000 elements: 1.03157
+Duplicate Array with 20000 elements: 1.00812
+Random Array with 30000 elements: 2.73882
+PreSorted Array with 30000 elements: 8e-05
+Backward Array with 30000 elements: 2.32328
+Duplicate Array with 30000 elements: 2.29761
+Random Array with 40000 elements: 4.8915
+PreSorted Array with 40000 elements: 0.000126
+Backward Array with 40000 elements: 4.13036
+Duplicate Array with 40000 elements: 4.11148
+Random Array with 50000 elements: 7.66696
+PreSorted Array with 50000 elements: 0.000133
+Backward Array with 50000 elements: 6.45981
+Duplicate Array with 50000 elements: 6.42007

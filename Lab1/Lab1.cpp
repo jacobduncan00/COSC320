@@ -144,11 +144,13 @@ void testSort(void(*sort)(int*, int), int* arr, int n){
     insertionOut.open("insertion.dat", std::ios_base::app);
     std::ofstream selectionOut;
     selectionOut.open("selection.dat", std::ios_base::app);
+    typedef std::chrono::high_resolution_clock Clock;
     auto start = std::chrono::system_clock::now(); // starts time
     sort(arr, n);
     auto end = std::chrono::system_clock::now(); // ends time
+    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
     std::chrono::duration<double>elapsed_seconds = end-start;
-    std::cout << std::setprecision(8);
+    std::cout << std::setprecision(10);
     std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
     if(sort == bubbleSort){
         bubbleOut << elapsed_seconds.count() << "\n";
@@ -174,7 +176,7 @@ void printArray(int* arr, int n){
         }
     }
     std::cout << "\n";
-}
+}   
 
 void isSorted(int* arr, int n){
 	if (n == 0){
@@ -204,107 +206,155 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
     int it = 100;
     int* arr = new int[it];
     void(*sort)(int*, int);
-    for(int i = 0; i < 15; i++){
-        if (i < 4){
+    for(int i = 0; i < 32; i++){
+        if (i < 7){
             sort = bubbleSort;
+            std::ofstream bubbleOut;
+            bubbleOut.open("bubble.dat", std::ios_base::app);
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << "~~~Bubble Sort with " << it << " elements~~~" << std::endl;
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << std::endl;
             std::cout << "Random Array" << std::endl;
             genRandomArray(arr, it);
+            bubbleOut << "Random Array with " << it << " elements: ";
+            bubbleOut.close();
             testSort(bubbleSort, arr, it);
             isSorted(arr, it);
 
+            bubbleOut.open("bubble.dat", std::ios_base::app);
             std::cout << "Already Sorted Array" << std::endl;
             genSortedArray(arr, it);
+            bubbleOut << "PreSorted Array with " << it << " elements: ";
+            bubbleOut.close();
             testSort(bubbleSort, arr, it);
             isSorted(arr, it);
 
+            bubbleOut.open("bubble.dat", std::ios_base::app);
             std::cout << "Backwards Sorted Array" << std::endl;
             genBackwardsArray(arr, it);
+            bubbleOut << "Backward Array with " << it << " elements: ";
+            bubbleOut.close();
             testSort(bubbleSort, arr, it);
             isSorted(arr, it);
 
+            bubbleOut.open("bubble.dat", std::ios_base::app);
             std::cout << "Duplicate Element Array" << std::endl;
             genDuplicatedElementArray(arr, it);
+            bubbleOut << "Duplicate Array with " << it << " elements: ";
+            bubbleOut.close();
             testSort(bubbleSort, arr, it);
             isSorted(arr, it);
             delete[] arr;
-            it *= 10;
+            if(it >= 10000){
+                it += 10000;
+            }
+            else{
+                it *= 10;
+            }
             arr = new int[it];
         }
-        if (i == 4){
+        if (i == 7){
             delete[] arr;
             it = 100;
             arr = new int[it];
         }
-        if (i > 4 && i <= 10){
+        if (i > 7 && i <= 19){
             sort = insertionSort;
+            std::ofstream insertionOut;
+            insertionOut.open("insertion.dat", std::ios_base::app);
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << "~~~Insertion Sort with " << it << " elements~~~" << std::endl;
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << std::endl;
             std::cout << "Random Array" << std::endl;
             genRandomArray(arr, it);
+            insertionOut << "Random Array with " << it << " elements: ";
+            insertionOut.close();
             testSort(insertionSort, arr, it);
             isSorted(arr, it);
 
+            insertionOut.open("insertion.dat", std::ios_base::app);
             std::cout << "Already Sorted Array" << std::endl;
             genSortedArray(arr, it);
+            insertionOut << "PreSorted Array with " << it << " elements: ";
+            insertionOut.close();
             testSort(insertionSort, arr, it);
             isSorted(arr, it);
 
+            insertionOut.open("insertion.dat", std::ios_base::app);
             std::cout << "Backwards Sorted Array" << std::endl;
             genBackwardsArray(arr, it);
+            insertionOut << "Backward Array with " << it << " elements: ";
+            insertionOut.close();
             testSort(insertionSort, arr, it);
             isSorted(arr, it);
 
+            insertionOut.open("insertion.dat", std::ios_base::app);
             std::cout << "Duplicate Element Array" << std::endl;
             genDuplicatedElementArray(arr, it);
+            insertionOut << "Duplicate Array with " << it << " elements";
+            insertionOut.close();
             testSort(insertionSort, arr, it);
             isSorted(arr, it);
             delete[] arr;
-            it *= 10;
-            if(it >= 100000){
-                it += 100000;
+            if(it >= 10000){
+                it += 10000;
+            }
+            else{
+                it *= 10;
             }
             arr = new int[it];
         }
-        if (i == 8){
+        if (i == 19){
             delete[] arr;
             it = 100;
             arr = new int[it];
         }
-        if(i > 10 && i <= 16){
+        if(i > 19 && i <= 32){
             sort = selectionSort;
+            std::ofstream selectionOut;
+            selectionOut.open("selection.dat", std::ios_base::app);
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << "~~~Selection Sort with " << it << " elements~~~" << std::endl;
             std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
             std::cout << std::endl;
             std::cout << "Random Array" << std::endl;
             genRandomArray(arr, it);
+            selectionOut << "Random Array with " << it << " elements: ";
+            selectionOut.close();
             testSort(selectionSort, arr, it);
             isSorted(arr, it);
 
+            selectionOut.open("selection.dat", std::ios_base::app);
             std::cout << "Already Sorted Array" << std::endl;
             genSortedArray(arr, it);
+            selectionOut << "PreSorted Array with " << it << " elements: ";
+            selectionOut.close();
             testSort(selectionSort, arr, it);
             isSorted(arr, it);
 
+            selectionOut.open("selection.dat", std::ios_base::app);
             std::cout << "Backwards Sorted Array" << std::endl;
             genBackwardsArray(arr, it);
+            selectionOut << "Backwards Array with " << it << " elements: ";
+            selectionOut.close();
             testSort(selectionSort, arr, it);
             isSorted(arr, it);
 
+            selectionOut.open("selection.dat", std::ios_base::app);
             std::cout << "Duplicate Element Array" << std::endl;
             genDuplicatedElementArray(arr, it);
+            selectionOut << "Duplicate Array with " << it << " elements: ";
+            selectionOut.close();
             testSort(selectionSort, arr, it);
             isSorted(arr, it);
             delete[] arr;
-            it *= 10;
-            if(it >= 100000){
-                it += 100000;
+            if(it >= 10000){
+                it += 10000;
+            }
+            else{
+                it *= 10;
             }
             arr = new int[it];
         }
