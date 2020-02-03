@@ -6,7 +6,7 @@
 #include <iomanip>
 #include <fstream>
 
-void resetFiles(){
+void resetFiles(){ // function that clears the files in order to write only the current run
   std::ofstream bubble;
   bubble.open("bubble.dat", std::ofstream::out | std::ofstream::trunc);
   bubble.close();
@@ -18,13 +18,13 @@ void resetFiles(){
   selection.close();
 }
 
-void swap(int &a, int &b){
+void swap(int &a, int &b){ // function that swaps two elements in an array
     int temp = a;
     a = b;
     b = temp;
 }
 
-void genRandomArray(int* arr, int n){
+void genRandomArray(int* arr, int n){ // function fills an array with random numbers
     srand(time(NULL));
     for (int i = 0; i < n+1; i++){
         int random = (rand()%n);
@@ -32,7 +32,7 @@ void genRandomArray(int* arr, int n){
     }
 }
 
-void genBackwardsArray(int* arr, int n){
+void genBackwardsArray(int* arr, int n){ // function that fills an array with numbers in descending order
 	srand(time(NULL));
 	for(int i = 0; i < n; i++){
 		arr[i] = (rand()%n);
@@ -50,14 +50,14 @@ void genBackwardsArray(int* arr, int n){
 	}
 }
 
-void genSortedArray(int* arr, int n){
+void genSortedArray(int* arr, int n){ // functon that fills an array with numbers in ascending order
 	srand(time(NULL));
 	for(int i = 0; i < n; i++){
 		arr[i] = i;
 	}
 }
 
-void genDuplicatedElementArray(int* arr, int n){
+void genDuplicatedElementArray(int* arr, int n){ // function that fills an array with duplicated numbers
     srand(time(NULL));
     for(int i = 0; i < n; i++){
         if(i < n/25){
@@ -72,7 +72,7 @@ void genDuplicatedElementArray(int* arr, int n){
 	}
 }
 
-void bubbleSort(int* arr, int n){
+void bubbleSort(int* arr, int n){ // bubble sort, plain and trash
     if(n == 0){
         std::cout << "Cannot Bubble Sort an empty array!" << std::endl;
         return;
@@ -97,7 +97,7 @@ void bubbleSort(int* arr, int n){
     std::cout << "-> Swaps: " << counter << std::endl;
 }
 
-void insertionSort(int* arr, int n){
+void insertionSort(int* arr, int n){ // insertion sort, plain and decent
     if(n == 0){
         std::cout << "Cannot Insertion Sort an empty array!" << std::endl;
         return;
@@ -117,7 +117,7 @@ void insertionSort(int* arr, int n){
 std::cout << "-> Swaps: " << counter << std::endl;
 }
 
-void selectionSort(int* arr, int n){
+void selectionSort(int* arr, int n){ // selection sort, almost as bad as bubble
     if(n == 0){
         std::cout << "Cannot Selection Sort an empty array!" << std::endl;
         return;
@@ -137,7 +137,7 @@ void selectionSort(int* arr, int n){
     std::cout << "-> Swaps: " << counter << std::endl;
 }
 
-void testSort(void(*sort)(int*, int), int* arr, int n){
+void testSort(void(*sort)(int*, int), int* arr, int n){ // test sort function opens all files and calculates time taken by sort, exporting to file and terminal
     std::ofstream bubbleOut;
     bubbleOut.open("bubble.dat", std::ios_base::app);
     std::ofstream insertionOut;
@@ -166,7 +166,7 @@ void testSort(void(*sort)(int*, int), int* arr, int n){
     }
 }
 
-void printArray(int* arr, int n){
+void printArray(int* arr, int n){ // prints array, for testing purposes only, not required
     for(int i = 0; i < n; i++){
         if (i % 10 == 0 && i != 0){
             std::cout << arr[i] << std::endl;
@@ -176,9 +176,9 @@ void printArray(int* arr, int n){
         }
     }
     std::cout << "\n";
-}   
+}
 
-void isSorted(int* arr, int n){
+void isSorted(int* arr, int n){ // fhecks to see if the array is sorted or not
 	if (n == 0){
 		std::cout << "ERROR: Array has no contents" << std::endl;
 		std::cout << std::endl;
@@ -201,13 +201,13 @@ void isSorted(int* arr, int n){
 	return;
 }
 
-int main(){ // Make files for each sort and copy paste that to microsoft excel
+int main(){
     resetFiles();
     int it = 100;
     int* arr = new int[it];
     void(*sort)(int*, int);
     for(int i = 0; i < 32; i++){
-        if (i < 7){
+        if (i < 7){ // runs bubble sort from 100-50000
             sort = bubbleSort;
             std::ofstream bubbleOut;
             bubbleOut.open("bubble.dat", std::ios_base::app);
@@ -254,12 +254,12 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             }
             arr = new int[it];
         }
-        if (i == 7){
+        if (i == 7){ // resets array size to 100 elements
             delete[] arr;
             it = 100;
             arr = new int[it];
         }
-        if (i > 7 && i <= 19){
+        if (i > 7 && i <= 19){ // runs insertion sort from 100-100000 elements
             sort = insertionSort;
             std::ofstream insertionOut;
             insertionOut.open("insertion.dat", std::ios_base::app);
@@ -293,7 +293,7 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             insertionOut.open("insertion.dat", std::ios_base::app);
             std::cout << "Duplicate Element Array" << std::endl;
             genDuplicatedElementArray(arr, it);
-            insertionOut << "Duplicate Array with " << it << " elements";
+            insertionOut << "Duplicate Array with " << it << " elements: ";
             insertionOut.close();
             testSort(insertionSort, arr, it);
             isSorted(arr, it);
@@ -306,12 +306,12 @@ int main(){ // Make files for each sort and copy paste that to microsoft excel
             }
             arr = new int[it];
         }
-        if (i == 19){
+        if (i == 19){ // resets array size to 100 elements
             delete[] arr;
             it = 100;
             arr = new int[it];
         }
-        if(i > 19 && i <= 32){
+        if(i > 19 && i <= 32){ // runs selection sort from 100-100000 elements
             sort = selectionSort;
             std::ofstream selectionOut;
             selectionOut.open("selection.dat", std::ios_base::app);
