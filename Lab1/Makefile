@@ -6,3 +6,5 @@ Lab1.o: Lab1.cpp
 
 clean:
 	rm *.o
+	rm *.dat
+	rm Lab1
