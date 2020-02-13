@@ -23,10 +23,10 @@ void MaxHeapify(int *A, int i){
     int largest = 0;
     // Find the largest among node i and its children, and swap with i
     if((l <= A.heap_size) && (A[l] > A[i])){
-        largest = i;
+        largest = l;
     }
     else{
-        largest = j;
+        largest = i;
     }
     
     if((r <= A.heap_size) && (A[r] > A[largest])){
