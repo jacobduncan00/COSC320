@@ -14,8 +14,8 @@
  * the sort made, as well as the time it took for the sort to complete
 */
 
-int quickComparisons; // global variable / counter for QuickSort comparisons
-int mergeComparisons; // gloval variable / counter for MergeSort comparisons
+int long quickComparisons; // global variable / counter for QuickSort comparisons
+int long mergeComparisons; // gloval variable / counter for MergeSort comparisons
 
 void resetFiles(){ // function that clears the files in order to write only the current run
   std::ofstream quick;
