@@ -1,118 +1,209 @@
-#include<iostream>
-#include<stdlib.h>
+#include <iostream>
 #include <math.h>
 #include <time.h>
-#include <ctime>
+#include <chrono>
 #include <iomanip>
 
-using namespace std;
+/*
+	* Jacob Duncan Lab 3 for Dr. Joseph Anderson at Salisbury University
+	* this lab tests our skills on creating heaps from arrays, building 
+	* max heaps from arrays and being able to sort an array in place by 
+	* turning it into a heap and using heap sort.
+*/
 
-struct Heap {
-		int* arr; // the underlying array
-		int length; // should always be the size of arr int 
-		int heap_size; // will change based on which portion of arr is a valid heap
-		int& operator[](int i){
-			// good idea to also check that 1 <= i <= length;
-            //if(i >= 1 && i <= length){
-				return arr[i-1]; 
-            //}
-			// so A[1] is the first and A[n] is the last
+namespace counter{ // instead of using a global variable, which is frowned upon, we can use a namespace instead
+	int counter = 0;
+}
 
-		};
+struct Heap{
+	int* arr;
+	int length;
+	int heap_size;
+	Heap(int* array, int len){ // constructor for a heap
+		arr = array; // sets the array of the heap
+		length = len; // sets the length of the heap's array
+		heap_size = 0; // initializes heap_size to 0
+	}
+	~Heap(){
+		delete[] arr; // deallocates memory by deleting the heap's aray
+	}
+	int& operator[](int i){
+		return arr[i]; // having problems with the i-1 so decided to just return A[i] value, easier than typing A.arr[i] :)
+	}
 };
 
-void swap(int &val1, int &val2){
-  int temp = val1;
-  val1 = val2;
-  val2 = temp;
+void swap(int&, int&); // function that swaps to numbers in an array
+int Left(int); // function that returns the left "child" index of a node
+int Right(int); // function that returns the right "child" index of a node
+void maxHeapify(Heap&, int); // function that will create a valid heap of elements
+void buildMaxHeap(Heap&); // function that creates a valid max heap from an array 
+void heapSort(Heap&); // function that will sort a heap
+void printArr(Heap&); // function that will print the array
+void printHeap(Heap&); // function that will print the heap
+bool isSorted(Heap&); // function that determines if the array/heap is sorted
+void testSort(void(*sort)(Heap&), Heap&); // function that tests the time and swaps of heap sort
+int* genArray(int); // function that generates an array of random integers from 0-99
+int* genPresortedArray(int); // function that generates a presorted array
+int* genBackwardArray(int); // function that generates an array in descending order
+
+int main(){
+	int testSizesLength = 8;
+	int testSizes[] = {1000, 10000, 100000, 500000, 1000000, 5000000, 10000000, 25000000};
+	void(*sort)(Heap&);
+	sort = heapSort;
+	std::cout << "##########################################" << std::endl;
+	std::cout << "\e[1m Testing Heap Sort with Random Array: \e[0m" << std::endl;
+	std::cout << std::endl;
+	for(int i = 0; i < testSizesLength; i++){
+		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
+		Heap randHeap(genArray(testSizes[i]), testSizes[i]);
+		testSort(sort, randHeap);
+	}
+	std::cout << "##########################################" << std::endl;
+	std::cout << std::endl;
+	std::cout << "##########################################" << std::endl;
+	std::cout << "\e[1m Testing Heap Sort with PreSorted Array: \e[0m" << std::endl;
+	std::cout << std::endl;
+	for(int i = 0; i < testSizesLength; i++){
+		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
+		Heap presortedHeap(genPresortedArray(testSizes[i]), testSizes[i]);
+		testSort(sort, presortedHeap);
+	}
+	std::cout << "##########################################" << std::endl;
+	std::cout << std::endl;
+	std::cout << "##########################################" << std::endl;
+	std::cout << "\e[1m Testing Heap Sort with Backward Array: \e[0m" << std::endl;
+	std::cout << std::endl;
+	for(int i = 0; i < testSizesLength; i++){
+		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
+		Heap backwardsHeap(genBackwardArray(testSizes[i]), testSizes[i]);
+		testSort(sort, backwardsHeap);
+	}
+	std::cout << "##########################################" << std::endl;
+	return 0;
 }
 
-void maxheapify(Heap A, int i){
-	int l = 2*i-1;
-	int r = 2*i;
-	int max;
+void swap(int& a, int& b){
+	int c = a;
+	a = b;
+	b = c;
+	counter::counter++;
+}
 
-	if(l <= A.heap_size && A[l] > A[i]){
-		max = l;
+int Left(int i){
+	return (2 * i) + 1;
+}
+
+int Right(int i){
+	return (2 * i) + 2;
+}
+
+void maxHeapify(Heap& A, int i){
+	int leftChild = Left(i);
+	int rightChild = Right(i);
+	int largest = i;
+	
+	if((leftChild < A.heap_size) && (A[leftChild] > A[largest])){
+		largest = leftChild;
 	}
-	else{
-		max = i;
+	if((rightChild < A.heap_size) && (A[rightChild] > A[largest])){
+		largest = rightChild;
 	}
-	if(r <= A.heap_size && A[r] > A[max]){
-		max = r;
-	}
-	if(max != i){
-		swap(A[i], A[max]);
-		maxheapify(A, max);
+	if(largest != i){
+		swap(A[i], A[largest]);
+		maxHeapify(A, largest);
 	}
 }
 
-void buildmaxheap(Heap A){
+void buildMaxHeap(Heap& A){
 	A.heap_size = A.length;
-	for(int i = (A.length/2); i >= 1; i--){
-		maxheapify(A, i);
+	for(int i = A.length - 1; i >= 0; i--){
+		maxHeapify(A, i);
 	}
 }
 
-void heapSort(Heap A){
-	cout << endl;
-	cout << "Starting Heap Sort...";
-	buildmaxheap(A);
-	for(int i = A.length; i >= 2; i--){
-		swap(A[1], A[i]); 
-		A.heap_size = A.heap_size - 1; 
-		maxheapify(A, 1); 
+void heapSort(Heap& A){
+	buildMaxHeap(A);
+	for(int i = A.length - 1; i > 0; i--){
+		swap(A[0], A[i]);
+		A.heap_size--;
+		maxHeapify(A, 0);
 	}
-    std::cout << "sort complete!" << std::endl;
-};
-
-void testSort(void(*sort)(Heap), Heap a){ // test sort function opens all files and calculates time taken by sort, exporting to file and terminal
-    typedef std::chrono::high_resolution_clock Clock;
-    auto start = std::chrono::system_clock::now(); // starts time
-    sort(a);
-    auto end = std::chrono::system_clock::now(); // ends time
-    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-    std::chrono::duration<double>elapsed_seconds = end-start;
-    std::cout << std::setprecision(10);
-    std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
 }
 
-void printHeap(Heap A, int a){
-	int n = 10;
+void printArr(Heap& A){ // Not used in my testing, however it does work
+	for(int i = A.length - 1; i > 0; i--){
+		std::cout << A[i] << " ";
+	}
+	std::cout << std::endl;
+}
 
-	for(int i = 1; i < a; i++){
-		cout << A[i] << " ";
+void printHeap(Heap& A){ // Not used in my testing, however it does work
+	int n = log2(A.length);
+
+	for(int i = 0; i < A.length; i++){
+		std::cout << A[i] << " ";
 		for(int j = 1; j <= n; j++){
-			if( i == (pow(2.0, j) - 1)){
-				cout << endl;
+			if( i == (pow(2.0, j) - 2)){
+				std::cout << std::endl;
 			}
 		}
 	}
-	cout << endl;
-};
+	std::cout << std::endl;
+}
 
-int main(){
-    int x;
-    std::cout << "How many elements do you want in your Heap? ";
-    std::cin >> x;
+bool isSorted(Heap& A){ 
+	for(int i = 0; i < A.length - 1; i++){
+		if(A[i] > A[i+1]){
+			return false;
+		}
+		return true;
+	}
+}
 
-	int start = 0;
-	int end = x;
+void testSort(void(*sort)(Heap&), Heap& A){
+	typedef std::chrono::high_resolution_clock Clock;
+	auto start = std::chrono::system_clock::now(); // starts time
+	sort(A);
+	auto end = std::chrono::system_clock::now(); // ends time
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	std::chrono::duration<double>elapsed_seconds = end-start;
+	std::cout << "-> # of swaps: " << counter::counter << std::endl;
+	counter::counter = 0; // resets counter for next test
+	std::cout << std::setprecision(10);
+	std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
+	std::cout << std::endl;
 
-	Heap Trial;
+	if(isSorted(A)){
+		return;
+	}
+	else{
+		std::cout << "ERROR: Sort was not completed correctly!" << std::endl;
+		return;
+	}
+}
 
-	Trial.arr = new int[x];
-    srand(time(NULL));
-	for(int i = 1; i <= x; i++){
-      int j = rand()%100;
-      Trial[i] = j;
-      cout << " | " << Trial[i] << " | ";
-    };
+int* genArray(int len){
+	int* rtn = new int[len];
+	for(int i = 0; i < len; i++){
+		rtn[i] = (rand()%100);
+	}
+	return rtn;
+}
 
-	Trial.length = x;
-    void(*sort)(Heap);
-    sort = heapSort;
-    testSort(sort, Trial);
-    
-	printHeap(Trial, x);
-};
+int* genPresortedArray(int len){
+	int* rtn = new int[len];
+	for(int i = 0; i < len; i++){
+		rtn[i] = i;
+	}
+	return rtn;
+}
+
+int* genBackwardArray(int len){
+	int* rtn = new int[len];
+	for(int i = len; i <= 0; i--){
+		rtn[i] = i;
+	}
+	return rtn;
+}
+
