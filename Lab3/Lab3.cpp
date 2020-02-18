@@ -3,6 +3,7 @@
 #include <time.h>
 #include <chrono>
 #include <iomanip>
+#include <fstream>
 
 /*
 	* Jacob Duncan Lab 3 for Dr. Joseph Anderson at Salisbury University
@@ -32,6 +33,7 @@ struct Heap{
 	}
 };
 
+void resetFile();
 void swap(int&, int&); // function that swaps to numbers in an array
 int Left(int); // function that returns the left "child" index of a node
 int Right(int); // function that returns the right "child" index of a node
@@ -47,6 +49,8 @@ int* genPresortedArray(int); // function that generates a presorted array
 int* genBackwardArray(int); // function that generates an array in descending order
 
 int main(){
+	resetFile();
+	std::ofstream heap;
 	int testSizesLength = 8;
 	int testSizes[] = {1000, 10000, 100000, 500000, 1000000, 5000000, 10000000, 25000000};
 	void(*sort)(Heap&);
@@ -55,32 +59,53 @@ int main(){
 	std::cout << "\e[1m Testing Heap Sort with Random Array: \e[0m" << std::endl;
 	std::cout << std::endl;
 	for(int i = 0; i < testSizesLength; i++){
+		heap.open("heap.dat", std::ios_base::app);
 		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
+		heap << "Random Array with " << testSizes[i] << " elements: ";
+		heap.close();
 		Heap randHeap(genArray(testSizes[i]), testSizes[i]);
 		testSort(sort, randHeap);
 	}
+	heap.open("heap.dat", std::ios_base::app);
+	heap << "\n";
+	heap.close();
 	std::cout << "##########################################" << std::endl;
 	std::cout << std::endl;
 	std::cout << "##########################################" << std::endl;
 	std::cout << "\e[1m Testing Heap Sort with PreSorted Array: \e[0m" << std::endl;
 	std::cout << std::endl;
 	for(int i = 0; i < testSizesLength; i++){
+		heap.open("heap.dat", std::ios_base::app);
 		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
+		heap << "PreSorted Array with " << testSizes[i] << " elements: ";
+		heap.close();
 		Heap presortedHeap(genPresortedArray(testSizes[i]), testSizes[i]);
 		testSort(sort, presortedHeap);
 	}
+	heap.open("heap.dat", std::ios_base::app);
+	heap << "\n";
+	heap.close();
 	std::cout << "##########################################" << std::endl;
 	std::cout << std::endl;
 	std::cout << "##########################################" << std::endl;
 	std::cout << "\e[1m Testing Heap Sort with Backward Array: \e[0m" << std::endl;
 	std::cout << std::endl;
 	for(int i = 0; i < testSizesLength; i++){
+		heap.open("heap.dat", std::ios_base::app);
 		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
+		heap << "Backward Array with " << testSizes[i] << " elements: ";
+		heap.close();
 		Heap backwardsHeap(genBackwardArray(testSizes[i]), testSizes[i]);
 		testSort(sort, backwardsHeap);
 	}
 	std::cout << "##########################################" << std::endl;
 	return 0;
+}
+
+void resetFile(){
+	std::ofstream heap;
+	heap.open("heap.dat", std::ofstream::out | std::ofstream::trunc);
+	heap.close();
 }
 
 void swap(int& a, int& b){
@@ -162,6 +187,8 @@ bool isSorted(Heap& A){
 }
 
 void testSort(void(*sort)(Heap&), Heap& A){
+	std::ofstream heap;
+	heap.open("heap.dat", std::ios_base::app);
 	typedef std::chrono::high_resolution_clock Clock;
 	auto start = std::chrono::system_clock::now(); // starts time
 	sort(A);
@@ -172,6 +199,7 @@ void testSort(void(*sort)(Heap&), Heap& A){
 	counter::counter = 0; // resets counter for next test
 	std::cout << std::setprecision(10);
 	std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
+	heap << elapsed_seconds.count() << "s\n";
 	std::cout << std::endl;
 
 	if(isSorted(A)){

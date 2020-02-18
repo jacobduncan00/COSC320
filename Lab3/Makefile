@@ -7,3 +7,4 @@ Lab3.o: Lab3.cpp
 clean:
 	rm *.o
 	rm Lab3
+	rm *.dat
