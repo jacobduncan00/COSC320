@@ -8,9 +8,7 @@ This lab was a pain to be very honest. I think my main problem was trying to und
 
 ##### (b) What is the theoretical time complexity of your sorting algorithm (best and worst case), in terms of the array size?
 
-->              Best Case           Worst Case
-
-Heap Sort       Θ(nlog(n))          Θ(nlog(n))
+Heap Sort  ---  Best Case: Θ(nlog(n)) --- Worst Case: Θ(nlog(n))
 
 ##### (c) Test your sorting algorithm on different size and types of arrays, as you did with labs 1 and 2. Be sure to vary the parameters enough to use the observations to answer the next questions!
 
@@ -26,9 +24,7 @@ See attached image.
 
 ##### (f) How does the sort perform in different cases? What is the best and worst case, according to your own test results?
 
-->              Best Case           Worst Case
-
-Heap Sort       Θ(nlog(n))          Θ(nlog(n))
+Heap Sort  ---  Best Case: Θ(nlog(n)) --- Worst Case: Θ(nlog(n))
 
 ##### (g) How could the code be improved in terms of usability, efficiency, and robustness?
 
