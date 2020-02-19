@@ -16,11 +16,12 @@ namespace counter{ // instead of using a global variable, which is frowned upon,
 	int counter = 0;
 }
 
+template <class T>
 struct Heap{
-	int* arr;
+	T* arr;
 	int length;
 	int heap_size;
-	Heap(int* array, int len){ // constructor for a heap
+	Heap(T* array, int len){ // constructor for a heap
 		arr = array; // sets the array of the heap
 		length = len; // sets the length of the heap's array
 		heap_size = 0; // initializes heap_size to 0
@@ -29,7 +30,7 @@ struct Heap{
 		delete[] arr; // deallocates memory by deleting the heap's aray
 	}
 	int& operator[](int i){
-		return arr[i]; // having problems with the i-1 so decided to just return A[i] value, easier than typing A.arr[i] :)
+		return this->arr[i]; // having problems with the i-1 so decided to just return A[i] value, easier than typing A.arr[i] :)
 	}
 };
 
@@ -37,13 +38,22 @@ void resetFile();
 void swap(int&, int&); // function that swaps to numbers in an array
 int Left(int); // function that returns the left "child" index of a node
 int Right(int); // function that returns the right "child" index of a node
-void maxHeapify(Heap&, int); // function that will create a valid heap of elements
-void buildMaxHeap(Heap&); // function that creates a valid max heap from an array 
-void heapSort(Heap&); // function that will sort a heap
-void printArr(Heap&); // function that will print the array
-void printHeap(Heap&); // function that will print the heap
-bool isSorted(Heap&); // function that determines if the array/heap is sorted
-void testSort(void(*sort)(Heap&), Heap&); // function that tests the time and swaps of heap sort
+template <typename T>
+void maxHeapify(Heap<T>&, int); // function that will create a valid heap of elements
+template <typename T>
+void buildMaxHeap(Heap<T>&); // function that creates a valid max heap from an array 
+template <typename T>
+void heapSort(Heap<T>&); // function that will sort a heap
+template <typename T>
+void printArr(Heap<T>&); // function that will print the array
+template <typename T>
+void printHeap(Heap<T>&); // function that will print the heap
+template <typename T>
+void printHeap(Heap<T>&, int, int); // function that will print the heap
+template <typename T>
+bool isSorted(Heap<T>&); // function that determines if the array/heap is sorted
+template <typename T>
+void testSort(void(*sort)(Heap<T>&), Heap<T>&); // function that tests the time and swaps of heap sort
 int* genArray(int); // function that generates an array of random integers from 0-99
 int* genPresortedArray(int); // function that generates a presorted array
 int* genBackwardArray(int); // function that generates an array in descending order
@@ -51,20 +61,36 @@ int* genBackwardArray(int); // function that generates an array in descending or
 int main(){
 	resetFile();
 	std::ofstream heap;
-	int testSizesLength = 8;
-	int testSizes[] = {1000, 10000, 100000, 500000, 1000000, 5000000, 10000000, 25000000};
-	void(*sort)(Heap&);
-	sort = heapSort;
+	int testSizesLength = 9;
+	int testSizes[] = {15, 1000, 10000, 100000, 500000, 1000000, 5000000, 10000000, 25000000};
+	void(*sortInts)(Heap<int>&);
+	sortInts = heapSort;
+	Heap<int>n(genPresortedArray(testSizes[0]), testSizes[0]);
+	std::cout << "##########################################" << std::endl;
+	std::cout << "Example of Printing Heap:" << std::endl;
+	printHeap(n);
+	std::cout << std::endl;
+	int start, depth;
+	std::cout << "Choose a starting node to print from (root being 0): ";
+	std::cin >> start;
+	std::cout << "Choose the depth of which you want to print: ";
+	std::cin >> depth;
+	std::cout << std::endl;
+	std::cout << "##########################################" << std::endl;
+	std::cout << "Example of printing a subtree of the Heap:" << std::endl;
+	printHeap(n, start, depth);
+	std::cout << std::endl;
+	
 	std::cout << "##########################################" << std::endl;
 	std::cout << "\e[1m Testing Heap Sort with Random Array: \e[0m" << std::endl;
 	std::cout << std::endl;
-	for(int i = 0; i < testSizesLength; i++){
+	for(int i = 1; i < testSizesLength; i++){
 		heap.open("heap.dat", std::ios_base::app);
 		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
 		heap << "Random Array with " << testSizes[i] << " elements: ";
 		heap.close();
-		Heap randHeap(genArray(testSizes[i]), testSizes[i]);
-		testSort(sort, randHeap);
+		Heap<int>randHeap(genArray(testSizes[i]), testSizes[i]);
+		testSort(sortInts, randHeap);
 	}
 	heap.open("heap.dat", std::ios_base::app);
 	heap << "\n";
@@ -74,13 +100,13 @@ int main(){
 	std::cout << "##########################################" << std::endl;
 	std::cout << "\e[1m Testing Heap Sort with PreSorted Array: \e[0m" << std::endl;
 	std::cout << std::endl;
-	for(int i = 0; i < testSizesLength; i++){
+	for(int i = 1; i < testSizesLength; i++){
 		heap.open("heap.dat", std::ios_base::app);
 		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
 		heap << "PreSorted Array with " << testSizes[i] << " elements: ";
 		heap.close();
-		Heap presortedHeap(genPresortedArray(testSizes[i]), testSizes[i]);
-		testSort(sort, presortedHeap);
+		Heap<int>presortedHeap(genPresortedArray(testSizes[i]), testSizes[i]);
+		testSort(sortInts, presortedHeap);
 	}
 	heap.open("heap.dat", std::ios_base::app);
 	heap << "\n";
@@ -90,15 +116,34 @@ int main(){
 	std::cout << "##########################################" << std::endl;
 	std::cout << "\e[1m Testing Heap Sort with Backward Array: \e[0m" << std::endl;
 	std::cout << std::endl;
-	for(int i = 0; i < testSizesLength; i++){
+	for(int i = 1; i < testSizesLength; i++){
 		heap.open("heap.dat", std::ios_base::app);
 		std::cout << "Heap Sorting array with " << testSizes[i] << " elements..." << std::endl;
 		heap << "Backward Array with " << testSizes[i] << " elements: ";
 		heap.close();
-		Heap backwardsHeap(genBackwardArray(testSizes[i]), testSizes[i]);
-		testSort(sort, backwardsHeap);
+		Heap<int>backwardsHeap(genBackwardArray(testSizes[i]), testSizes[i]);
+		testSort(sortInts, backwardsHeap);
 	}
 	std::cout << "##########################################" << std::endl;
+
+	void(*sortStrings)(Heap<std::string>&);
+	sortStrings = heapSort;
+
+	int stringArrSize = 4;
+	std::string stringArr[] = {"yolanda", "bill", "joseph", "quackenbush"};
+	Heap<std::string>stringHeap(stringArr, stringArrSize);
+	std::cout << "String Heap:" << std::endl;
+	std::cout << std::endl;
+	printHeap(stringHeap);
+	std::cout << std::endl;
+	std::cout << "String Max Heap:" << std::endl;
+	std::cout << std::endl;
+	buildMaxHeap(stringHeap);
+	std::cout << std::endl;
+	std::cout << "String Heap Sorted:" << std::endl;
+	std::cout << std::endl;
+	testSort(sortStrings, stringHeap);
+
 	return 0;
 }
 
@@ -123,7 +168,8 @@ int Right(int i){
 	return (2 * i) + 2;
 }
 
-void maxHeapify(Heap& A, int i){
+template <typename T>
+void maxHeapify(Heap<T>& A, int i){
 	int leftChild = Left(i);
 	int rightChild = Right(i);
 	int largest = i;
@@ -140,14 +186,16 @@ void maxHeapify(Heap& A, int i){
 	}
 }
 
-void buildMaxHeap(Heap& A){
+template <typename T>
+void buildMaxHeap(Heap<T>& A){
 	A.heap_size = A.length;
 	for(int i = A.length - 1; i >= 0; i--){
 		maxHeapify(A, i);
 	}
 }
 
-void heapSort(Heap& A){
+template <typename T>
+void heapSort(Heap<T>& A){
 	buildMaxHeap(A);
 	for(int i = A.length - 1; i > 0; i--){
 		swap(A[0], A[i]);
@@ -156,14 +204,16 @@ void heapSort(Heap& A){
 	}
 }
 
-void printArr(Heap& A){ // Not used in my testing, however it does work
+template <typename T>
+void printArr(Heap<T>& A){ // Not used in my testing, however it does work
 	for(int i = A.length - 1; i > 0; i--){
 		std::cout << A[i] << " ";
 	}
 	std::cout << std::endl;
 }
 
-void printHeap(Heap& A){ // Not used in my testing, however it does work
+template <typename T>
+void printHeap(Heap<T>& A){ // Not used in my testing, however it does work
 	int n = log2(A.length);
 
 	for(int i = 0; i < A.length; i++){
@@ -177,7 +227,30 @@ void printHeap(Heap& A){ // Not used in my testing, however it does work
 	std::cout << std::endl;
 }
 
-bool isSorted(Heap& A){ 
+template <typename T>
+void printHeap(Heap<T>& A, int start, int end){
+	if(A.length < 1){
+		std::cout << "Heap is empty!" << std::endl;
+		return;
+	}
+	std::cout << A[start] << "\n";
+	int startOfRow = (2*start)+1;
+	for(int i = 2; i <= end; i++){
+		for(int j = startOfRow; j < (startOfRow + pow(2, i-1)); j++){
+			if(j < A.length){
+				std::cout << A[j] << " ";
+			}
+			else{
+				std::cout << "*" << " ";
+			}
+		}
+		std::cout << std::endl;
+		startOfRow = (2*startOfRow)+1;
+	}
+}
+
+template <typename T>
+bool isSorted(Heap<T>& A){ 
 	for(int i = 0; i < A.length - 1; i++){
 		if(A[i] > A[i+1]){
 			return false;
@@ -186,7 +259,8 @@ bool isSorted(Heap& A){
 	}
 }
 
-void testSort(void(*sort)(Heap&), Heap& A){
+template <typename T>
+void testSort(void(*sort)(Heap<T>&), Heap<T>& A){
 	std::ofstream heap;
 	heap.open("heap.dat", std::ios_base::app);
 	typedef std::chrono::high_resolution_clock Clock;
@@ -229,7 +303,7 @@ int* genPresortedArray(int len){
 
 int* genBackwardArray(int len){
 	int* rtn = new int[len];
-	for(int i = len; i <= 0; i--){
+	for(int i = len; i >= 0; i--){
 		rtn[i] = i;
 	}
 	return rtn;
