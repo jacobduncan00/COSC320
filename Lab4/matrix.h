@@ -26,6 +26,4 @@ class Matrix{
         friend Matrix operator^ (const Matrix& m, const char& exp);
 };
 
-//#include "matrix.cpp"
-
 #endif

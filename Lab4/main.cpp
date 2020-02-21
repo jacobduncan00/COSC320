@@ -2,6 +2,14 @@
 #include <chrono>
 #include "matrix.h"
 
+/*
+    Lab 4 by Jacob Duncan at Salisbury Universtiy for Dr. Joseph Anderson
+    COSC 320. This lab displays Matrix operations in C++. I demonstrated
+    Matrix addition, multiplication, Diagonal, Triangular (Upper and Lower), 
+    Identity, as well as Vector Matrices. I also included time trials 
+    for multiplying different Matrices varying in size and form.
+*/
+
 int main(){
     long unsigned int arr[4] = {10,20,30,40};
 
