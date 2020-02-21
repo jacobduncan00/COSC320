@@ -13,8 +13,8 @@
 */
 
 namespace counter{ // instead of using a global variable, which is frowned upon, we can use a namespace instead
-	int swaps = 0;
-	int comparisons = 0;
+	long int swaps = 0;
+	long int comparisons = 0;
 }
 
 struct Heap{
@@ -51,14 +51,13 @@ int main(){
 
 	resetFile(); // resets the .dat file to be empty each run
 	std::ofstream heap; // output stream for the file
-	int testSizesLength = 9;
-	int testSizes[] = {15, 1000, 10000, 100000, 500000, 1000000, 5000000, 10000000, 25000000}; // different testing sizes for the various array's/heaps
+	int testSizesLength = 11; 
+	int testSizes[] = {15,1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000, 9000000, 10000000}; // different testing sizes for the various array's/heaps
 	void(*sort)(Heap&); // out sort parameter for testSort function
 	sort = heapSort;
 	Heap n(genPresortedArray(testSizes[0]), testSizes[0]); // uses constructor for heap struct to make a new heap of specified size and length
 	
 	// Testing the print method of printing subtrees of original heap
-	
 	std::cout << "##########################################" << std::endl;
 	std::cout << "Example of Printing Heap:" << std::endl;
 	printHeap(n); // call to print the heap only, not the sub tree heap print
@@ -66,7 +65,7 @@ int main(){
 	int start, depth;
 	std::cout << "Choose a starting node to print from (root being 0): ";
 	std::cin >> start;
-	std::cout << "Choose the depth of which you want to print: ";
+	std::cout << "Choose the depth of which you want to print (current row being 1): ";
 	std::cin >> depth;
 	std::cout << std::endl;
 	std::cout << "##########################################" << std::endl;
@@ -267,7 +266,7 @@ void testSort(void(*sort)(Heap&), Heap& A){
 int* genArray(int len){
 	int* rtn = new int[len];
 	for(int i = 0; i < len; i++){
-		rtn[i] = (rand()%100);
+		rtn[i] = (rand()%len);
 	}
 	return rtn;
 }
@@ -282,7 +281,7 @@ int* genPresortedArray(int len){
 
 int* genBackwardArray(int len){
 	int* rtn = new int[len];
-	for(int i = len; i >= 0; i--){
+	for(int i = len - 1; i >= 0; i--){
 		rtn[i] = i;
 	}
 	return rtn;
