@@ -8,10 +8,10 @@
 #define PURPLE "\033[35m"
 #define RED "\033[31m" 
 
-Matrix::Matrix() : rows(10), cols(10) {
-    mat = new long unsigned int*[rows];
+Matrix::Matrix() : rows(1), cols(1) {
+    mat = new float*[rows];
     for(int i = 0; i < rows; i++){
-        mat[i] = new long unsigned int[cols];
+        mat[i] = new float[cols];
     }
     mat[0][0] = 0;
 }
@@ -23,12 +23,12 @@ Matrix::Matrix(unsigned long int row, unsigned long int col){
   } 
   rows = row;
   cols = col;
-  mat = new long unsigned int*[row];
+  mat = new float*[row];
   srand(time(NULL));
     for(int i = 0; i < rows; i++){
-      mat[i] = new long unsigned int[cols];
+      mat[i] = new float[cols];
       for (int j = 0; j < cols; j++){
-        mat[i][j] = (rand()%99)+1; // for testing purposes 0-4
+        mat[i][j] = (rand()%col)+1; // could be rows too 
       }
     }
 }
@@ -37,9 +37,9 @@ Matrix::Matrix(unsigned long int row, unsigned long int col){
 Matrix::Matrix(const Matrix& m){
   rows = m.rows;
   cols = m.cols;
-  long unsigned int** arr = new long unsigned int*[rows];
+  float** arr = new float*[rows];
   for(int i = 0; i < rows; i++){
-    arr[i] = new long unsigned int[cols];
+    arr[i] = new float[cols];
   }
   mat = arr;
   for(int i = 0; i < m.rows; i++){
@@ -55,6 +55,91 @@ Matrix::~Matrix(){
   }
   delete[] this -> mat;
 }
+
+void Matrix::insert(int i, int j, float num){
+  mat[i][j] = num;
+}
+
+float Matrix::getVal(int i, int j){
+  return mat[i][j];
+}
+
+void Matrix::determinant(){
+  int det = 0;
+  if(rows != cols){
+    std::cout << "Matrix is not a square, cannot be invertible" << std::endl;
+  }
+  if(rows == 2 && cols == 2){
+    det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
+  }
+  else if (rows == 3 && cols == 3){
+    det = (mat[0][0] * mat[1][1] * mat[2][2]
+			  + mat[0][1]  * mat[1][2] * mat[2][0]
+		  	+ mat[0][2]  * mat[1][0] * mat[2][1])
+		  	- (mat[0][2] * mat[1][1] * mat[2][0]
+		  	+  mat[0][0] * mat[1][2] * mat[2][1]
+		  	+  mat[0][1] * mat[1][0] * mat[2][2]);
+  }
+  else{
+    for(int i = 0; i < rows; i++){
+      for (int j = 0; j < cols; j++){
+        det+=mat[i][j];
+      }
+    }
+  }
+}
+
+void Matrix::twoDRegression(std::string fileName){
+  std::ifstream infile(fileName);
+  if(!infile.is_open()){
+      	std::cout << "File Opening Error.\n";
+      	exit (1);
+  }
+  int datasize;
+  if(fileName == "points100.dat"){
+    datasize = 100;
+  }
+  else if(fileName == "points500.dat"){
+    datasize = 500;
+  }
+  else if(fileName == "points1000.dat"){
+    datasize = 1000;
+  }
+  else if(fileName == "points5000.dat"){
+    datasize = 5000;
+  }
+  else if(fileName == "points10000.dat"){
+    datasize = 10000;
+  }
+  else if(fileName == "points50000.dat"){
+    datasize = 50000;
+  }
+  else if(fileName == "points100000.dat"){
+    datasize = 100000;
+  }
+  else{
+    std::cout << "Data Size could not be calculated!" << std::endl;
+    return;
+  }
+  float c1, c2;
+  Matrix *A = new Matrix(datasize, 2);
+  Matrix *b = new Matrix(datasize, 1);
+  for(int i = 0; i < datasize; i++){
+    infile >> c1;
+    //std::cout << "1st Value: " << c1 << std::endl;
+    infile >> c2;
+    //std::cout << "2nd Value: " << c2 << std::endl;
+    A->insert(i, 0, c1);
+    b->insert(i, 0, c2);
+    A->insert(i, 1, 1.0);
+  }
+  infile.close();
+  Matrix AT = (*A)^'T';
+  Matrix Beta = (((AT * *A).inverse() * AT) * *b);
+  std::cout << "[2D] Aβ = [A]*[β]=[x] = b:" << std::endl;
+  std::cout << Beta << std::endl; // Prints regression line.
+}
+
 
 void Matrix::identityMatrix(){
   for(int i = 0; i < this->rows; i++){
@@ -121,12 +206,12 @@ void Matrix::operator=(const Matrix& m){
   Matrix copy(m);
   rows = m.rows;
   cols = m.cols;
-  long unsigned int** arr = new long unsigned int*[rows];
+  float** arr = new float*[rows];
   for(int i = 0; i < rows; i++){
-    arr[i] = new long unsigned int[cols];
+    arr[i] = new float[cols];
   }
   mat = arr;
-  long unsigned int** temp = mat;
+  float** temp = mat;
   mat = copy.mat;
   copy.mat = temp;
 }
@@ -180,7 +265,7 @@ Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 	return matrixc;
 }
 
-Matrix operator* (const long unsigned int& c, const Matrix& matrixa){ // Scalar Mult.
+Matrix operator* (const float& c, const Matrix& matrixa){ // Scalar Mult.
 	Matrix matrixb(matrixa.rows, matrixa.cols);
 	for(int i = 0; i < matrixa.rows; i++)
 		for(int k = 0; k < matrixa.cols; k++)

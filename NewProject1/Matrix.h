@@ -5,14 +5,19 @@
 
 class Matrix{
     private:
-        long unsigned int** mat;
-        long unsigned int rows;
-        long unsigned int cols;
+        float** mat;
+        unsigned long int rows;
+        unsigned long int cols;
     public:
         Matrix();
-        Matrix(long unsigned int, long unsigned int);
+        Matrix(unsigned long int, unsigned long int);
         Matrix(const Matrix&);
         ~Matrix();
+        void insert(int, int, float);
+        float getVal(int, int);
+        void determinant();
+        Matrix& inverse();
+        void twoDRegression(std::string); // takes in fileName by argv in main
         void identityMatrix();
         void diagonalMatrix();
         void triangularMatrix(bool);
@@ -22,7 +27,7 @@ class Matrix{
         friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator- (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const Matrix& matrixa, const Matrix& matrixb);
-        friend Matrix operator* (const long unsigned int& c, const Matrix& matrixa);
+        friend Matrix operator* (const float& c, const Matrix& matrixa);
         friend Matrix operator^ (const Matrix& m, const char& exp);
 };
 
