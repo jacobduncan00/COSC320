@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <iterator>
+#include <math.h>
 #include "matrix.h"
 
 Matrix::Matrix():rows(1), cols(1){
@@ -53,7 +54,7 @@ Matrix::Matrix(unsigned long int row, unsigned long int col){
     for(int i = 0; i < rows; i++){
       mat[i] = new float[cols];
       for (int j = 0; j < cols; j++){
-        mat[i][j] = 0.0;
+        mat[i][j] = (rand()%9)+1;
       }
     }
 }
@@ -69,13 +70,13 @@ float Matrix::GetVal(int i, int k){
 
 void Matrix::Determinant(){
   int det = 0;
-  if(rows != cols){
+  if(rows != cols){ // if matrix is not n x n 
     std::cout << "Not a square, cannot be invertible" << std::endl;
   }
-  if(rows == 2 && cols == 2){
+  if(rows == 2 && cols == 2){ // if matrix is 2 x 2
     det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
   }
-  else if (rows == 3 && cols == 3){
+  else if (rows == 3 && cols == 3){ // if matrix is 3 x 3, which wouldnt meet 2^n criteria
     det = (mat[0][0] * mat[1][1] * mat[2][2]
 			  + mat[0][1] * mat[1][2] * mat[2][0]
 		  	+ mat[0][2] * mat[1][0] * mat[2][1])
@@ -83,7 +84,7 @@ void Matrix::Determinant(){
 		  	+  mat[0][0] * mat[1][2] * mat[2][1]
 		  	+  mat[0][1] * mat[1][0] * mat[2][2]);
   }
-  else{
+  else{ // else, calculate the determinant based off the sum of mat[i][j]
     for(int i = 0; i < rows; i++){
       for (int j = 0; j < cols; j++){
         det+=mat[i][j];
@@ -319,6 +320,18 @@ void Matrix::triangularMatrix(bool up){
       }
     }
   }
+}
+
+void Matrix::printMatrix(){
+    for(int i = 0; i < this->rows; i++){
+        if(i != 0)
+            std::cout << std::endl;
+        for(int j = 0; j < this->cols; j++){
+              std::cout << std::setw(5) << this->mat[i][j] << " ";
+        }
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 std::ostream& operator<< (std::ostream& os, const Matrix& matrix){

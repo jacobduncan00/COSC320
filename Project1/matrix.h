@@ -23,6 +23,7 @@ public:
   void identityMatrix();
   void diagonalMatrix();
   void triangularMatrix(bool);
+  void printMatrix();
   void operator= (const Matrix&);
   friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix);
 	friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);
