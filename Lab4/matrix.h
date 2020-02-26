@@ -5,7 +5,7 @@
 
 class Matrix{
     private:
-        long unsigned int** mat;
+        long int** mat;
         long unsigned int rows;
         long unsigned int cols;
     public:
@@ -23,7 +23,6 @@ class Matrix{
         friend Matrix operator- (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const long unsigned int& c, const Matrix& matrixa);
-        friend Matrix operator^ (const Matrix& m, const char& exp);
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <math.h>
+#include <chrono>
 #include "matrix.h"
 
 #define RESET "\033[0m"
@@ -9,9 +10,9 @@
 #define RED "\033[31m" 
 
 Matrix::Matrix() : rows(10), cols(10) {
-    mat = new long unsigned int*[rows];
+    mat = new long int*[rows];
     for(int i = 0; i < rows; i++){
-        mat[i] = new long unsigned int[cols];
+        mat[i] = new long int[cols];
     }
     mat[0][0] = 0;
 }
@@ -23,10 +24,11 @@ Matrix::Matrix(unsigned long int row, unsigned long int col){
   } 
   rows = row;
   cols = col;
-  mat = new long unsigned int*[row];
-  srand(time(NULL));
+  mat = new long int*[row];
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  srand(seed);
     for(int i = 0; i < rows; i++){
-      mat[i] = new long unsigned int[cols];
+      mat[i] = new long int[cols];
       for (int j = 0; j < cols; j++){
         mat[i][j] = (rand()%99)+1; // for testing purposes 0-4
       }
@@ -37,9 +39,9 @@ Matrix::Matrix(unsigned long int row, unsigned long int col){
 Matrix::Matrix(const Matrix& m){
   rows = m.rows;
   cols = m.cols;
-  long unsigned int** arr = new long unsigned int*[rows];
+  long int** arr = new long int*[rows];
   for(int i = 0; i < rows; i++){
-    arr[i] = new long unsigned int[cols];
+    arr[i] = new long int[cols];
   }
   mat = arr;
   for(int i = 0; i < m.rows; i++){
@@ -108,6 +110,9 @@ void Matrix::printMatrix(){
             else if(this->mat[i][j] == 1){
               std::cout << std::setfill('0') << std::setw(3) << RED << "001" << " " << RESET;
             }
+            else if(this->mat[i][j] < 0){
+              std::cout << std::setw(5) << RED << this->mat[i][j] << " " << RESET;
+            }
             else{
               std::cout << std::setfill('0') << std::setw(3) << this->mat[i][j] << " ";
             }
@@ -121,12 +126,12 @@ void Matrix::operator=(const Matrix& m){
   Matrix copy(m);
   rows = m.rows;
   cols = m.cols;
-  long unsigned int** arr = new long unsigned int*[rows];
+  long int** arr = new long int*[rows];
   for(int i = 0; i < rows; i++){
-    arr[i] = new long unsigned int[cols];
+    arr[i] = new long int[cols];
   }
   mat = arr;
-  long unsigned int** temp = mat;
+  long int** temp = mat;
   mat = copy.mat;
   copy.mat = temp;
 }
@@ -185,15 +190,6 @@ Matrix operator* (const long unsigned int& c, const Matrix& matrixa){ // Scalar 
 	for(int i = 0; i < matrixa.rows; i++)
 		for(int k = 0; k < matrixa.cols; k++)
 			matrixb.mat[i][k] = (matrixa.mat[i][k] * c);
-
-	return matrixb;
-}
-
-Matrix operator^ (const Matrix& m, const char& exp){
-	Matrix matrixb(m.cols, m.rows);
-	for(int i = 0; i < m.rows; i++)
-		for(int j = 0; j < m.cols; j++)
-			matrixb.mat[j][i] = m.mat[i][j];
 
 	return matrixb;
 }
