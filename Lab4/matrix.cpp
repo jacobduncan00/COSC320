@@ -9,7 +9,7 @@
 #define PURPLE "\033[35m"
 #define RED "\033[31m" 
 
-Matrix::Matrix() : rows(10), cols(10) {
+Matrix::Matrix() : rows(10), cols(10) { // default constructor which generates a 10x10 matrix with 0's
     mat = new long int*[rows];
     for(int i = 0; i < rows; i++){
         mat[i] = new long int[cols];
@@ -17,8 +17,8 @@ Matrix::Matrix() : rows(10), cols(10) {
     mat[0][0] = 0;
 }
 
-Matrix::Matrix(unsigned long int row, unsigned long int col){
-  if (row < 1 || col < 1){
+Matrix::Matrix(unsigned long int row, unsigned long int col){ // constructor that takes in rows,cols parameter to set the size of matrix with 
+  if (row < 1 || col < 1){                                    // values from 1-99
     std::cout << "Invalid Matrix Size" << std::endl;
     exit(1);
   } 
@@ -30,13 +30,13 @@ Matrix::Matrix(unsigned long int row, unsigned long int col){
     for(int i = 0; i < rows; i++){
       mat[i] = new long int[cols];
       for (int j = 0; j < cols; j++){
-        mat[i][j] = (rand()%99)+1; // for testing purposes 0-4
+        mat[i][j] = (rand()%99)+1; 
       }
     }
 }
 
 
-Matrix::Matrix(const Matrix& m){
+Matrix::Matrix(const Matrix& m){ // copy constructor, used along side overloaded= operator
   rows = m.rows;
   cols = m.cols;
   long int** arr = new long int*[rows];
@@ -51,29 +51,29 @@ Matrix::Matrix(const Matrix& m){
   }
 }
 
-Matrix::~Matrix(){
+Matrix::~Matrix(){ // destructor that deallocates the memory used by making "new" 2d arrays
   for(int i = 0; i < this -> rows; i++){
     delete[] this -> mat[i];
   }
   delete[] this -> mat;
 }
 
-void Matrix::identityMatrix(){
+void Matrix::identityMatrix(){ // identity Matrix function that makes an identity matrix meaning 1's going down the main diagonal
   for(int i = 0; i < this->rows; i++){
     this->mat[i][i] = 1;
   }
 }
 
-void Matrix::diagonalMatrix(){
+void Matrix::diagonalMatrix(){ // diagonal Matrix function that makes the main diagonal all the same number, in this case 999 
   srand(time(NULL));
   for(int i = 0; i < this->rows; i++){
     this->mat[i][i] = 999;
   }
 }
 
-void Matrix::triangularMatrix(bool up){
+void Matrix::triangularMatrix(bool up){ // triangular Matrix function, depending on the parameter will create a lower or upper triangle within the Matrix
   srand(time(NULL));
-  if(up){
+  if(up){ // if up == true, then create an upper triangle matrix, meaning if i < j, then assign 999, else assign 0
     for(int i = 0; i < this->rows; i++){
       for(int j = 0; j < this->rows; j++){
         if(i < j){
@@ -85,7 +85,7 @@ void Matrix::triangularMatrix(bool up){
       }
     }
   }
-  else{
+  else{ // else if up == false, then create a lower triangle matrix, meaning if i > j, then assign 999, else assign 0
     for(int i = 0; i < this->rows; i++){
       for(int j = 0; j < this->rows; j++){
         if(i > j){
@@ -99,7 +99,7 @@ void Matrix::triangularMatrix(bool up){
   }
 }
 
-void Matrix::printMatrix(){
+void Matrix::printMatrix(){ // function used to print Matrice's, not needed as I completed the overloaded << operator, however included to use colors
     for(int i = 0; i < this->rows; i++){
         if(i != 0)
             std::cout << std::endl;
@@ -122,7 +122,7 @@ void Matrix::printMatrix(){
     std::cout << std::endl;
 }
 
-void Matrix::operator=(const Matrix& m){
+void Matrix::operator=(const Matrix& m){ // overloaded assignment operator takes in a Matrix and assigns it's contents to another
   Matrix copy(m);
   rows = m.rows;
   cols = m.cols;
@@ -136,7 +136,7 @@ void Matrix::operator=(const Matrix& m){
   copy.mat = temp;
 }
 
-std::ostream& operator<< (std::ostream& os, const Matrix& matrix){
+std::ostream& operator<< (std::ostream& os, const Matrix& matrix){ // overloaded output stream operator allows me to print Matrices with just std::cout << Matrix;
     for(int i = 0; i < matrix.rows; i++){
         for(int k = 0; k < matrix.cols; k++)
             os << matrix.mat[i][k] << " ";
@@ -145,7 +145,7 @@ std::ostream& operator<< (std::ostream& os, const Matrix& matrix){
         return os;
 }
 
-Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){
+Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){ // overloaded addition operator to do Matrix addition, Matrix + Matrix
 	if(matrixa.rows != matrixb.rows || matrixa.cols != matrixb.cols){
 		std::cout << "Invalid matrix size combination.";
 		exit (1);
@@ -158,7 +158,7 @@ Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){
 	return matrixc;
 }
 
-Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){
+Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){ // overloaded subtraction operator to do Matrix subtraction, Matrix - Matrix
 	if(matrixa.rows!= matrixb.rows|| matrixa.cols != matrixb.cols){
 		std::cout << "Invalid matrix size combination.";
 		exit (1);
@@ -171,7 +171,7 @@ Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){
 	return matrixc;
 }
 
-Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
+Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){ // overloaded multiplication operator to do Matrix multiplication, Matrix x Matrix
 	if(matrixa.cols != matrixb.rows){
 		std::cout << "Invalid matrix size combination.";
 		exit (1);
@@ -185,7 +185,7 @@ Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 	return matrixc;
 }
 
-Matrix operator* (const long unsigned int& c, const Matrix& matrixa){ // Scalar Mult.
+Matrix operator* (const long unsigned int& c, const Matrix& matrixa){ // Scalar Mult. overloaded operator to do Matrix Scalar multiplication, Matrix x int
 	Matrix matrixb(matrixa.rows, matrixa.cols);
 	for(int i = 0; i < matrixa.rows; i++)
 		for(int k = 0; k < matrixa.cols; k++)

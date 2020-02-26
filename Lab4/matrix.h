@@ -5,14 +5,14 @@
 
 class Matrix{
     private:
-        long int** mat;
-        long unsigned int rows;
-        long unsigned int cols;
+        long int** mat; // main "Matrix" 2D Array
+        long unsigned int rows; // Rows in the Array
+        long unsigned int cols; // Cols in the Array
     public:
-        Matrix();
-        Matrix(long unsigned int, long unsigned int);
-        Matrix(const Matrix&);
-        ~Matrix();
+        Matrix(); // Default Constructor
+        Matrix(long unsigned int, long unsigned int); // Constructor that takes parameters
+        Matrix(const Matrix&); // Copy Constructor
+        ~Matrix(); // Destructor
         void identityMatrix();
         void diagonalMatrix();
         void triangularMatrix(bool);
