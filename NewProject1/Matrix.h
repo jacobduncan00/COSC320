@@ -13,9 +13,12 @@ class Matrix{
         Matrix(unsigned long int, unsigned long int);
         Matrix(const Matrix&);
         ~Matrix();
+        void fillMatrix(float);
         void insert(int, int, float);
         float getVal(int, int);
         void determinant();
+        Matrix transpose();
+        Matrix& padMatrix();
         Matrix& inverse();
         void twoDRegression(std::string); // takes in fileName by argv in main
         void identityMatrix();

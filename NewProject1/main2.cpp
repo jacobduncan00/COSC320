@@ -1,10 +1,10 @@
 #include <iostream>
 #include <fstream>
-//#include "Matrix.h"
+#include "Matrix.h"
 
 // read and report file
 
-void handleFile(std::string fileName){
+Matrix handleFile(std::string fileName){
     // Coal
     // Electricity
     // Produce
@@ -23,37 +23,71 @@ void handleFile(std::string fileName){
         std::cout << "ERROR: File not opened!" << std::endl;
         std::exit(1); // need to be careful with this, change to throw catch exceptions
     }
-    int buffer = 10; // needs to be able to find #
-        // first level
-    for(int i = 0; i < buffer; i++){
-        if(i == 3){
-            std::string level2buffer = " ";
-            inputFile >> level2buffer;
-            std::cout << level2buffer << std::endl;
+    std::string buffer = " "; // needs to be able to find #
+    float buffer2 = 0;
+    bool flag = true;
+    int i = 0;
+    while(buffer != "---"){
+        inputFile >> buffer;
+        if(buffer == "---"){
+            // std::cout << std::endl;
+            // std::cout << "Buffer: " << buffer << std::endl;
+            break;
         }
-        if (i > 3){
-            std::string idk;
-            std::getline(inputFile, idk);
-            for(int i = 0; i < idk.length(); i++){
-                float num = 0;
-                input
-            }
-            std::cout << idk << std::endl;
+        // std::cout << buffer << std::endl;
+        i++;
+    }
+    // std::cout << std::endl;
+    // std::cout << "Matrix will be " << i << "x" << i << std::endl;
+    // std::cout << std::endl;
+    // std::cout << "      Matrix   " << std::endl;
+    // std::cout << "   ------------" << std::endl;
+    // std::cout << std::endl;
+    Matrix A(i, i); // creates an i x i Matrix, we can do this based off the project instructions
+    for(unsigned long int j = 0; j < i; j++){
+        for(unsigned long int k = 0; k < i; k++){
+            float num;
+            inputFile >> num;
+            A.insert(j, k, num);
         }
-        if(i < 2){
-            std::string line;
-            inputFile >> line;
-            firstLevel[i] = line;
-            std::cout << firstLevel[i] << std::endl;
-        }  
+    }
+    //A.printMatrix();
+    std::string nextBuffer, thirdLevel;
+    inputFile >> nextBuffer;
+    //std::cout << "Buffer: " << nextBuffer << std::endl;
+    //std::cout << std::endl;
+    for(int l = 0; l < i; l++){
+        inputFile >> thirdLevel;
+        //std::cout << thirdLevel << std::endl;
     }
     inputFile.close(); 
-    // second level
-    // get line, then line length, then store each in vector
+    return A;
 }
 
 int main(int argc, char** argv){
     std::string fileName = argv[1];
-    handleFile(fileName);
+    Matrix A = handleFile(fileName);
+    Matrix A_identity = handleFile(fileName);
+    Matrix B = A;
+
+    std::cout << "Matrix A" << std::endl;
+    std::cout << std::endl;
+    A.printMatrix();
+
+    std::cout << "A Inverse" << std::endl;
+    std::cout << std::endl;
+    B.inverse();
+    B.printMatrix();
+
+    std::cout << "Identity Matrix of A" << std::endl;
+    std::cout << std::endl;
+    A_identity.identityMatrix();
+    A_identity.printMatrix();
+
+    std::cout << "Showing that A * A Inverse is Identity Matrix" << std::endl;
+    std::cout << std::endl;
+    Matrix C = B * A;
+    C.printMatrix();
+
     return 0;
 }
