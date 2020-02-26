@@ -30,7 +30,6 @@ int main(){
     C.printMatrix();
 
     std::cout << "\e[1mMatrix A - Matrix B\e[0m" << std::endl;
-    std::cout << "\e[1mMatrix A = Matrix B, therefore should be all 0's\e[0m" << std::endl;
     std::cout << std::endl;
     Matrix CC = A - B;
     CC.printMatrix();
