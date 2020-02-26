@@ -148,7 +148,7 @@ Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){
 
 	Matrix matrixc(matrixa.rows, matrixa.cols);
 	for(int i = 0; i < matrixa.rows; i++)
-		for(int k = 0; k < matrixa.cols; k++)
+		for(int k = 0; k < matrixa.cols; k++) 
 			matrixc.mat[i][k] = matrixa.mat[i][k] + matrixb.mat[i][k];
 	return matrixc;
 }
