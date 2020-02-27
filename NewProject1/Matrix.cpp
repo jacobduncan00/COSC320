@@ -12,16 +12,13 @@ namespace counter{
     int count = 0;
 }
 
-Matrix::Matrix() : rows(1), cols(1) {
-    mat = new float*[rows];
-    for(int i = 0; i < rows; i++){
-        mat[i] = new float[cols];
-    }
-    mat[0][0] = 0;
+Matrix::Matrix(){
+    rows = 0;
+    cols = 0;
 }
 
-Matrix::Matrix(unsigned long int row, unsigned long int col){
-  if (row < 1 || col < 1){
+Matrix::Matrix(long int row, long int col){
+  if (row <= 0 || col <= 0){
     std::cout << "Invalid Matrix Size" << std::endl;
     exit(1);
   } 
@@ -60,6 +57,23 @@ Matrix::~Matrix(){
   delete[] this -> mat;
 }
 
+Matrix Matrix::fillMatrix(){
+  Matrix A = Matrix(rows, cols);
+  A.mat[0][0] = 1.0;
+	A.mat[0][1] = 0.0;
+	A.mat[0][2] = 0.0;
+	
+	A.mat[1][0] = 0.0;
+	A.mat[1][1] = 2.0;
+	A.mat[1][2] = 0.0;
+	
+	A.mat[2][0] = 0.0;
+	A.mat[2][1] = 0.0;
+	A.mat[2][2] = 3.0;
+
+  return A;
+}
+
 void Matrix::insert(int i, int j, float num){
   mat[i][j] = num;
 }
@@ -94,26 +108,23 @@ void Matrix::determinant(){
 }
 
 Matrix& Matrix::padMatrix(){
-	//check if needs to be padded
 	int size = 2;
 	while((size < rows || size < cols) && size > 0 ){
-		size = size * 2; 
-	} //no remainder
+		size*=2; 
+	}
+
 	float** old = mat;
 	int prevRows = rows;
 	int prevCol = cols;
-	
-
-	//size is now rows and columns
 	rows = cols = size;
+  
 	mat = new float*[rows];
 	for(int i = 0; i < rows; i++){
 		mat[i] = new float[cols];
-		//set all elements to 0
 		for(int j = 0; j < cols; j++){
 			mat[i][j] = 0;
 		}
-	};
+	}
 
 	for(int i = 0; i < rows; i++){
 		for(int j = 0; j < cols; j++){
@@ -134,9 +145,7 @@ Matrix& Matrix::padMatrix(){
 		delete [] old[i];
 	}
 	delete [] old;
-
 	return *this;
-
 };
 
 Matrix Matrix::transpose(){
@@ -152,165 +161,86 @@ Matrix Matrix::transpose(){
 Matrix& Matrix::inverse(){
 	// Please use a 2^n x 2^n matrix.
   // Assuming that "this" is a square (n x n) matrix and is symmetric
-	//int row = this->rows;
-  int row = rows;
-  std::cout << "Rows: " << row << std::endl;
-	//int col = this->cols;
-  int col = cols;
-  std::cout << "Cols: " << col << std::endl;
-	int row2 = row/2;
-  std::cout << "Rows/2: " << row2 << std::endl;
-	int col2 = col/2;
-  std::cout << "Cols/2: " << col2 << std::endl;
 
-	if(row == 1 && col == 1){ // base case where the Matrix is a 1x1
-			if(mat[0][0] != 0){ // Cannot divide by 0.
-				mat[0][0] = (1.0 / mat[0][0]);
-      }
-			return *this;
-	}
+  if(rows != cols){
+    throw "not a square matrix!";
+  }
+  if(rows == 1 && cols == 1){
+    if(mat[0][0] != 0){
+      mat[0][0] = 1/mat[0][0];
+    }
+    return *this;
+  }
+
+  int row = rows;
+  int col = cols;
+  padMatrix();
+	int row2 = rows/2;
+	int col2 = cols/2;
 
 	Matrix B(row2, col2); // n/2 matrix
-  std::cout << "Matrix B: " << std::endl;
-  std::cout << std::endl;
-  std::cout << B;
-  std::cout << std::endl;
 	Matrix C(row2, col2); // n/2 matrix
-  std::cout << "Matrix C: " << std::endl;
-  std::cout << std::endl;
-  std::cout << C;
-  std::cout << std::endl;
 	Matrix D(row2, col2); // n/2 matrix
-  std::cout << "Matrix D: " << std::endl;
-  std::cout << std::endl;
-  std::cout << D;
-  std::cout << std::endl;
-	Matrix CT = C^'T'; // C transpose
-  std::cout << "Matrix C transpose: " << std::endl;
-  std::cout << std::endl;
-  std::cout << CT;
+	Matrix CT(row2, col2); // n/2 matrix
 
-	for(int i = 0; i < row2; i++){
-		for(int j = 0; j < col2; j++){
-			B.mat[i][j] = mat[i][j];
-    }
-  }
+	for(int i = 0; i < rows; i++)
+		for(int j = 0; j < cols; j++)
+		{
+			if(i < row2 && j < col2) //top left
+				B.mat[i][j] = mat[i][j];
 
-	for(int i = 0; i < row2; i++){
-		for(int j = (col2); j < col; j++){
-			CT.mat[i][j - col2] = mat[i][j];
-    }
-  }
+			else if(i < row2 && j >= col2) //top right
+				CT.mat[i][j - col2] = mat[i][j];
 
-	for(int i = (row2); i < row; i++){
-		for(int j = 0; j < col2; j++){
-			C.mat[i - row2][j] = mat[i][j];
-    }
-  }
+			else if(i >= row2 && j < col2) // bottom left
+				C.mat[i - row2][j] = mat[i][j];
 
-	for(int i = (row2); i < row; i++){
-		for(int j = (col2); j < col; j++){
-	 		D.mat[i - row2][j - col2] = mat[i][j];
-    }
-  }
+			else if(i >= row2 && j >= col2) //bottom right
+				D.mat[i - row2][j - col2] = mat[i][j];
+		}
 
-  std::cout << std::endl;
-  std::cout << "AFTER FILLING" << std::endl;
-  std::cout << std::endl; 
-  std::cout << "Matrix B: " << std::endl;
-  std::cout << std::endl;
-  std::cout << B;
-  std::cout << "Matrix C: " << std::endl;
-  std::cout << std::endl;
-  std::cout << C;
-  std::cout << "Matrix D: " << std::endl;
-  std::cout << std::endl;
-  std::cout << D;
-  std::cout << "Matrix C Transpose: " << std::endl;
-  std::cout << std::endl;
-  std::cout << CT;
-
-	Matrix BI = (B.inverse()); // recursively call this function
-  std::cout << std::endl;   
-  std::cout << "B Inverse: " << std::endl;
-  std::cout << BI; // should be 10
-  std::cout << std::endl;
-
-	Matrix W = (C) * (BI);
-  std::cout << "W: " << std::endl;
-  std::cout << W; 
-  std::cout << std::endl;
-
-  Matrix WT = BI * CT; // this gives 30
-  Matrix WTrans = W.transpose();
-	//Matrix WT = W^'T'; // this gives 6, same as W, so is it really transposing?
-  std::cout << "W Transpose:" << std::endl;
-  std::cout << WTrans;
-  std::cout << std::endl;
-
-	Matrix X = (W) * (CT);
-  std::cout << "X: " << std::endl;
-  std::cout << X;
-  std::cout << std::endl;
-
+	Matrix BI = B.inverse(); // recursively call this function
+	Matrix W = C * BI;
+  Matrix WT = W.transpose();; // this gives 30
+	Matrix X = W * CT;
 	Matrix S = D - X;
-  std::cout << "S" << std::endl;
-  std::cout << S;
-  std::cout << std::endl;
-
-	Matrix V = (S.inverse());
-  std::cout << "V: " << std::endl;
-  std::cout << V;
-  std::cout << std::endl;
-
-	Matrix Y = V * (W);
-  std::cout << "Y: " << std::endl;
-  std::cout << Y;
-  std::cout << std::endl;
-
-	Matrix YT = Y^'T';
-  std::cout << "YT: " << std::endl;
-  std::cout << Y;
-  std::cout << std::endl;
-
-	Matrix T = (-1 * YT);
-  std::cout << "T: " << std::endl;
-  std::cout << T;
-  std::cout << std::endl;
-
-	Matrix U = (-1 * Y);
-  std::cout << "U: " << std::endl;
-  std::cout << U;
-  std::cout << std::endl;
-
-	Matrix Z = (WT) * (Y);
-  std::cout << "Z: " << std::endl;
-  std::cout << Z;
-  std::cout << std::endl;
-  
+	Matrix V = S.inverse();
+	Matrix Y = V * W;
+	Matrix YT = Y.transpose();
+	Matrix T = -1 * YT;
+	Matrix U = -1 * Y;
+	Matrix Z = WT* Y;
 	Matrix R = BI + Z;
-  std::cout << "R: " << std::endl;
-  std::cout << R;
-  std::cout << std::endl;
 
-	for(int i = 0; i < row2; i ++)
-		for(int j = 0; j < col2; j++)
-			mat[i][j] = R.mat[i][j];
+  for(int i = 0; i < rows; i++)
+		delete[] mat[i];
+	delete[] mat;
 
+  rows = row;
+  cols = col;
+  mat = new float*[rows];
+	for(int i = 0; i < rows; i++){
+		mat[i] = new float[cols];
+		for(int j = 0; j < cols; j++){
+			mat[i][j] = 0;
+		}
+	}
 
-	for(int i = row2; i < row; i++)
-		for(int j = 0; j < col2; j++)
-			mat[i][j] = U.mat[i - row2][j];
+  for(int i = 0; i < rows; i++)
+		for(int j = 0; j < cols; j++)
+		{
+			if(i < row2 && j < col2) //top left
+				mat[i][j] = R.mat[i][j];
 
+			else if(i < row2 && j >= col2) //top right
+				mat[i][j] = T.mat[i][j-col2];
 
-	for(int i = 0; i < row2; i++)
-		for(int j = col2; j < col; j++)
-			mat[i][j] = T.mat[i][j - col2];
+			else if(i >= row2 && j < col2) // bottom left
+				mat[i][j] = U.mat[i-row2][j];
 
-
-	for(int i = row2; i < row; i++)
-		for(int j = col2; j < col; j++)
-			mat[i][j] = V.mat[i - row2][j - col2];
+			else if(i >= row2 && j >= col2) //bottom right
+				mat[i][j] = V.mat[i-row2][j-col2];
+		}
 
 	return *this;
 }
@@ -429,6 +359,7 @@ void Matrix::operator=(const Matrix& m){
     arr[i] = new float[cols];
   }
   mat = arr;
+  
   float** temp = mat;
   mat = copy.mat;
   copy.mat = temp;
@@ -437,11 +368,12 @@ void Matrix::operator=(const Matrix& m){
 
 std::ostream& operator<< (std::ostream& os, const Matrix& matrix){
     for(int i = 0; i < matrix.rows; i++){
-        for(int k = 0; k < matrix.cols; k++)
+        for(int k = 0; k < matrix.cols; k++){
             os << matrix.mat[i][k] << " ";
-        std::cout << "\n";
         }
-        return os;
+        std::cout << "\n";
+    }
+    return os;
 }
 
 Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){
@@ -451,10 +383,12 @@ Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){
 	}
 
 	Matrix matrixc(matrixa.rows, matrixa.cols);
-	for(int i = 0; i < matrixa.rows; i++)
-		for(int k = 0; k < matrixa.cols; k++)
+	for(int i = 0; i < matrixa.rows; i++){
+		for(int k = 0; k < matrixa.cols; k++){
 			matrixc.mat[i][k] = matrixa.mat[i][k] + matrixb.mat[i][k];
-    counter::count++;
+    }
+  }
+  counter::count++;
 	return matrixc;
 }
 
@@ -465,10 +399,12 @@ Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){
 	}
 
 	Matrix matrixc(matrixa.rows, matrixa.cols);
-	for(int i = 0; i < matrixa.rows;i++)
-		for(int k = 0; k < matrixa.cols; k++)
+	for(int i = 0; i < matrixa.rows;i++){
+		for(int k = 0; k < matrixa.cols; k++){
 			matrixc.mat[i][k] = matrixa.mat[i][k] - matrixb.mat[i][k];
-    counter::count++;
+    }
+  }
+  counter::count++;
 	return matrixc;
 }
 
@@ -478,31 +414,35 @@ Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 		exit (1);
 	}
 	Matrix matrixc(matrixa.rows, matrixb.cols);
-	for(int i = 0; i < matrixa.rows; i++)
-		for(int k = 0; k < matrixb.cols; k++)
-			for(int p = 0; p < matrixb.rows; p++)
-				matrixc.mat[i][k] += (matrixa.mat[i][p] * matrixb.mat[p][k]);
-
-    counter::count++;
+	for(int i = 0; i < matrixa.rows; i++){
+		for(int j = 0; j < matrixb.cols; j++){
+			for(int k = 0; k < matrixa.cols; k++){
+				matrixc.mat[i][j] += matrixa.mat[i][j] * matrixb.mat[k][j];
+      }
+    }
+  }
+  counter::count++;
 	return matrixc;
 }
 
 Matrix operator* (const float& c, const Matrix& matrixa){ // Scalar Mult.
 	Matrix matrixb(matrixa.rows, matrixa.cols);
-	for(int i = 0; i < matrixa.rows; i++)
-		for(int k = 0; k < matrixa.cols; k++)
+	for(int i = 0; i < matrixa.rows; i++){
+		for(int k = 0; k < matrixa.cols; k++){
 			matrixb.mat[i][k] = (matrixa.mat[i][k] * c);
-
-    counter::count++;
+    }
+  }
+  counter::count++;
 	return matrixb;
 }
 
 Matrix operator^ (const Matrix& m, const char& exp){
 	Matrix matrixb(m.cols, m.rows);
-	for(int i = 0; i < m.rows; i++)
-		for(int j = 0; j < m.cols; j++)
+	for(int i = 0; i < m.rows; i++){
+		for(int j = 0; j < m.cols; j++){
 			matrixb.mat[j][i] = m.mat[i][j];
-
-    counter::count++;
+    }
+  }
+  counter::count++;
 	return matrixb;
 }

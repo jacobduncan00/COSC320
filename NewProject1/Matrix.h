@@ -6,14 +6,14 @@
 class Matrix{
     private:
         float** mat;
-        unsigned long int rows;
-        unsigned long int cols;
+        long int rows;
+        long int cols;
     public:
         Matrix();
-        Matrix(unsigned long int, unsigned long int);
+        Matrix(long int, long int);
         Matrix(const Matrix&);
         ~Matrix();
-        void fillMatrix(float);
+        Matrix fillMatrix();
         void insert(int, int, float);
         float getVal(int, int);
         void determinant();

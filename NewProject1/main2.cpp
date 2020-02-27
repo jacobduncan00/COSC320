@@ -65,29 +65,46 @@ Matrix handleFile(std::string fileName){
 }
 
 int main(int argc, char** argv){
+    if(argc != 2){
+        std::cout << "You only input 1 parameter, this program takes 2!" << std::endl;
+        return 0;
+    }
     std::string fileName = argv[1];
     Matrix A = handleFile(fileName);
+    Matrix Holder = A;
     Matrix A_identity = handleFile(fileName);
     Matrix B = A;
 
-    std::cout << "Matrix A" << std::endl;
+    std::cout << "Matrix A From File" << std::endl;
     std::cout << std::endl;
     A.printMatrix();
 
-    std::cout << "A Inverse" << std::endl;
-    std::cout << std::endl;
-    B.inverse();
-    B.printMatrix();
+    std::cout << "------------------------" << std::endl;
 
-    std::cout << "Identity Matrix of A" << std::endl;
+    std::cout << "  Matrix B (Generated)" << std::endl;
     std::cout << std::endl;
-    A_identity.identityMatrix();
-    A_identity.printMatrix();
+    Matrix Y(3,3);
+    Matrix Z = Y.fillMatrix();
+    Matrix DD = Z;
+    Matrix LL = Z;
+    Z.printMatrix();
 
-    std::cout << "Showing that A * A Inverse is Identity Matrix" << std::endl;
+    std::cout << "      B Inverse" << std::endl;
     std::cout << std::endl;
-    Matrix C = B * A;
-    C.printMatrix();
+    Matrix inv = LL.inverse();
+    inv.printMatrix();
+
+    std::cout << "    B * B Inverse" << std::endl;
+    std::cout << std::endl;
+    Matrix done = DD * Z.inverse();
+    done.printMatrix(); 
+    
+    std::cout << "   B Identity Matrix" << std::endl;
+    std::cout << std::endl;
+    DD.identityMatrix();
+    DD.printMatrix();
+
+    std::cout << "------------------------" << std::endl;
 
     return 0;
 }

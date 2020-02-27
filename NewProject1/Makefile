@@ -17,4 +17,5 @@ matrix.o: Matrix.cpp
 
 clean:
 	rm *.o
-	rm run
+	rm productionNeeded.exe
+	rm driver.exe
