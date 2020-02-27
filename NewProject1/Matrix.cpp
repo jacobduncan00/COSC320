@@ -24,10 +24,10 @@ Matrix::Matrix(long int row, long int col){
   } 
   rows = row;
   cols = col;
-  mat = new float*[row];
+  mat = new double*[row];
   srand(time(NULL));
-    for(int i = 0; i < rows; i++){
-      mat[i] = new float[cols];
+    for(long int i = 0; i < rows; i++){
+      mat[i] = new double[cols];
       for (int j = 0; j < cols; j++){
         mat[i][j] = 0; // could be rows too 
       }
@@ -38,20 +38,20 @@ Matrix::Matrix(long int row, long int col){
 Matrix::Matrix(const Matrix& m){
   rows = m.rows;
   cols = m.cols;
-  float** arr = new float*[rows];
-  for(int i = 0; i < rows; i++){
-    arr[i] = new float[cols];
+  double** arr = new double*[rows];
+  for(long int i = 0; i < rows; i++){
+    arr[i] = new double[cols];
   }
   mat = arr;
-  for(int i = 0; i < m.rows; i++){
-    for(int j = 0; j < cols; j++){
+  for(long int i = 0; i < m.rows; i++){
+    for(long int j = 0; j < cols; j++){
       mat[i][j] = m.mat[i][j];
     }
   }
 }
 
 Matrix::~Matrix(){
-  for(int i = 0; i < this -> rows; i++){
+  for(long int i = 0; i < this -> rows; i++){
     delete[] this -> mat[i];
   }
   delete[] this -> mat;
@@ -74,11 +74,11 @@ Matrix Matrix::fillMatrix(){
   return A;
 }
 
-void Matrix::insert(int i, int j, float num){
+void Matrix::insert(long int i, long int j, double num){
   mat[i][j] = num;
 }
 
-float Matrix::getVal(int i, int j){
+double Matrix::getVal(int i, int j){
   return mat[i][j];
 }
 
@@ -99,8 +99,8 @@ void Matrix::determinant(){
 		  	+  mat[0][1] * mat[1][0] * mat[2][2]);
   }
   else{
-    for(int i = 0; i < rows; i++){
-      for (int j = 0; j < cols; j++){
+    for(long int i = 0; i < rows; i++){
+      for (long int j = 0; j < cols; j++){
         det+=mat[i][j];
       }
     }
@@ -113,21 +113,21 @@ Matrix& Matrix::padMatrix(){
 		size*=2; 
 	}
 
-	float** old = mat;
+	double** old = mat;
 	int prevRows = rows;
 	int prevCol = cols;
 	rows = cols = size;
   
-	mat = new float*[rows];
-	for(int i = 0; i < rows; i++){
-		mat[i] = new float[cols];
-		for(int j = 0; j < cols; j++){
+	mat = new double*[rows];
+	for(long int i = 0; i < rows; i++){
+		mat[i] = new double[cols];
+		for(long int j = 0; j < cols; j++){
 			mat[i][j] = 0;
 		}
 	}
 
-	for(int i = 0; i < rows; i++){
-		for(int j = 0; j < cols; j++){
+	for(long int i = 0; i < rows; i++){
+		for(long int j = 0; j < cols; j++){
 
 			if(i >= prevRows || j >= prevCol){
 				if(i == j){
@@ -141,7 +141,7 @@ Matrix& Matrix::padMatrix(){
 		}
 	} //end for 
 	
-	for(int i = 0; i < prevRows; i++){
+	for(long int i = 0; i < prevRows; i++){
 		delete [] old[i];
 	}
 	delete [] old;
@@ -150,15 +150,15 @@ Matrix& Matrix::padMatrix(){
 
 Matrix Matrix::transpose(){
 	Matrix transposed = Matrix(cols, rows);
-	for(int i = 0; i < rows; i++){
-		for(int j = 0; j < cols; j++){
+	for(long int i = 0; i < rows; i++){
+		for(long int j = 0; j < cols; j++){
 			transposed.mat[j][i] = mat[i][j];
 		}
 	}
 	return transposed;
 };
 
-Matrix& Matrix::inverse(){
+Matrix Matrix::inverse(){
 	// Please use a 2^n x 2^n matrix.
   // Assuming that "this" is a square (n x n) matrix and is symmetric
 
@@ -183,65 +183,67 @@ Matrix& Matrix::inverse(){
 	Matrix D(row2, col2); // n/2 matrix
 	Matrix CT(row2, col2); // n/2 matrix
 
-	for(int i = 0; i < rows; i++)
-		for(int j = 0; j < cols; j++)
-		{
-			if(i < row2 && j < col2) //top left
+	for(long int i = 0; i < rows; i++){
+		for(long int j = 0; j < cols; j++){
+			if(i < row2 && j < col2){ //top left
 				B.mat[i][j] = mat[i][j];
-
-			else if(i < row2 && j >= col2) //top right
+      }
+			else if(i < row2 && j >= col2){ //top right
 				CT.mat[i][j - col2] = mat[i][j];
-
-			else if(i >= row2 && j < col2) // bottom left
+      }
+			else if(i >= row2 && j < col2){ // bottom left
 				C.mat[i - row2][j] = mat[i][j];
-
-			else if(i >= row2 && j >= col2) //bottom right
+      }
+			else if(i >= row2 && j >= col2){ //bottom right
 				D.mat[i - row2][j - col2] = mat[i][j];
+      }
 		}
+  }
 
 	Matrix BI = B.inverse(); // recursively call this function
 	Matrix W = C * BI;
-  Matrix WT = W.transpose();; // this gives 30
+  Matrix WT = W.transpose();
 	Matrix X = W * CT;
 	Matrix S = D - X;
 	Matrix V = S.inverse();
 	Matrix Y = V * W;
 	Matrix YT = Y.transpose();
-	Matrix T = -1 * YT;
-	Matrix U = -1 * Y;
+	Matrix T = YT * -1;
+	Matrix U = Y * -1;
 	Matrix Z = WT* Y;
 	Matrix R = BI + Z;
 
-  for(int i = 0; i < rows; i++)
+  for(long int i = 0; i < rows; i++){
 		delete[] mat[i];
+  }
 	delete[] mat;
 
   rows = row;
   cols = col;
-  mat = new float*[rows];
-	for(int i = 0; i < rows; i++){
-		mat[i] = new float[cols];
-		for(int j = 0; j < cols; j++){
+  mat = new double*[rows];
+	for(long int i = 0; i < rows; i++){
+		mat[i] = new double[cols];
+		for(long int j = 0; j < cols; j++){
 			mat[i][j] = 0;
 		}
 	}
 
-  for(int i = 0; i < rows; i++)
-		for(int j = 0; j < cols; j++)
-		{
-			if(i < row2 && j < col2) //top left
+  for(long int i = 0; i < rows; i++){
+		for(long int j = 0; j < cols; j++){
+			if(i < row2 && j < col2){ //top left
 				mat[i][j] = R.mat[i][j];
-
-			else if(i < row2 && j >= col2) //top right
+      }
+			else if(i < row2 && j >= col2){ //top right
 				mat[i][j] = T.mat[i][j-col2];
-
-			else if(i >= row2 && j < col2) // bottom left
+      }
+			else if(i >= row2 && j < col2){ // bottom left
 				mat[i][j] = U.mat[i-row2][j];
-
-			else if(i >= row2 && j >= col2) //bottom right
+      }
+			else if(i >= row2 && j >= col2){ //bottom right
 				mat[i][j] = V.mat[i-row2][j-col2];
+      }
 		}
-
+  }
 	return *this;
 }
 
@@ -277,10 +279,10 @@ void Matrix::twoDRegression(std::string fileName){
     std::cout << "Data Size could not be calculated!" << std::endl;
     return;
   }
-  float c1, c2;
+  double c1, c2;
   Matrix *A = new Matrix(datasize, 2);
   Matrix *b = new Matrix(datasize, 1);
-  for(int i = 0; i < datasize; i++){
+  for(long int i = 0; i < datasize; i++){
     infile >> c1;
     //std::cout << "1st Value: " << c1 << std::endl;
     infile >> c2;
@@ -298,14 +300,14 @@ void Matrix::twoDRegression(std::string fileName){
 
 
 void Matrix::identityMatrix(){
-  for(int i = 0; i < this->rows; i++){
+  for(long int i = 0; i < this->rows; i++){
     this->mat[i][i] = 1;
   }
 }
 
 void Matrix::diagonalMatrix(){
   srand(time(NULL));
-  for(int i = 0; i < this->rows; i++){
+  for(long int i = 0; i < this->rows; i++){
     this->mat[i][i] = 999;
   }
 }
@@ -313,8 +315,8 @@ void Matrix::diagonalMatrix(){
 void Matrix::triangularMatrix(bool up){
   srand(time(NULL));
   if(up){
-    for(int i = 0; i < this->rows; i++){
-      for(int j = 0; j < this->rows; j++){
+    for(long int i = 0; i < this->rows; i++){
+      for(long int j = 0; j < this->rows; j++){
         if(i < j){
           this->mat[i][j] = 999;
         }
@@ -325,8 +327,8 @@ void Matrix::triangularMatrix(bool up){
     }
   }
   else{
-    for(int i = 0; i < this->rows; i++){
-      for(int j = 0; j < this->rows; j++){
+    for(long int i = 0; i < this->rows; i++){
+      for(long int j = 0; j < this->rows; j++){
         if(i > j){
           this->mat[i][j] = 999;
         }
@@ -339,10 +341,10 @@ void Matrix::triangularMatrix(bool up){
 }
 
 void Matrix::printMatrix(){
-    for(int i = 0; i < this->rows; i++){
+    for(long int i = 0; i < this->rows; i++){
         if(i != 0)
             std::cout << std::endl;
-        for(int j = 0; j < this->cols; j++){
+        for(long int j = 0; j < this->cols; j++){
               std::cout << std::setw(5) << this->mat[i][j] << " ";
         }
     }
@@ -354,21 +356,21 @@ void Matrix::operator=(const Matrix& m){
   Matrix copy(m);
   rows = m.rows;
   cols = m.cols;
-  float** arr = new float*[rows];
-  for(int i = 0; i < rows; i++){
-    arr[i] = new float[cols];
+  double** arr = new double*[rows];
+  for(long int i = 0; i < rows; i++){
+    arr[i] = new double[cols];
   }
   mat = arr;
   
-  float** temp = mat;
+  double** temp = mat;
   mat = copy.mat;
   copy.mat = temp;
   counter::count++;
 }
 
 std::ostream& operator<< (std::ostream& os, const Matrix& matrix){
-    for(int i = 0; i < matrix.rows; i++){
-        for(int k = 0; k < matrix.cols; k++){
+    for(long int i = 0; i < matrix.rows; i++){
+        for(long int k = 0; k < matrix.cols; k++){
             os << matrix.mat[i][k] << " ";
         }
         std::cout << "\n";
@@ -383,8 +385,8 @@ Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb){
 	}
 
 	Matrix matrixc(matrixa.rows, matrixa.cols);
-	for(int i = 0; i < matrixa.rows; i++){
-		for(int k = 0; k < matrixa.cols; k++){
+	for(long int i = 0; i < matrixa.rows; i++){
+		for(long int k = 0; k < matrixa.cols; k++){
 			matrixc.mat[i][k] = matrixa.mat[i][k] + matrixb.mat[i][k];
     }
   }
@@ -399,8 +401,8 @@ Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){
 	}
 
 	Matrix matrixc(matrixa.rows, matrixa.cols);
-	for(int i = 0; i < matrixa.rows;i++){
-		for(int k = 0; k < matrixa.cols; k++){
+	for(long int i = 0; i < matrixa.rows;i++){
+		for(long int k = 0; k < matrixa.cols; k++){
 			matrixc.mat[i][k] = matrixa.mat[i][k] - matrixb.mat[i][k];
     }
   }
@@ -414,10 +416,11 @@ Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 		exit (1);
 	}
 	Matrix matrixc(matrixa.rows, matrixb.cols);
-	for(int i = 0; i < matrixa.rows; i++){
-		for(int j = 0; j < matrixb.cols; j++){
-			for(int k = 0; k < matrixa.cols; k++){
+	for(long int i = 0; i < matrixa.rows; i++){
+		for(long int j = 0; j < matrixb.cols; j++){
+			for(long int k = 0; k < matrixa.cols; k++){
 				matrixc.mat[i][j] += matrixa.mat[i][j] * matrixb.mat[k][j];
+        //std::cout << "Res: " << matrixc.mat[i][j] << std::endl;
       }
     }
   }
@@ -425,10 +428,10 @@ Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 	return matrixc;
 }
 
-Matrix operator* (const float& c, const Matrix& matrixa){ // Scalar Mult.
+Matrix operator* (const Matrix& matrixa, const double& c){ // Scalar Mult.
 	Matrix matrixb(matrixa.rows, matrixa.cols);
-	for(int i = 0; i < matrixa.rows; i++){
-		for(int k = 0; k < matrixa.cols; k++){
+	for(long int i = 0; i < matrixa.rows; i++){
+		for(long int k = 0; k < matrixa.cols; k++){
 			matrixb.mat[i][k] = (matrixa.mat[i][k] * c);
     }
   }
@@ -438,8 +441,8 @@ Matrix operator* (const float& c, const Matrix& matrixa){ // Scalar Mult.
 
 Matrix operator^ (const Matrix& m, const char& exp){
 	Matrix matrixb(m.cols, m.rows);
-	for(int i = 0; i < m.rows; i++){
-		for(int j = 0; j < m.cols; j++){
+	for(long int i = 0; i < m.rows; i++){
+		for(long int j = 0; j < m.cols; j++){
 			matrixb.mat[j][i] = m.mat[i][j];
     }
   }

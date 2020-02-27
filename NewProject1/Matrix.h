@@ -5,7 +5,7 @@
 
 class Matrix{
     private:
-        float** mat;
+        double** mat;
         long int rows;
         long int cols;
     public:
@@ -14,12 +14,12 @@ class Matrix{
         Matrix(const Matrix&);
         ~Matrix();
         Matrix fillMatrix();
-        void insert(int, int, float);
-        float getVal(int, int);
+        void insert(long int, long int, double);
+        double getVal(int, int);
         void determinant();
         Matrix transpose();
         Matrix& padMatrix();
-        Matrix& inverse();
+        Matrix inverse();
         void twoDRegression(std::string); // takes in fileName by argv in main
         void identityMatrix();
         void diagonalMatrix();
@@ -30,7 +30,7 @@ class Matrix{
         friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator- (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const Matrix& matrixa, const Matrix& matrixb);
-        friend Matrix operator* (const float& c, const Matrix& matrixa);
+        friend Matrix operator* (const Matrix& matrixa, const double& c);
         friend Matrix operator^ (const Matrix& m, const char& exp);
 };
 
