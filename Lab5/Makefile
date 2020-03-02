@@ -1,12 +1,12 @@
-main: main.o heap.o
-	g++ -o main main.o heap.o
+main.exe: main.o HeapPQ.o
+	g++ -o main.exe main.o HeapPQ.o 
 
-heap.o: heap.cpp
-	g++ -std=c++11 -c heap.cpp
+HeapPQ.o: HeapPQ.cpp
+	g++ -c HeapPQ.cpp -std=c++11 
 
 main.o: main.cpp
-	g++ -std=c++11 -c main.cpp
+	g++ -c main.cpp -std=c++11
 
 clean:
 	rm *.o
-	rm *main
+	rm main.exe
