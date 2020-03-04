@@ -24,14 +24,11 @@ Matrix::Matrix(long int row, long int col){
   } 
   rows = row;
   cols = col;
-  mat = new double*[row];
+  mat = new double*[rows];
   srand(time(NULL));
-    for(long int i = 0; i < rows; i++){
-      mat[i] = new double[cols];
-      for (int j = 0; j < cols; j++){
-        mat[i][j] = 0; // could be rows too 
-      }
-    }
+  for(long int i = 0; i < rows; i++){
+    mat[i] = new double[cols];
+  }
 }
 
 
@@ -51,10 +48,10 @@ Matrix::Matrix(const Matrix& m){
 }
 
 Matrix::~Matrix(){
-  for(long int i = 0; i < this -> rows; i++){
-    delete[] this -> mat[i];
+  for(long int i = 0; i < rows; i++){
+    delete[] mat[i];
   }
-  delete[] this -> mat;
+  delete[] mat;
 }
 
 Matrix Matrix::fillMatrix(){
@@ -89,6 +86,12 @@ void Matrix::determinant(){
   }
   if(rows == 2 && cols == 2){
     det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
+    if(det == 0){
+      std::cout << "Matrix is not invertible.\n";
+    }
+    else{
+      std::cout << "Matrix is invertible.\n";
+    }
   }
   else if (rows == 3 && cols == 3){
     det = (mat[0][0] * mat[1][1] * mat[2][2]
@@ -97,74 +100,77 @@ void Matrix::determinant(){
 		  	- (mat[0][2] * mat[1][1] * mat[2][0]
 		  	+  mat[0][0] * mat[1][2] * mat[2][1]
 		  	+  mat[0][1] * mat[1][0] * mat[2][2]);
+      
+    if(det == 0){
+      std::cout << "Matrix is not invertible.\n";
+    }
+    else{
+      std::cout << "Matrix is invertible.\n";
+    }
   }
   else{
+    int count;
     for(long int i = 0; i < rows; i++){
       for (long int j = 0; j < cols; j++){
         det+=mat[i][j];
       }
+      if(det == 0){
+        std::cout << "Matrix is not invertible.\n";
+      }
+      else{
+        count++;
+      }
+    }
+    if(count == rows - 1){
+      std::cout << "Matrix is invertible.\n";
     }
   }
 }
 
-Matrix& Matrix::padMatrix(){
-	int size = 2;
-	while((size < rows || size < cols) && size > 0 ){
-		size*=2; 
-	}
+bool Matrix::isSymmetric(){
+  Matrix a = *this;
+  Matrix b = this->transpose();
+  for(long int i = 0; i < rows; i++){
+    for(int j = 0; j < cols; j++){
+      if(a.mat[i][j] != b.mat[i][j]){ // if the original is not the same as the tranpose, shows symmetry
+        return false;
+      }
+    }
+  }
+  return true;
+}
 
-	double** old = mat;
-	int prevRows = rows;
-	int prevCol = cols;
-	rows = cols = size;
-  
-	mat = new double*[rows];
-	for(long int i = 0; i < rows; i++){
-		mat[i] = new double[cols];
-		for(long int j = 0; j < cols; j++){
-			mat[i][j] = 0;
-		}
-	}
-
-	for(long int i = 0; i < rows; i++){
-		for(long int j = 0; j < cols; j++){
-
-			if(i >= prevRows || j >= prevCol){
-				if(i == j){
-					mat[i][j] = 1;
-				}else{
-					mat[i][j] = 0;
-				}//end of inside
-			}else{
-				mat[i][j] = old[i][j];
-			}
-		}
-	} //end for 
-	
-	for(long int i = 0; i < prevRows; i++){
-		delete [] old[i];
-	}
-	delete [] old;
-	return *this;
-};
-
-Matrix Matrix::transpose(){
-	Matrix transposed = Matrix(cols, rows);
-	for(long int i = 0; i < rows; i++){
-		for(long int j = 0; j < cols; j++){
-			transposed.mat[j][i] = mat[i][j];
-		}
-	}
-	return transposed;
-};
+Matrix Matrix::padMatrix(int d){
+	int size = 0;
+  while(log2(d + size) - (int)log2(d + size) != 0){
+    size++;
+  }
+  Matrix rtn(d+size, d+size);
+  Matrix id(size, size);
+  id.identityMatrix();
+  for(long int i = 0; i < rtn.rows; i++){
+    for(long int j = 0; j < rtn.cols; j++){
+      if(i < d && j < d){
+        rtn.mat[i][j] = mat[i][j];
+      }
+      if(i >= d && j >= d){
+        rtn.mat[i][j] = id.mat[i-d][j-d];
+      }
+      if((i >= d && j < d) || (i < d && j >= d)){
+        rtn.mat[i][j] = 0;
+      }
+    }
+  }
+  return rtn;
+}
 
 Matrix Matrix::inverse(){
-	// Please use a 2^n x 2^n matrix.
   // Assuming that "this" is a square (n x n) matrix and is symmetric
 
   if(rows != cols){
-    throw "not a square matrix!";
+    throw "Not a square matrix!";
   }
+
   if(rows == 1 && cols == 1){
     if(mat[0][0] != 0){
       mat[0][0] = 1/mat[0][0];
@@ -172,19 +178,34 @@ Matrix Matrix::inverse(){
     return *this;
   }
 
-  int row = rows;
-  int col = cols;
-  padMatrix();
-	int row2 = rows/2;
-	int col2 = cols/2;
+  int ogRow = rows;
+  if(log2(rows) - (int)log2(rows) != 0){ // check to see if Matrix is a 2^n x 2^n
+    if(rows == 1){
+      Matrix rtn2(1,1);
+      rtn2.mat[0][0] = mat[0][0];
+      return rtn2;
+    }
+  }
+  Matrix curr = padMatrix(rows);
+  Matrix rtn = curr.inverse();
+
+
+  long int row = rows;
+  long int col = cols;
+
+  padMatrix(row);
+
+	long int row2 = rows/2;
+	long int col2 = cols/2;
 
 	Matrix B(row2, col2); // n/2 matrix
 	Matrix C(row2, col2); // n/2 matrix
-	Matrix D(row2, col2); // n/2 matrix
 	Matrix CT(row2, col2); // n/2 matrix
+	Matrix D(row2, col2); // n/2 matrix
 
 	for(long int i = 0; i < rows; i++){
 		for(long int j = 0; j < cols; j++){
+
 			if(i < row2 && j < col2){ //top left
 				B.mat[i][j] = mat[i][j];
       }
@@ -197,20 +218,21 @@ Matrix Matrix::inverse(){
 			else if(i >= row2 && j >= col2){ //bottom right
 				D.mat[i - row2][j - col2] = mat[i][j];
       }
+
 		}
   }
 
-	Matrix BI = B.inverse(); // recursively call this function
-	Matrix W = C * BI;
+	Matrix BI = (B.inverse()); // recursively call this function
+	Matrix W = (C) * (BI);
   Matrix WT = W.transpose();
 	Matrix X = W * CT;
 	Matrix S = D - X;
-	Matrix V = S.inverse();
-	Matrix Y = V * W;
+	Matrix V = (S.inverse());
+	Matrix Y = V * (W);
 	Matrix YT = Y.transpose();
-	Matrix T = YT * -1;
-	Matrix U = Y * -1;
-	Matrix Z = WT* Y;
+	Matrix T = (YT * -1);
+	Matrix U = (Y * -1);
+	Matrix Z = (WT) * (Y);
 	Matrix R = BI + Z;
 
   for(long int i = 0; i < rows; i++){
@@ -220,16 +242,15 @@ Matrix Matrix::inverse(){
 
   rows = row;
   cols = col;
+
   mat = new double*[rows];
 	for(long int i = 0; i < rows; i++){
 		mat[i] = new double[cols];
-		for(long int j = 0; j < cols; j++){
-			mat[i][j] = 0;
-		}
 	}
 
   for(long int i = 0; i < rows; i++){
 		for(long int j = 0; j < cols; j++){
+
 			if(i < row2 && j < col2){ //top left
 				mat[i][j] = R.mat[i][j];
       }
@@ -242,6 +263,7 @@ Matrix Matrix::inverse(){
 			else if(i >= row2 && j >= col2){ //bottom right
 				mat[i][j] = V.mat[i-row2][j-col2];
       }
+
 		}
   }
 	return *this;
@@ -292,7 +314,7 @@ void Matrix::twoDRegression(std::string fileName){
     A->insert(i, 1, 1.0);
   }
   infile.close();
-  Matrix AT = (*A)^'T';
+  Matrix AT = (*A).transpose();
   Matrix Beta = (((AT * *A).inverse() * AT) * *b);
   std::cout << "[2D] Aβ = [A]*[β]=[x] = b:" << std::endl;
   std::cout << Beta << std::endl; // Prints regression line.
@@ -352,20 +374,27 @@ void Matrix::printMatrix(){
     std::cout << std::endl;
 }
 
-void Matrix::operator=(const Matrix& m){
-  Matrix copy(m);
+Matrix& Matrix::operator=(const Matrix& m){
+  if(this == &m){ // when matrices are already the same
+    return *this;
+  }
+  for(long int i = 0; i < rows; i++){
+    delete[] mat[i];
+  }
+  delete[] mat;
+  mat = new double*[m.rows];
+  for(long int i = 0; i < m.rows; i++){
+    mat[i] = new double[m.cols];
+  }
   rows = m.rows;
   cols = m.cols;
-  double** arr = new double*[rows];
   for(long int i = 0; i < rows; i++){
-    arr[i] = new double[cols];
+    for(long int j = 0; j < cols; j++){
+      mat[i][j] = m.mat[i][j];
+    }
   }
-  mat = arr;
-  
-  double** temp = mat;
-  mat = copy.mat;
-  copy.mat = temp;
   counter::count++;
+  return *this;
 }
 
 std::ostream& operator<< (std::ostream& os, const Matrix& matrix){
@@ -399,7 +428,6 @@ Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){
 		std::cout << "Invalid matrix size combination.";
 		exit (1);
 	}
-
 	Matrix matrixc(matrixa.rows, matrixa.cols);
 	for(long int i = 0; i < matrixa.rows;i++){
 		for(long int k = 0; k < matrixa.cols; k++){
@@ -413,15 +441,16 @@ Matrix operator- (const Matrix& matrixa, const Matrix& matrixb){
 Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 	if(matrixa.cols != matrixb.rows){
 		std::cout << "Invalid matrix size combination.";
-		exit (1);
+		exit(1);
 	}
 	Matrix matrixc(matrixa.rows, matrixb.cols);
 	for(long int i = 0; i < matrixa.rows; i++){
 		for(long int j = 0; j < matrixb.cols; j++){
-			for(long int k = 0; k < matrixa.cols; k++){
-				matrixc.mat[i][j] += matrixa.mat[i][j] * matrixb.mat[k][j];
-        //std::cout << "Res: " << matrixc.mat[i][j] << std::endl;
+      double sum = 0.0;
+      for(long int l = 0; l < matrixa.cols; l++){
+        sum += matrixa.mat[i][l] * matrixb.mat[l][j];
       }
+      matrixc.mat[i][j] = sum;
     }
   }
   counter::count++;
@@ -439,13 +468,13 @@ Matrix operator* (const Matrix& matrixa, const double& c){ // Scalar Mult.
 	return matrixb;
 }
 
-Matrix operator^ (const Matrix& m, const char& exp){
-	Matrix matrixb(m.cols, m.rows);
-	for(long int i = 0; i < m.rows; i++){
-		for(long int j = 0; j < m.cols; j++){
-			matrixb.mat[j][i] = m.mat[i][j];
+Matrix Matrix::transpose(){ // Tranpose function
+	Matrix transpose(cols, rows);
+	for(long int i = 0; i < rows; i++){
+		for(long int j = 0; j < cols; j++){
+			transpose.mat[j][i] = mat[i][j];
     }
   }
   counter::count++;
-	return matrixb;
+	return transpose;
 }

@@ -49,11 +49,43 @@ int main(int argc, char** argv){
     Matrix Holder = Q;
     Matrix Holder2 = Q;
 
+    // Test * (both), tranpose, minus, plus
+
+    std::cout << "Testing Copy Const" << std::endl;
+    std::cout << std::endl;
+    Matrix TY(Q);
+    TY.printMatrix();
+
+    std::cout << "Testing Assignment Operator" << std::endl;
+    std::cout << std::endl;
+    Matrix TT = TY;
+    TT.printMatrix();
+
+    std::cout << "Testing Scalar Mult" << std::endl;
+    std::cout << std::endl;
+    Matrix IO(5,5);
+    IO.printMatrix();
+    std::cout << "that * 2" << std::endl;
+    std::cout << std::endl;
+    Matrix IO2 = IO * 2;
+    IO2.printMatrix();
+
+    std::cout << "Testing Matrix * Matrix" << std::endl;
+    std::cout << std::endl;
+    Matrix PPP(3,3);
+    PPP.printMatrix();
+    std::cout << "that * " << std::endl;
+    std::cout << std::endl;
+    Matrix PP2(3,3);
+    PP2.printMatrix();
+    Matrix PP3 = PPP * PP2;
+    std::cout << PP3 << std::endl;
+
     std::cout << "Matrix A From File" << std::endl;
     std::cout << std::endl;
     Q.printMatrix();
 
-    std::cout << "Matrix A Inverse" << std::endl; // why not working with floats?? NANI!
+    std::cout << "Matrix A Inverse" << std::endl; 
     std::cout << std::endl;
     Matrix CC = Holder2.inverse();
     CC.printMatrix();
@@ -61,7 +93,7 @@ int main(int argc, char** argv){
     std::cout << "A * A Inverse" << std::endl;
     std::cout << std::endl;
     Matrix PP = Holder * Q.inverse();
-    PP.printMatrix();
+    std::cout << PP << std::endl;
 
     std::cout << "A Identity Matrix" << std::endl;
     std::cout << std::endl;

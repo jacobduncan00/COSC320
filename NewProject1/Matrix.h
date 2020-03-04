@@ -9,29 +9,29 @@ class Matrix{
         long int rows;
         long int cols;
     public:
-        Matrix();
-        Matrix(long int, long int);
-        Matrix(const Matrix&);
-        ~Matrix();
-        Matrix fillMatrix();
+        Matrix(); // works
+        Matrix(long int, long int); // work
+        Matrix(const Matrix&); // works
+        ~Matrix(); 
+        Matrix fillMatrix(); // works
         void insert(long int, long int, double);
         double getVal(int, int);
         void determinant();
+        bool isSymmetric();
         Matrix transpose();
-        Matrix& padMatrix();
+        Matrix padMatrix(int);
         Matrix inverse();
         void twoDRegression(std::string); // takes in fileName by argv in main
-        void identityMatrix();
-        void diagonalMatrix();
-        void triangularMatrix(bool);
-        void printMatrix();
-        void operator= (const Matrix&);
+        void identityMatrix(); // works
+        void diagonalMatrix(); // works
+        void triangularMatrix(bool); // works
+        void printMatrix(); // works
+        Matrix& operator= (const Matrix&); // works
         friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix);
         friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator- (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const Matrix& matrixa, const double& c);
-        friend Matrix operator^ (const Matrix& m, const char& exp);
 };
 
 #endif
