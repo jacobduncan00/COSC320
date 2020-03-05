@@ -14,6 +14,8 @@ class Matrix{
         Matrix(const Matrix&); // works
         ~Matrix(); 
         Matrix fillMatrix(); // works
+        Matrix fillMatrix2();
+        Matrix fillMatrix3();
         void insert(long int, long int, double);
         double getVal(int, int);
         void determinant();
@@ -25,9 +27,10 @@ class Matrix{
         void identityMatrix(); // works
         void diagonalMatrix(); // works
         void triangularMatrix(bool); // works
+        void inversePrint();
         void printMatrix(); // works
         Matrix& operator= (const Matrix&); // works
-        friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix);
+        friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix); // works
         friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator- (const Matrix& matrixa, const Matrix& matrixb);
         friend Matrix operator* (const Matrix& matrixa, const Matrix& matrixb);

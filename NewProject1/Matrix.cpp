@@ -56,17 +56,60 @@ Matrix::~Matrix(){
 
 Matrix Matrix::fillMatrix(){
   Matrix A = Matrix(rows, cols);
-  A.mat[0][0] = 1.0;
-	A.mat[0][1] = 0.0;
-	A.mat[0][2] = 0.0;
+  A.mat[0][0] = 8.0;
+	A.mat[0][1] = 3.0;
+	A.mat[0][2] = 8.0;
 	
-	A.mat[1][0] = 0.0;
-	A.mat[1][1] = 2.0;
-	A.mat[1][2] = 0.0;
+	A.mat[1][0] = 4.0;
+	A.mat[1][1] = 9.0;
+	A.mat[1][2] = 5.0;
 	
-	A.mat[2][0] = 0.0;
-	A.mat[2][1] = 0.0;
-	A.mat[2][2] = 3.0;
+	A.mat[2][0] = 7.0;
+	A.mat[2][1] = 4.0;
+	A.mat[2][2] = 7.0;
+
+  return A;
+}
+
+Matrix Matrix::fillMatrix2(){
+  Matrix A = Matrix(rows, cols);
+  A.mat[0][0] = 5.0;
+	A.mat[0][1] = 2.0;
+	A.mat[0][2] = 3.0;
+	
+	A.mat[1][0] = 2.0;
+	A.mat[1][1] = 6.0;
+	A.mat[1][2] = 2.0;
+	
+	A.mat[2][0] = 3.0;
+	A.mat[2][1] = 2.0;
+	A.mat[2][2] = 6.0;
+
+  return A;
+}
+
+Matrix Matrix::fillMatrix3(){
+  Matrix A = Matrix(rows, cols);
+  A.mat[0][0] = 5.0;
+	A.mat[0][1] = 2.0;
+	A.mat[0][2] = 3.0;
+  A.mat[0][3] = 9.0;
+	
+	A.mat[1][0] = 2.0;
+	A.mat[1][1] = 6.0;
+	A.mat[1][2] = 2.0;
+  A.mat[1][3] = 8.0;
+	
+	A.mat[2][0] = 3.0;
+	A.mat[2][1] = 2.0;
+	A.mat[2][2] = 6.0;
+  A.mat[2][3] = 5.0;
+
+  A.mat[3][0] = 9.0;
+	A.mat[3][1] = 5.0;
+	A.mat[3][2] = 7.0;
+  A.mat[3][3] = 3.0;
+
 
   return A;
 }
@@ -185,16 +228,31 @@ Matrix Matrix::inverse(){
       rtn2.mat[0][0] = mat[0][0];
       return rtn2;
     }
+    Matrix fixCurr = padMatrix(rows);
+    Matrix rtn = fixCurr.inverse();
+    Matrix newRtn(ogRow, ogRow);
+    for(long int i = 0; i < ogRow; i++){
+      for(long int j = 0; j < ogRow; j++){
+        newRtn.mat[i][j] = rtn.mat[i][j];
+      }
+    }
+    return newRtn;
   }
-  Matrix curr = padMatrix(rows);
-  Matrix rtn = curr.inverse();
 
+  if(!isSymmetric()){
+    Matrix temp(rows, cols);
+    for(long int i = 0; i < rows; i++){
+      for(long int j = 0; j < cols; j++){
+        temp.mat[i][j] = mat[i][j];
+      }
+    }
+    Matrix temp2 = temp.transpose();
+    Matrix temp3 = temp2 * temp;
+    Matrix temp4 = temp3.inverse() * temp2;
+  }
 
   long int row = rows;
   long int col = cols;
-
-  padMatrix(row);
-
 	long int row2 = rows/2;
 	long int col2 = cols/2;
 
@@ -234,19 +292,6 @@ Matrix Matrix::inverse(){
 	Matrix U = (Y * -1);
 	Matrix Z = (WT) * (Y);
 	Matrix R = BI + Z;
-
-  for(long int i = 0; i < rows; i++){
-		delete[] mat[i];
-  }
-	delete[] mat;
-
-  rows = row;
-  cols = col;
-
-  mat = new double*[rows];
-	for(long int i = 0; i < rows; i++){
-		mat[i] = new double[cols];
-	}
 
   for(long int i = 0; i < rows; i++){
 		for(long int j = 0; j < cols; j++){
@@ -330,7 +375,7 @@ void Matrix::identityMatrix(){
 void Matrix::diagonalMatrix(){
   srand(time(NULL));
   for(long int i = 0; i < this->rows; i++){
-    this->mat[i][i] = 999;
+    this->mat[i][i] = 9;
   }
 }
 
@@ -340,7 +385,7 @@ void Matrix::triangularMatrix(bool up){
     for(long int i = 0; i < this->rows; i++){
       for(long int j = 0; j < this->rows; j++){
         if(i < j){
-          this->mat[i][j] = 999;
+          this->mat[i][j] = 9;
         }
         else{
           this->mat[i][j] = 0;
@@ -352,7 +397,7 @@ void Matrix::triangularMatrix(bool up){
     for(long int i = 0; i < this->rows; i++){
       for(long int j = 0; j < this->rows; j++){
         if(i > j){
-          this->mat[i][j] = 999;
+          this->mat[i][j] = 9;
         }
         else{
           this->mat[i][j] = 0;
@@ -360,6 +405,26 @@ void Matrix::triangularMatrix(bool up){
       }
     }
   }
+}
+
+void Matrix::inversePrint(){ // this is a shitty way of doing it by just "rounding" the # but I don't know what else to do...
+  for(long int i = 0; i < this->rows; i++){
+        if(i != 0)
+            std::cout << std::endl;
+        for(long int j = 0; j < this->cols; j++){
+          if(this->mat[i][j] > 0 && this->mat[i][j] < 1){
+            std::cout << std::setw(5) << 0 << " ";
+          }
+          else if(this->mat[i][j] > -1 && this->mat[i][j] < 0){
+            std::cout << std::setw(5) << 0 << " ";
+          }
+          else{
+              std::cout << std::setw(5) << this->mat[i][j] << " ";
+        }
+    }
+  }
+    std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 void Matrix::printMatrix(){
