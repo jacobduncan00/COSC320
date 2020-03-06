@@ -201,7 +201,8 @@ void randomQuickSort(int* arr, int start, int end){
 void merge(int *arr, int left, int mid, int right){
   int leftSize = mid - left + 1;
   int rightSize = right - mid;
-  int Left[leftSize], Right[rightSize]; // make two new arrays Left and Right
+  int *Left = new int[leftSize];
+  int *Right = new int[rightSize]; // make two new arrays Left and Right
   int i, j, k;
   for(i = 0; i < leftSize; i++){
     Left[i] = arr[left + i]; // creates index's for the Left array
@@ -224,6 +225,8 @@ void merge(int *arr, int left, int mid, int right){
   while(j < rightSize){
     arr[k++] = Right[j++]; // increase size as needed
   }
+  delete[] Left;
+  delete[] Right;
 }
 
 void mergeSort(int *arr, int left, int right){
@@ -265,14 +268,14 @@ void testHeapSort(void(*sort)(Heap&), Heap& A){
 	std::chrono::duration<double>elapsed_seconds = end-start;
 	std::cout << std::setprecision(10);
 	std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
-	std::cout << std::endl;
-
 	if(isSortedHeap(A)){
         std::cout << "-> Heap is Sorted" << std::endl;
+        std::cout << std::endl;
 		return;
 	}
 	else{
 		std::cout << "ERROR: Sort was not completed correctly!" << std::endl;
+        std::cout << std::endl;
 		return;
 	}
 }
@@ -287,7 +290,7 @@ int main(){
     std::cout << std::endl;
     int star = 1000;
     int cand = 10000;
-    int sum;
+    int sum = 0;
     for (int i = star; i <= cand; i += 1000){
         int *arr2 = new int[i];
         for(int j = 0; j < i; j++){
@@ -298,9 +301,9 @@ int main(){
     }
 
     int denom = cand/star;
-    sum = sum/denom;
+    int sumFinal = sum/denom;
     std::cout << std::endl;
-    std::cout << "\e[1mAverage Hires: \e[0m" << sum << std::endl;
+    std::cout << "\e[1mAverage Hires: \e[0m" << sumFinal << std::endl;
     std::cout << std::endl;
 
     // Sorting 
@@ -310,7 +313,7 @@ int main(){
             arr[i] = i;
         }
         shuffle(arr, curr);
-        testSort(quickSort, arr, 0, curr);
+        testSort(quickSort, arr, 0, curr - 1);
         isSortedArr(arr, curr);
         delete[] arr;
         curr = curr + inc;
@@ -322,7 +325,7 @@ int main(){
             arr[i] = i;
         }
         shuffle(arr, curr);
-        testSort(randomQuickSort, arr, 0, curr);
+        testSort(randomQuickSort, arr, 0, curr - 1);
         isSortedArr(arr, curr);
         delete[] arr;
         curr = curr + inc;
@@ -334,7 +337,7 @@ int main(){
             arr[i] = i;
         }
         shuffle(arr, curr);
-        testSort(mergeSort, arr, 0, curr);
+        testSort(mergeSort, arr, 0, curr - 1);
         isSortedArr(arr, curr);
         delete[] arr;
         curr = curr + inc;
@@ -349,10 +352,10 @@ int main(){
         Heap temp(arr, curr);
         std::cout << "HeapSort with " << curr << " elements" << std::endl;
         testHeapSort(heapSort, temp);
-        delete[] arr;
         curr = curr + inc;
         arr = new int[curr];
     }
+    delete[] arr;
     return 0;
 }
 
