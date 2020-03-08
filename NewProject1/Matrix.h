@@ -24,11 +24,12 @@ class Matrix{
         Matrix padMatrix(int);
         Matrix inverse();
         void twoDRegression(std::string); // takes in fileName by argv in main
-        void identityMatrix(); // works
+        Matrix identityMatrix(); // works
         void diagonalMatrix(); // works
         void triangularMatrix(bool); // works
         void inversePrint();
         void printMatrix(); // works
+        // void printByCols(int);
         Matrix& operator= (const Matrix&); // works
         friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix); // works
         friend Matrix operator+ (const Matrix& matrixa, const Matrix& matrixb);

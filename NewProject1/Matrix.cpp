@@ -366,10 +366,19 @@ void Matrix::twoDRegression(std::string fileName){
 }
 
 
-void Matrix::identityMatrix(){
+Matrix Matrix::identityMatrix(){
+  Matrix temp(this->rows, this->cols);
   for(long int i = 0; i < this->rows; i++){
-    this->mat[i][i] = 1;
+    for(long int j = 0; j < this->cols; j++){
+      if(i == j){
+      temp.mat[i][j] = 1;
+      }
+      else{
+        temp.mat[i][j] = 0;
+      }
+    }
   }
+  return temp;
 }
 
 void Matrix::diagonalMatrix(){
@@ -438,6 +447,12 @@ void Matrix::printMatrix(){
     std::cout << std::endl;
     std::cout << std::endl;
 }
+
+// void Matrix::printByCols(int a){
+//   for(long int i = 0; i < this->rows; i++){
+//     std::cout << this->mat[a][i] << " " << std::endl;
+//   }
+// }
 
 Matrix& Matrix::operator=(const Matrix& m){
   if(this == &m){ // when matrices are already the same

@@ -139,6 +139,12 @@ int main(){
     std::cout << std::endl;
     Matrix Qinv = Q.inverse();
     Qinv.printMatrix();
+    std::cout << "Inverse * Matrix Q w/ Normal Print" << std::endl;
+    std::cout << std::endl;
+    Matrix newNew = Qinv * holder;
+    std::cout << newNew << std::endl;
+    std::cout << "These numbers represent floating point rounding errors.." << std::endl;
+    std::cout << "Therefore the Matrix should look something like this:" << std::endl;
     std::cout << "Inverse * Matrix Q" << std::endl;
     std::cout << std::endl;
     Matrix newQ = Qinv * holder;
