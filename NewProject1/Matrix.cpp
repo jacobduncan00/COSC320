@@ -3,18 +3,17 @@
 #include <math.h>
 #include "Matrix.h"
 
-#define RESET "\033[0m"
-#define WHITE "\033[37m" 
-#define PURPLE "\033[35m"
-#define RED "\033[31m" 
-
 namespace counter{
     int count = 0;
 }
 
 Matrix::Matrix(){
-    rows = 0;
-    cols = 0;
+    mat = new double*[3];
+    for(int i = 0; i < 3; i++){
+      mat[i] = new double[3];
+    }
+    rows = 3;
+    cols = 3;
 }
 
 Matrix::Matrix(long int row, long int col){
@@ -48,7 +47,7 @@ Matrix::Matrix(const Matrix& m){
 }
 
 Matrix::~Matrix(){
-  for(long int i = 0; i < rows; i++){
+  for(long int i = 0; i < this->rows; i++){
     delete[] mat[i];
   }
   delete[] mat;
@@ -114,60 +113,18 @@ Matrix Matrix::fillMatrix3(){
   return A;
 }
 
-void Matrix::insert(long int i, long int j, double num){
-  mat[i][j] = num;
+void Matrix::insertNum(int i, int j, double num){
+  if((i < 0 || i > this->rows) || (j < 0 || j > this->cols)){
+    throw "ERROR: Indeces are not valid.";
+  }
+  this->mat[i][j] = num;
 }
 
 double Matrix::getVal(int i, int j){
-  return mat[i][j];
-}
-
-void Matrix::determinant(){
-  int det = 0;
-  if(rows != cols){
-    std::cout << "Matrix is not a square, cannot be invertible" << std::endl;
+  if((i < 0 || i > this->rows) || (j < 0 || j > this->cols)){
+    throw "ERROR: Indeces are not valid.";
   }
-  if(rows == 2 && cols == 2){
-    det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
-    if(det == 0){
-      std::cout << "Matrix is not invertible.\n";
-    }
-    else{
-      std::cout << "Matrix is invertible.\n";
-    }
-  }
-  else if (rows == 3 && cols == 3){
-    det = (mat[0][0] * mat[1][1] * mat[2][2]
-			  + mat[0][1]  * mat[1][2] * mat[2][0]
-		  	+ mat[0][2]  * mat[1][0] * mat[2][1])
-		  	- (mat[0][2] * mat[1][1] * mat[2][0]
-		  	+  mat[0][0] * mat[1][2] * mat[2][1]
-		  	+  mat[0][1] * mat[1][0] * mat[2][2]);
-      
-    if(det == 0){
-      std::cout << "Matrix is not invertible.\n";
-    }
-    else{
-      std::cout << "Matrix is invertible.\n";
-    }
-  }
-  else{
-    int count;
-    for(long int i = 0; i < rows; i++){
-      for (long int j = 0; j < cols; j++){
-        det+=mat[i][j];
-      }
-      if(det == 0){
-        std::cout << "Matrix is not invertible.\n";
-      }
-      else{
-        count++;
-      }
-    }
-    if(count == rows - 1){
-      std::cout << "Matrix is invertible.\n";
-    }
-  }
+  return this->mat[i][j];
 }
 
 bool Matrix::isSymmetric(){
@@ -214,20 +171,19 @@ Matrix Matrix::inverse(){
     throw "Not a square matrix!";
   }
 
-  if(rows == 1 && cols == 1){
+  if(rows == 1 || cols == 1){
+    Matrix rtn(1,1);
     if(mat[0][0] != 0){
-      mat[0][0] = 1/mat[0][0];
+      rtn.mat[0][0] = 1.0/mat[0][0];
     }
-    return *this;
+    else{
+      rtn.mat[0][0] = 0;
+    }
+    return rtn;
   }
 
   int ogRow = rows;
   if(log2(rows) - (int)log2(rows) != 0){ // check to see if Matrix is a 2^n x 2^n
-    if(rows == 1){
-      Matrix rtn2(1,1);
-      rtn2.mat[0][0] = mat[0][0];
-      return rtn2;
-    }
     Matrix fixCurr = padMatrix(rows);
     Matrix rtn = fixCurr.inverse();
     Matrix newRtn(ogRow, ogRow);
@@ -240,19 +196,13 @@ Matrix Matrix::inverse(){
   }
 
   if(!isSymmetric()){
-    Matrix temp(rows, cols);
-    for(long int i = 0; i < rows; i++){
-      for(long int j = 0; j < cols; j++){
-        temp.mat[i][j] = mat[i][j];
-      }
-    }
+    Matrix temp = *this;
     Matrix temp2 = temp.transpose();
     Matrix temp3 = temp2 * temp;
     Matrix temp4 = temp3.inverse() * temp2;
+    return temp4;
   }
 
-  long int row = rows;
-  long int col = cols;
 	long int row2 = rows/2;
 	long int col2 = cols/2;
 
@@ -263,17 +213,16 @@ Matrix Matrix::inverse(){
 
 	for(long int i = 0; i < rows; i++){
 		for(long int j = 0; j < cols; j++){
-
 			if(i < row2 && j < col2){ //top left
 				B.mat[i][j] = mat[i][j];
       }
-			else if(i < row2 && j >= col2){ //top right
+			if(i < row2 && j >= col2){ //top right
 				CT.mat[i][j - col2] = mat[i][j];
       }
-			else if(i >= row2 && j < col2){ // bottom left
+			if(i >= row2 && j < col2){ // bottom left
 				C.mat[i - row2][j] = mat[i][j];
       }
-			else if(i >= row2 && j >= col2){ //bottom right
+			if(i >= row2 && j >= col2){ //bottom right
 				D.mat[i - row2][j - col2] = mat[i][j];
       }
 
@@ -292,79 +241,26 @@ Matrix Matrix::inverse(){
 	Matrix U = (Y * -1);
 	Matrix Z = (WT) * (Y);
 	Matrix R = BI + Z;
+  Matrix rtnNew(rows, cols);
 
   for(long int i = 0; i < rows; i++){
 		for(long int j = 0; j < cols; j++){
-
 			if(i < row2 && j < col2){ //top left
-				mat[i][j] = R.mat[i][j];
+				rtnNew.mat[i][j] = R.mat[i][j];
       }
-			else if(i < row2 && j >= col2){ //top right
-				mat[i][j] = T.mat[i][j-col2];
+			if(i < row2 && j >= col2){ //top right
+				rtnNew.mat[i][j] = T.mat[i][j-col2];
       }
-			else if(i >= row2 && j < col2){ // bottom left
-				mat[i][j] = U.mat[i-row2][j];
+			if(i >= row2 && j < col2){ // bottom left
+				rtnNew.mat[i][j] = U.mat[i-row2][j];
       }
-			else if(i >= row2 && j >= col2){ //bottom right
-				mat[i][j] = V.mat[i-row2][j-col2];
+			if(i >= row2 && j >= col2){ //bottom right
+				rtnNew.mat[i][j] = V.mat[i-row2][j-col2];
       }
-
 		}
   }
-	return *this;
+	return rtnNew;
 }
-
-void Matrix::twoDRegression(std::string fileName){
-  std::ifstream infile(fileName);
-  if(!infile.is_open()){
-      	std::cout << "File Opening Error.\n";
-      	exit (1);
-  }
-  int datasize;
-  if(fileName == "points100.dat"){
-    datasize = 100;
-  }
-  else if(fileName == "points500.dat"){
-    datasize = 500;
-  }
-  else if(fileName == "points1000.dat"){
-    datasize = 1000;
-  }
-  else if(fileName == "points5000.dat"){
-    datasize = 5000;
-  }
-  else if(fileName == "points10000.dat"){
-    datasize = 10000;
-  }
-  else if(fileName == "points50000.dat"){
-    datasize = 50000;
-  }
-  else if(fileName == "points100000.dat"){
-    datasize = 100000;
-  }
-  else{
-    std::cout << "Data Size could not be calculated!" << std::endl;
-    return;
-  }
-  double c1, c2;
-  Matrix *A = new Matrix(datasize, 2);
-  Matrix *b = new Matrix(datasize, 1);
-  for(long int i = 0; i < datasize; i++){
-    infile >> c1;
-    //std::cout << "1st Value: " << c1 << std::endl;
-    infile >> c2;
-    //std::cout << "2nd Value: " << c2 << std::endl;
-    A->insert(i, 0, c1);
-    b->insert(i, 0, c2);
-    A->insert(i, 1, 1.0);
-  }
-  infile.close();
-  Matrix AT = (*A).transpose();
-  Matrix Beta = (((AT * *A).inverse() * AT) * *b);
-  std::cout << "[2D] Aβ = [A]*[β]=[x] = b:" << std::endl;
-  std::cout << Beta << std::endl; // Prints regression line.
-}
-
 
 Matrix Matrix::identityMatrix(){
   Matrix temp(this->rows, this->cols);
@@ -448,11 +344,9 @@ void Matrix::printMatrix(){
     std::cout << std::endl;
 }
 
-// void Matrix::printByCols(int a){
-//   for(long int i = 0; i < this->rows; i++){
-//     std::cout << this->mat[a][i] << " " << std::endl;
-//   }
-// }
+int Matrix::printCounter(){
+  return counter::count;
+}
 
 Matrix& Matrix::operator=(const Matrix& m){
   if(this == &m){ // when matrices are already the same

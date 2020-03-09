@@ -1,21 +1,21 @@
-all: productionNeeded.exe driver.exe
+all: iomodel driver 
 
-driver.exe: main.o matrix.o
-	g++ -o driver.exe main.o matrix.o
-	
-productionNeeded.exe: main2.o matrix.o
-	g++ -o productionNeeded.exe main2.o matrix.o
+iomodel: iomodel.o Matrix.o
+	g++ -o iomodel iomodel.o Matrix.o
 
-main.o: main.cpp 
-	g++ -std=c++11 -c main.cpp
+driver: driver.o Matrix.o
+	g++ -o driver driver.o Matrix.o
 
-main2.o: main2.cpp
-	g++ -std=c++11 -c main2.cpp
+driver.o: driver.cpp
+	g++ -std=c++11 -c driver.cpp
 
-matrix.o: Matrix.cpp
+iomodel.o: iomodel.cpp
+	g++ -std=c++11 -c iomodel.cpp
+
+Matrix.o: Matrix.cpp
 	g++ -std=c++11 -c Matrix.cpp
 
 clean:
 	rm *.o
-	rm productionNeeded.exe
-	rm driver.exe
+	rm iomodel
+	rm driver
