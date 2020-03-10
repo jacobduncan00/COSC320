@@ -262,19 +262,18 @@ Matrix Matrix::inverse(){
 	return rtnNew;
 }
 
-Matrix Matrix::identityMatrix(){
+void Matrix::identityMatrix(){
   Matrix temp(this->rows, this->cols);
   for(long int i = 0; i < this->rows; i++){
     for(long int j = 0; j < this->cols; j++){
       if(i == j){
-      temp.mat[i][j] = 1;
+        mat[i][j] = 1;
       }
       else{
-        temp.mat[i][j] = 0;
+        mat[i][j] = 0;
       }
     }
   }
-  return temp;
 }
 
 void Matrix::diagonalMatrix(){

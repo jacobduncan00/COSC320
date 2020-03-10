@@ -4,7 +4,8 @@
 #include "Matrix.h"
 
 Matrix calcDemand(Matrix& in, Matrix& dem){
-    Matrix id = in.identityMatrix();  
+    Matrix id = in;
+    id.identityMatrix();
     Matrix rtn = ((id - in).inverse()) * (dem);
     return rtn;
 }
@@ -24,6 +25,7 @@ int main(int argc, char** argv){
 
     int dimensions = 0;
     std::string firstLevelNames[50];
+    bool flag = false;
     while(inFile.peek() != EOF){
         std::cout << "First Level: " << std::endl;
         std::cout << std::endl;

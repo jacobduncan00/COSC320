@@ -24,7 +24,7 @@ class Matrix{
         Matrix transpose(); // Returns a tranposed Matrix of the one called upon
         Matrix padMatrix(int); // Pads the Matrix called upon to be a 2^n x 2^n
         Matrix inverse(); // Returns the inverse of a given Matrix
-        Matrix identityMatrix(); // Returns the Identity Matrix of a given Matrix
+        void identityMatrix(); // Returns the Identity Matrix of a given Matrix
         void diagonalMatrix(); // Creates the Diagonal Matrix of a given Matrix
         void triangularMatrix(bool); // Creates the Triangular Matrix of a given Matrix
         void inversePrint(); // Due to floating point errors, print that rounds the product of A * A inverse 
