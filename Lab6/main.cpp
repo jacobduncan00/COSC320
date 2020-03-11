@@ -28,7 +28,6 @@ void swap(int& a, int& b){
 }
 
 void shuffle(int* arr, int n){
-    srand(time(NULL));
     for(int i = 0; i < n; i++){
         int j = (rand()%n);
         //std::cout << "Random Number: " << j << std::endl;
@@ -115,27 +114,23 @@ void printHeap(Heap& A, int start, int end){
 void isSortedArr(int* arr, int n){ // function that determines if an array is sorted or not
 	if (n == 0){
 		std::cout << "ERROR: Array has no contents" << std::endl;
-		std::cout << std::endl;
 		return;
 	}
 	if (n == 1){
 		std::cout << "-> Array is Sorted" << std::endl;
-		std::cout << std::endl;
 		return;
 	}
 	for(int i = 1; i < n; i++){
 		if(arr[i-1] > arr[i]){
 			std::cout << "-> Array is NOT Sorted" << std::endl;
-			std::cout << std::endl;
 			return;
 		}
 	}
 	std::cout << "-> Array is Sorted" << std::endl;
-	std::cout << std::endl;
 	return;
 }
 
-bool isSortedHeap(Heap& A){ 
+bool isSortedHeap(Heap& A){ // checks to see if a Heap's array is sorted 
 	for(int i = 0; i < A.length - 1; i++){
 		if(A.arr[i] > A.arr[i+1]){
 			return false;
@@ -146,7 +141,6 @@ bool isSortedHeap(Heap& A){
 
 int hireAssistant(int* rank, int n){
     int hires = 1;
-    shuffle(rank, n);
     int curr = rank[0];
     for(int i = 1; i < n; i++){
         if(rank[i] > curr){
@@ -234,19 +228,13 @@ void mergeSort(int *arr, int left, int right){
   if(left < right){
     mid = (left+right)/2; // get "pivot" or mid of array
     mergeSort(arr, left, mid); // call QuickSort on the left
-    mergeSort(arr, mid + 1, right); // call QuickSort on the right
-    merge(arr, left, mid, right); // merge the two back together
-  }
+    mergeSort(arr, mid + 1, right); // call QuickSort on the right merge(arr, left, mid, right); // merge the two back together
+    merge(arr, left, mid, right);
+   } 
 }
 
 void testSort(void(*sort)(int*, int, int), int* arr, int s, int e){
-    typedef std::chrono::high_resolution_clock Clock;
-    auto start = std::chrono::system_clock::now(); // starts time
     sort(arr, s, e);
-    auto end = std::chrono::system_clock::now(); // ends time
-    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-    std::chrono::duration<double>elapsed_seconds = end-start;
-    std::cout << std::setprecision(10);
     if(sort == quickSort){
         std::cout << "QuickSort with " << e << " elements" << std::endl;
     }
@@ -256,21 +244,12 @@ void testSort(void(*sort)(int*, int, int), int* arr, int s, int e){
     else if(sort == randomQuickSort){
         std::cout << "Random QuickSort with " << e << " elements" << std::endl;
     }
-    std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
 }
 
 void testHeapSort(void(*sort)(Heap&), Heap& A){
-	typedef std::chrono::high_resolution_clock Clock;
-	auto start = std::chrono::system_clock::now(); // starts time
 	sort(A);
-	auto end = std::chrono::system_clock::now(); // ends time
-	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-	std::chrono::duration<double>elapsed_seconds = end-start;
-	std::cout << std::setprecision(10);
-	std::cout << "-> Sort took " << elapsed_seconds.count() << "s" << std::endl;
 	if(isSortedHeap(A)){
         std::cout << "-> Heap is Sorted" << std::endl;
-        std::cout << std::endl;
 		return;
 	}
 	else{
@@ -292,15 +271,18 @@ int main(){
     int cand = 10000;
     int sum = 0;
     for (int i = star; i <= cand; i += 1000){
-        int *arr2 = new int[i];
-        for(int j = 0; j < i; j++){
-            arr2[j] = j;
+        for(int l = 0; l < 10; l++){
+            int *arr2 = new int[i];
+            for(int j = 0; j < i; j++){
+              arr2[j] = j;
+            }
+            shuffle(arr2, i);
+            sum += hireAssistant(arr2, i);
+            delete[] arr2;
         }
-        sum += hireAssistant(arr2, i);
-        delete[] arr2;
     }
 
-    int denom = cand/star;
+    int denom = cand/star*10;
     int sumFinal = sum/denom;
     std::cout << std::endl;
     std::cout << "\e[1mAverage Hires: \e[0m" << sumFinal << std::endl;
@@ -309,51 +291,91 @@ int main(){
     // Sorting 
 
     while(curr <= 1000000){
-        for(int i = 0; i < curr; i++){
-            arr[i] = i;
+        for(int l = 0; l < 20; l++){
+            for(int i = 0; i < curr; i++){
+                arr[i] = i;
+            }
+            typedef std::chrono::high_resolution_clock Clock;
+            auto start = std::chrono::system_clock::now(); // starts time
+            shuffle(arr, curr);
+            testSort(quickSort, arr, 0, curr - 1);
+            isSortedArr(arr, curr);
+            auto end = std::chrono::system_clock::now(); // ends time
+            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+            std::chrono::duration<double>elapsed_seconds = end-start;
+            std::cout << std::setprecision(10);
+            std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
+            std::cout << std::endl;
+            delete[] arr;
+            curr = curr + inc;
+            arr = new int[curr];
         }
-        shuffle(arr, curr);
-        testSort(quickSort, arr, 0, curr - 1);
-        isSortedArr(arr, curr);
-        delete[] arr;
-        curr = curr + inc;
-        arr = new int[curr];
     }
     curr = 10000;
     while(curr <= 1000000){
-        for(int i = 0; i < curr; i++){
-            arr[i] = i;
+        for(int l = 0; l < 20; l++){
+            for(int i = 0; i < curr; i++){
+                    arr[i] = i;
+            }
+            typedef std::chrono::high_resolution_clock Clock;
+            auto start = std::chrono::system_clock::now(); // starts time
+            shuffle(arr, curr);
+            testSort(randomQuickSort, arr, 0, curr - 1);
+            isSortedArr(arr, curr);
+            auto end = std::chrono::system_clock::now(); // ends time
+            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+            std::chrono::duration<double>elapsed_seconds = end-start;
+            std::cout << std::setprecision(10);
+            std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
+            std::cout << std::endl;
+            delete[] arr;
+            curr = curr + inc;
+            arr = new int[curr];
         }
-        shuffle(arr, curr);
-        testSort(randomQuickSort, arr, 0, curr - 1);
-        isSortedArr(arr, curr);
-        delete[] arr;
-        curr = curr + inc;
-        arr = new int[curr];
     }
     curr = 10000;
     while(curr <= 1000000){
-        for(int i = 0; i < curr; i++){
-            arr[i] = i;
+        for(int l = 0; l < 20; l++){
+            for(int i = 0; i < curr; i++){
+                    arr[i] = i;
+            }
+            typedef std::chrono::high_resolution_clock Clock;
+            auto start = std::chrono::system_clock::now(); // starts time
+            shuffle(arr, curr);
+            testSort(mergeSort, arr, 0, curr-1);
+            isSortedArr(arr, curr);
+            auto end = std::chrono::system_clock::now(); // ends time
+            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+            std::chrono::duration<double>elapsed_seconds = end-start;
+            std::cout << std::setprecision(10);
+            std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
+            std::cout << std::endl;
+            delete[] arr;
+            curr = curr + inc;
+            arr = new int[curr];
         }
-        shuffle(arr, curr);
-        testSort(mergeSort, arr, 0, curr - 1);
-        isSortedArr(arr, curr);
-        delete[] arr;
-        curr = curr + inc;
-        arr = new int[curr];
     }
     curr = 10000;
     while(curr <= 1000000){
-        for(int i = 0; i < curr; i++){
-            arr[i] = i;
+        for(int l = 0; l < 20; l++){
+            for(int i = 0; i < curr; i++){
+                    arr[i] = i;
+            }
+            typedef std::chrono::high_resolution_clock Clock;
+            auto start = std::chrono::system_clock::now(); // starts time
+            shuffle(arr, curr);
+            Heap test(arr, curr);
+            std::cout << "HeapSort with " << curr << " elements" << std::endl;
+            testHeapSort(heapSort, test);
+            auto end = std::chrono::system_clock::now(); // ends time
+            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+            std::chrono::duration<double>elapsed_seconds = end-start;
+            std::cout << std::setprecision(10);
+            std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
+            std::cout << std::endl;
+            curr = curr + inc;
+            arr = new int[curr];
         }
-        shuffle(arr, curr);
-        Heap temp(arr, curr);
-        std::cout << "HeapSort with " << curr << " elements" << std::endl;
-        testHeapSort(heapSort, temp);
-        curr = curr + inc;
-        arr = new int[curr];
     }
     delete[] arr;
     return 0;
