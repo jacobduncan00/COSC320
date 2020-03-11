@@ -1,13 +1,12 @@
 #ifndef MATRIX_H
 #define MATRIX_H
-
 #include <fstream>
 
 class Matrix{
     private:
-        double** mat;
-        long int rows;
-        long int cols;
+        double** mat; // 2D Array
+        long int rows; // # of Rows in Matrix / Array
+        long int cols; // # of Cols in Matrix / Array
     public:
         Matrix(); // Default Constructor
         Matrix(long int, long int); // Overloaded Constructor takes Rows & Cols
@@ -16,7 +15,7 @@ class Matrix{
         Matrix& operator= (const Matrix&); // Overloaded Assignment Operator
         
         Matrix fillMatrix(); // Fill Matrix Test #1         used in driver
-        Matrix fillMatrix2(); // Fill Matrix Test #2        used in driver
+        Matrix fillMatrix2(); // Fill Matrix Test #2        used in driver   for testing
         Matrix fillMatrix3(); // Fill Matrix Test #3        used in driver
         void insertNum(int, int, double); // inserts a double into the matrix at a specified location
         double getVal(int, int); // returns a double in the matrix at a specified location

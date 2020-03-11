@@ -18,8 +18,7 @@ Matrix::Matrix(){
 
 Matrix::Matrix(long int row, long int col){
   if (row <= 0 || col <= 0){
-    std::cout << "Invalid Matrix Size" << std::endl;
-    exit(1);
+    throw "Invalid Matrix Size";
   } 
   rows = row;
   cols = col;
@@ -58,15 +57,12 @@ Matrix Matrix::fillMatrix(){
   A.mat[0][0] = 8.0;
 	A.mat[0][1] = 3.0;
 	A.mat[0][2] = 8.0;
-	
 	A.mat[1][0] = 4.0;
 	A.mat[1][1] = 9.0;
 	A.mat[1][2] = 5.0;
-	
 	A.mat[2][0] = 7.0;
 	A.mat[2][1] = 4.0;
 	A.mat[2][2] = 7.0;
-
   return A;
 }
 
@@ -75,15 +71,12 @@ Matrix Matrix::fillMatrix2(){
   A.mat[0][0] = 5.0;
 	A.mat[0][1] = 2.0;
 	A.mat[0][2] = 3.0;
-	
 	A.mat[1][0] = 2.0;
 	A.mat[1][1] = 6.0;
 	A.mat[1][2] = 2.0;
-	
 	A.mat[2][0] = 3.0;
 	A.mat[2][1] = 2.0;
 	A.mat[2][2] = 6.0;
-
   return A;
 }
 
@@ -93,23 +86,18 @@ Matrix Matrix::fillMatrix3(){
 	A.mat[0][1] = 2.0;
 	A.mat[0][2] = 3.0;
   A.mat[0][3] = 9.0;
-	
 	A.mat[1][0] = 2.0;
 	A.mat[1][1] = 6.0;
 	A.mat[1][2] = 2.0;
   A.mat[1][3] = 8.0;
-	
 	A.mat[2][0] = 3.0;
 	A.mat[2][1] = 2.0;
 	A.mat[2][2] = 6.0;
   A.mat[2][3] = 5.0;
-
   A.mat[3][0] = 9.0;
 	A.mat[3][1] = 5.0;
 	A.mat[3][2] = 7.0;
   A.mat[3][3] = 3.0;
-
-
   return A;
 }
 
@@ -311,21 +299,19 @@ void Matrix::triangularMatrix(bool up){
   }
 }
 
-void Matrix::inversePrint(){ // this is a shitty way of doing it by just "rounding" the # but I don't know what else to do...
+void Matrix::inversePrint(){ 
   for(long int i = 0; i < this->rows; i++){
-        if(i != 0)
+        if(i != 0){
             std::cout << std::endl;
+	      }
         for(long int j = 0; j < this->cols; j++){
-          if(this->mat[i][j] > 0 && this->mat[i][j] < 1){
-            std::cout << std::setw(5) << 0 << " ";
-          }
-          else if(this->mat[i][j] > -1 && this->mat[i][j] < 0){
-            std::cout << std::setw(5) << 0 << " ";
+          if(this->mat[i][j] <= 0 && this->mat[i][j] >= -1){
+            std::cout << std::setw(5) << (int)this->mat[i][j]*(-1) << " ";;
           }
           else{
-              std::cout << std::setw(5) << this->mat[i][j] << " ";
+            std::cout << std::setw(5) << (int)this->mat[i][j] << " ";
+          }
         }
-    }
   }
     std::cout << std::endl;
     std::cout << std::endl;
@@ -333,10 +319,11 @@ void Matrix::inversePrint(){ // this is a shitty way of doing it by just "roundi
 
 void Matrix::printMatrix(){
     for(long int i = 0; i < this->rows; i++){
-        if(i != 0)
-            std::cout << std::endl;
+        if(i != 0){
+          std::cout << std::endl;
+        }
         for(long int j = 0; j < this->cols; j++){
-              std::cout << std::setw(5) << this->mat[i][j] << " ";
+          std::cout << std::setw(5) << this->mat[i][j] << " ";
         }
     }
     std::cout << std::endl;
