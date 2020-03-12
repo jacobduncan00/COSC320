@@ -1,3 +1,4 @@
+ 
 #include <iostream>
 #include <stdio.h>
 #include <chrono>
@@ -6,6 +7,15 @@
 #include <iomanip>
 #include <fstream>
 #include <math.h>
+
+void resetFile(){
+	std::ofstream timing;
+    std::ofstream size;
+	timing.open("timing.dat", std::ofstream::out | std::ofstream::trunc);
+	timing.close();
+    size.open("size.dat", std::ofstream::out | std::ofstream::trunc);
+	size.close();
+}
 
 struct Heap{
     int* arr;
@@ -21,11 +31,15 @@ struct Heap{
 	}
 };
 
+// Function to swap values
+
 void swap(int& a, int& b){
     int temp = a;
     a = b;
     b = temp;
 }
+
+// Function to shuffle an array 
 
 void shuffle(int* arr, int n){
     for(int i = 0; i < n; i++){
@@ -35,13 +49,29 @@ void shuffle(int* arr, int n){
     }
 }
 
+// generates array
+
+int* genArray(int len){
+	int* rtn = new int[len];
+	for(int i = 0; i < len; i++){
+		rtn[i] = (rand()%len);
+	}
+	return rtn;
+}
+
+// Gets left child of node in heap
+
 int Left(int i){
 	return (2 * i) + 1;
 }
 
+// Gets right child of node in heap
+
 int Right(int i){
 	return (2 * i) + 2;
 }
+
+// maxHeapifies heap
 
 void maxHeapify(Heap& A, int i){
 	int leftChild = Left(i);
@@ -60,12 +90,16 @@ void maxHeapify(Heap& A, int i){
 	}
 }
 
+// builds Max Heap by calling maxHeapify
+
 void buildMaxHeap(Heap& A){
 	A.heap_size = A.length;
 	for(int i = A.length - 1; i >= 0; i--){
 		maxHeapify(A, i);
 	}
 }
+
+// Sorts a Heap
 
 void heapSort(Heap& A){
 	buildMaxHeap(A);
@@ -76,19 +110,7 @@ void heapSort(Heap& A){
 	}
 }
 
-void printHeap(Heap& A){ 
-	int n = log2(A.length);
-
-	for(int i = 0; i < A.length; i++){
-		std::cout << A.arr[i] << " ";
-		for(int j = 1; j <= n; j++){
-			if( i == (pow(2.0, j) - 2)){
-				std::cout << std::endl;
-			}
-		}
-	}
-	std::cout << std::endl;
-}
+// Function to print values in heap, testing purposes
 
 void printHeap(Heap& A, int start, int end){
 	if(A.length < 1){
@@ -111,7 +133,9 @@ void printHeap(Heap& A, int start, int end){
 	}
 }
 
-void isSortedArr(int* arr, int n){ // function that determines if an array is sorted or not
+// function that determines if an array is sorted or not
+
+void isSortedArr(int* arr, int n){ 
 	if (n == 0){
 		std::cout << "ERROR: Array has no contents" << std::endl;
 		return;
@@ -130,7 +154,9 @@ void isSortedArr(int* arr, int n){ // function that determines if an array is so
 	return;
 }
 
-bool isSortedHeap(Heap& A){ // checks to see if a Heap's array is sorted 
+// function that determines if a Heap is sorted or not
+
+bool isSortedHeap(Heap& A){ 
 	for(int i = 0; i < A.length - 1; i++){
 		if(A.arr[i] > A.arr[i+1]){
 			return false;
@@ -138,6 +164,10 @@ bool isSortedHeap(Heap& A){ // checks to see if a Heap's array is sorted
 	}
 	return true;
 }
+
+// hire assistant function simulates the hiring process when an array
+// is given in random "shuffled" order. How many average hires are made is
+// calculated
 
 int hireAssistant(int* rank, int n){
     int hires = 1;
@@ -154,6 +184,8 @@ int hireAssistant(int* rank, int n){
     return hires;
 }
 
+// Partition used by quicksort
+
 int partition(int* arr, int start, int end){
     int a = start;
     int b = end;
@@ -167,6 +199,8 @@ int partition(int* arr, int start, int end){
     return a;
 }
 
+// Sorts array using quickSort
+
 void quickSort(int* arr, int start, int end){
     if(start < end){
         int pivot = partition(arr, start, end);
@@ -174,6 +208,8 @@ void quickSort(int* arr, int start, int end){
         quickSort(arr, pivot + 1, end);
     }
 }
+
+// partition function that chooses a pivot at random
 
 int randomPartition(int* arr, int start, int end){
     int swaps;
@@ -184,6 +220,8 @@ int randomPartition(int* arr, int start, int end){
     return partition(arr, start, end);
 }
 
+// quickSort that calls randomPartition 
+
 void randomQuickSort(int* arr, int start, int end){
     if(start < end){
         int pivot = randomPartition(arr, start, end);
@@ -191,6 +229,8 @@ void randomQuickSort(int* arr, int start, int end){
         quickSort(arr, pivot + 1, end);
     }
 }
+
+// used by mergeSort to divide array into sub arrays and merge back to form sorted array
 
 void merge(int *arr, int left, int mid, int right){
   int leftSize = mid - left + 1;
@@ -223,6 +263,8 @@ void merge(int *arr, int left, int mid, int right){
   delete[] Right;
 }
 
+// sorts an array by dividing down and rebuilding into sorted array
+
 void mergeSort(int *arr, int left, int right){
   int mid;
   if(left < right){
@@ -232,6 +274,8 @@ void mergeSort(int *arr, int left, int right){
     merge(arr, left, mid, right);
    } 
 }
+
+// function that calls a sort given a function
 
 void testSort(void(*sort)(int*, int, int), int* arr, int s, int e){
     sort(arr, s, e);
@@ -245,6 +289,8 @@ void testSort(void(*sort)(int*, int, int), int* arr, int s, int e){
         std::cout << "Random QuickSort with " << e << " elements" << std::endl;
     }
 }
+
+// function that calls the heapSort, only takes in heaps
 
 void testHeapSort(void(*sort)(Heap&), Heap& A){
 	sort(A);
@@ -260,10 +306,10 @@ void testHeapSort(void(*sort)(Heap&), Heap& A){
 }
 
 int main(){
+    resetFile(); // resets the .dat file to be empty each run
+	std::ofstream timing; // output stream for the file
+    std::ofstream size;
     srand(time(NULL));
-    int curr = 10000;
-    int inc = 50000;
-    int *arr = new int[curr];
 
     // Hiring Problem
     std::cout << std::endl;
@@ -288,84 +334,103 @@ int main(){
     std::cout << "\e[1mAverage Hires: \e[0m" << sumFinal << std::endl;
     std::cout << std::endl;
 
-    // Sorting 
+    // Sorting Testing
+    int sizes[18] = {10000, 60000, 210000, 260000, 310000, 360000, 410000, 460000, 510000, 560000, 610000, 660000, 710000, 760000, 810000, 860000, 910000, 960000};
+    bool flag = false;
+    timing.open("timing.dat", std::ios_base::app);
+    timing << "quick sort" << "\n";
+    timing.close();
+    for(int i = 0; i < 18; i++){
+        for(int l = 0; l < 20; l++){
+            int* tempArr = genArray(sizes[i]);
+            typedef std::chrono::high_resolution_clock Clock;
+            auto start = std::chrono::system_clock::now(); // starts time
+            shuffle(tempArr, sizes[i]);
+            testSort(quickSort, tempArr, 0, sizes[i]- 1);
+            isSortedArr(tempArr, sizes[i]);
+            auto end = std::chrono::system_clock::now(); // ends time
+            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+            std::chrono::duration<double>elapsed_seconds = end-start;
+            std::cout << std::setprecision(10);
+            std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
+            size.open("size.dat", std::ios_base::app);
+            size << sizes[i] << "\n";
+            size.close();
+            timing.open("timing.dat", std::ios_base::app);
+            timing << elapsed_seconds.count() << "\n";
+            timing.close();
+            std::cout << std::endl;
+            delete[] tempArr;
+        }
+    }
+    timing.open("timing.dat", std::ios_base::app);
+    timing << "\n" << "random quick sort" << "\n";
+    timing.close();
 
-    while(curr <= 1000000){
+    for(int i = 0; i < 18; i++){
         for(int l = 0; l < 20; l++){
-            for(int i = 0; i < curr; i++){
-                arr[i] = i;
-            }
+            int* tempArr = genArray(sizes[i]);
             typedef std::chrono::high_resolution_clock Clock;
             auto start = std::chrono::system_clock::now(); // starts time
-            shuffle(arr, curr);
-            testSort(quickSort, arr, 0, curr - 1);
-            isSortedArr(arr, curr);
+            shuffle(tempArr, sizes[i]);
+            testSort(randomQuickSort, tempArr, 0, sizes[i]- 1);
+            isSortedArr(tempArr, sizes[i]);
             auto end = std::chrono::system_clock::now(); // ends time
             std::time_t end_time = std::chrono::system_clock::to_time_t(end);
             std::chrono::duration<double>elapsed_seconds = end-start;
             std::cout << std::setprecision(10);
             std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
             std::cout << std::endl;
-            delete[] arr;
-            curr = curr + inc;
-            arr = new int[curr];
+            size.open("size.dat", std::ios_base::app);
+            size << sizes[i] << "\n";
+            size.close();
+            timing.open("timing.dat", std::ios_base::app);
+            timing << elapsed_seconds.count() << "\n";
+            timing.close();
+            delete[] tempArr;
         }
     }
-    curr = 10000;
-    while(curr <= 1000000){
+
+    timing.open("timing.dat", std::ios_base::app);
+    timing << "\n" << "mergesort" << "\n";
+    timing.close();
+
+    for(int i = 0; i < 18; i++){
         for(int l = 0; l < 20; l++){
-            for(int i = 0; i < curr; i++){
-                    arr[i] = i;
-            }
+            int* tempArr = genArray(sizes[i]);
             typedef std::chrono::high_resolution_clock Clock;
             auto start = std::chrono::system_clock::now(); // starts time
-            shuffle(arr, curr);
-            testSort(randomQuickSort, arr, 0, curr - 1);
-            isSortedArr(arr, curr);
+            shuffle(tempArr, sizes[i]);
+            testSort(mergeSort, tempArr, 0, sizes[i]-1);
+            isSortedArr(tempArr, sizes[i]);
             auto end = std::chrono::system_clock::now(); // ends time
             std::time_t end_time = std::chrono::system_clock::to_time_t(end);
             std::chrono::duration<double>elapsed_seconds = end-start;
             std::cout << std::setprecision(10);
             std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
             std::cout << std::endl;
-            delete[] arr;
-            curr = curr + inc;
-            arr = new int[curr];
+            size.open("size.dat", std::ios_base::app);
+            size << sizes[i] << "\n";
+            size.close();
+            timing.open("timing.dat", std::ios_base::app);
+            timing << elapsed_seconds.count() << "\n";
+            timing.close();
+            delete[] tempArr;
         }
     }
-    curr = 10000;
-    while(curr <= 1000000){
+
+    timing.open("timing.dat", std::ios_base::app);
+    timing << "\n" << "heap sort" << "\n";
+    timing.close();
+
+    for(int i = 0; i < 18; i++){
         for(int l = 0; l < 20; l++){
-            for(int i = 0; i < curr; i++){
-                    arr[i] = i;
-            }
+            int* tempArr = genArray(sizes[i]);
             typedef std::chrono::high_resolution_clock Clock;
             auto start = std::chrono::system_clock::now(); // starts time
-            shuffle(arr, curr);
-            testSort(mergeSort, arr, 0, curr-1);
-            isSortedArr(arr, curr);
-            auto end = std::chrono::system_clock::now(); // ends time
-            std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-            std::chrono::duration<double>elapsed_seconds = end-start;
-            std::cout << std::setprecision(10);
-            std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
-            std::cout << std::endl;
-            delete[] arr;
-            curr = curr + inc;
-            arr = new int[curr];
-        }
-    }
-    curr = 10000;
-    while(curr <= 1000000){
-        for(int l = 0; l < 20; l++){
-            for(int i = 0; i < curr; i++){
-                    arr[i] = i;
-            }
-            typedef std::chrono::high_resolution_clock Clock;
-            auto start = std::chrono::system_clock::now(); // starts time
-            shuffle(arr, curr);
-            Heap test(arr, curr);
-            std::cout << "HeapSort with " << curr << " elements" << std::endl;
+            shuffle(tempArr, sizes[i]);
+            Heap test(tempArr, sizes[i]);
+            std::cout << "HeapSort with " << sizes[i] << " elements" << std::endl;
             testHeapSort(heapSort, test);
             auto end = std::chrono::system_clock::now(); // ends time
             std::time_t end_time = std::chrono::system_clock::to_time_t(end);
@@ -373,11 +438,13 @@ int main(){
             std::cout << std::setprecision(10);
             std::cout << "-> Sort took " << elapsed_seconds.count() << std::endl;
             std::cout << std::endl;
-            curr = curr + inc;
-            arr = new int[curr];
+            size.open("size.dat", std::ios_base::app);
+            size << sizes[i] << "\n";
+            size.close();
+            timing.open("timing.dat", std::ios_base::app);
+            timing << elapsed_seconds.count() << "\n";
+            timing.close();
         }
     }
-    delete[] arr;
     return 0;
 }
-
