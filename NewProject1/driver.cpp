@@ -7,29 +7,35 @@ int main(){
 
     std::cout << "\e[1mTesting Copy Const\e[0m" << std::endl;
     std::cout << std::endl;
-    Matrix copy(A); // tests copy constructor
+    // tests copy constructor
+    Matrix copy(A);
     std::cout << copy << std::endl;
 
     std::cout << "\e[1mTesting Overloaded Assignment Operator\e[0m" << std::endl;
     std::cout << std::endl;
-    Matrix ass = A; // tests overloaded assignment operator
+    // tests overloaded assignment operator 
+    Matrix ass = A; 
     std::cout << ass << std::endl;
 
     std::cout << "\e[1mTesting insert function\e[0m" << std::endl;
     std::cout << std::endl;
-    A.insertNum(1,1,9); // tests inserting value into a specific index in Matrix
+    // tests inserting value into a specific index in Matrix
+    A.insertNum(1,1,9); 
     std::cout << A << std::endl;
 
     std::cout << "\e[1mTesting getVal function\e[0m" << std::endl;
     std::cout << std::endl;
     std::cout << "Getting value at A[1][1]" << std::endl;
-    double val = A.getVal(1,1); // tests fetching a value from a specfic index in Matrix
+    // tests fetching a value from a specific index in Matrix i.e. a specific
+    // [i][j]
+    double val = A.getVal(1,1); 
     std::cout << "Value returned from A[1][1]: " << val << std::endl;
     std::cout << std::endl;
 
     std::cout << "\e[1mTesting isSymmetric function\e[0m" << std::endl;
     std::cout << std::endl;
-    bool flag = A.isSymmetric(); // tests whether a Matrix is symmetric or not
+    // tests whether a Matrix is symmetric or not
+    bool flag = A.isSymmetric(); 
     if(flag == 1){
         std::cout << "It is TRUE that A is symmetric" << std::endl;
         std::cout << std::endl;
@@ -42,13 +48,15 @@ int main(){
     std::cout << "\e[1mTesting identityMatrix function\e[0m" << std::endl;
     std::cout << std::endl;
     Matrix Id(5,5);
-    Id.identityMatrix(); // creates the identity Matrix being called upon
+    // creates the identity Matrix of the Matrix being called upon
+    Id.identityMatrix(); 
     std::cout << Id << std::endl;
 
     std::cout << "\e[1mTesting diagonalMatrix function\e[0m" << std::endl;
     std::cout << std::endl;
     Matrix dia(5,5);
-    dia.diagonalMatrix(); // creates the diagonal Matrix being called upon
+    // creates the diagonal Matrix of the Matrix being called upon
+    dia.diagonalMatrix(); 
     std::cout << dia << std::endl;
 
     std::cout << "\e[1mTesting triangularMatrix function\e[0m" << std::endl;
@@ -56,12 +64,14 @@ int main(){
     std::cout << "Upper Triangle" << std::endl;
     std::cout << std::endl;
     Matrix upper(5,5);
-    upper.triangularMatrix(true); // creates the upper triangular Matrix being called upon
+    // creates an upper triangle Matrix of the Matrix being called upon
+    upper.triangularMatrix(true); 
     upper.printMatrix();
     std::cout << "Lower Triangle" << std::endl;
     std::cout << std::endl;
     Matrix lower(5,5);
-    lower.triangularMatrix(false); // creates the lower triangular Matrix being called upon
+    // creates a lower triangle Matrix of the Matrix being called upon
+    lower.triangularMatrix(false); 
     lower.printMatrix();
 
     std::cout << "\e[1mTesting Matrix Addition\e[0m" << std::endl;
@@ -69,16 +79,21 @@ int main(){
     std::cout << "Matrix S" << std::endl;
     std::cout << std::endl;
     Matrix S(3,3);
-    S = S.fillMatrix(); // tests the fill Matrix function which gives specific values for testing purposes
+    // tests the fill Matrix function which gives specific values for testing
+    // purposes
+    S = S.fillMatrix(); 
     std::cout << S << std::endl;
     std::cout << "Matrix T" << std::endl;
     std::cout << std::endl;
     Matrix T(3,3);
-    T = T.fillMatrix2(); // tests the fill Matrix2 function which gives specific values for testing purposes
+    // tests the fill Matrix2 function which gives specific values for testing
+    // purposes
+    T = T.fillMatrix2(); 
     std::cout << T << std::endl;
     std::cout << "Addition..." << std::endl;
     std::cout << std::endl;
-    Matrix ST = S + T; // testing addition of Matrices
+    // testing addition of Matrices
+    Matrix ST = S + T; 
     std::cout << ST << std::endl;
 
     std::cout << "\e[1mTesting Matrix Subtraction\e[0m" << std::endl;
@@ -95,7 +110,8 @@ int main(){
     std::cout << G << std::endl;
     std::cout << "Subtracting..." << std::endl;
     std::cout << std::endl;
-    Matrix EG = E - G; // testing subtraction of Matrices
+    // testing subtraction of Matrices
+    Matrix EG = E - G; 
     std::cout << EG << std::endl;
 
     std::cout << "\e[1mTesting Matrix Multiplication\e[0m" << std::endl;
@@ -112,7 +128,8 @@ int main(){
     std::cout << V << std::endl;
     std::cout << "Multiplying..." << std::endl;
     std::cout << std::endl;
-    Matrix UV = U * V; // testing multiplication of Matrices
+    // testing multiplication of Matrices (Matrix * Matrix)
+    Matrix UV = U * V; 
     std::cout << UV << std::endl;
 
     std::cout << "\e[1mTesting Matrix Scalar Multiplication\e[0m" << std::endl;
@@ -124,7 +141,8 @@ int main(){
     std::cout << W << std::endl;
     std::cout << "Multiplying by 2..." << std::endl;
     std::cout << std::endl;
-    Matrix W2 = W * 2; // testing scalar multiplication on Matrices
+    // testing scalar multiplication on Matrix
+    Matrix W2 = W * 2; 
     std::cout << W2 << std::endl;
 
     std::cout << "\e[1mTesting Matrix Inverse\e[0m" << std::endl;
@@ -137,18 +155,21 @@ int main(){
     std::cout << Q << std::endl;
     std::cout << "Inverse of Matrix Q" << std::endl;
     std::cout << std::endl;
-    Matrix Qinv = Q.inverse(); // testing inverse of Matrix
+    // testing inverse of Matrix
+    Matrix Qinv = Q.inverse(); 
     Qinv.printMatrix();
     std::cout << "Inverse * Matrix Q w/ Normal Print" << std::endl;
     std::cout << std::endl;
-    Matrix newNew = Qinv * holder; // showing that A * A.inverse() is equal to identity Matrix
+    // showing that A * A.inverse() is the identity Matrix
+    Matrix newNew = Qinv * holder; 
     std::cout << newNew << std::endl;
     std::cout << "These numbers represent floating point rounding errors.." << std::endl;
     std::cout << "Therefore the Matrix should look something like this:" << std::endl;
     std::cout << "Inverse * Matrix Q" << std::endl;
     std::cout << std::endl;
     Matrix newQ = Qinv * holder;
-    newQ.inversePrint(); // using rounded printing function due to floating point errors in C++
+    // using rounded printing function due to floating point errors 
+    newQ.inversePrint(); 
 
     return 0;
 }
