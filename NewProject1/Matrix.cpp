@@ -153,6 +153,49 @@ double Matrix::getVal(int i, int j){
   return this->mat[i][j];
 }
 
+// Function that calculates the determinant of Matrix 
+// testing whether it is invertible or not "for extra credit"
+
+void Matrix::determinant(){
+	int det = 0;
+	if(rows != cols){
+	  std::cout << "Matrix is not square, cannot be invertible" << std::endl;
+  }
+	if(rows == 2 && cols == 2){
+		det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
+		if(det == 0){
+			std::cout << "Matrix is not invertible" << std::endl;
+    }
+		else{
+			std::cout << "Matrix is invertible" << std::endl;
+    }
+	} else if (rows == 3 && cols == 3){
+		  det = mat[0][0] * mat[1][1] * mat[2][2] + mat[0][1] * mat[1][2] * mat[2][0]
+			    + mat[0][2] * mat[1][0] * mat[2][1] - (mat[0][2] * mat[1][1] * mat[2][0]
+			    +  mat[0][0] * mat[1][2] * mat[2][1] +  mat[0][1] * mat[1][0] * mat[2][2]);
+		if(det == 0){
+			std::cout << "Matrix is not invertible" << std::endl;
+    }
+		else{
+			std::cout << "Matrix is invertible" << std::endl;
+    }
+	} else {
+		int count = 0;
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				det += mat[i][j];
+				
+			}
+			if(det == 0)
+				std::cout << "Matrix is not invertible" << std::endl;
+			else
+				count++;
+		}
+		if(count == rows -1)
+			std::cout << "Matrix is invertible" << std::endl;
+	}
+}
+
 // Function that checks whether a Matrix is symmetrical or not
 // Meaning whether the values reflected across the main diagonal
 // are the same or not.

@@ -32,6 +32,8 @@ class Matrix{
         void insertNum(int, int, double); 
         // returns a double in the matrix at a specified location
         double getVal(int, int);
+        // finds determinant of a Matrix for extra credit
+        void determinant();
         // Checks to see if Matrix is symmetrical 
         bool isSymmetric(); 
         // Returns a tranposed Matrix of the one called upon
