@@ -52,15 +52,17 @@ int main(int argc, char** argv){
     std::ifstream inFile;
 
     try{
-        inFile.open(argv[1]); // attempts to open file
+        // attempts to open file
+        inFile.open(argv[1]); 
     } catch (...){
-        std::perror("ERROR: Input file not opened."); // if cannot be opened print error and end program, cannot run with no data
+        // if cannot be opened print error and end program, cannot run with no data
+        std::perror("ERROR: Input file not opened."); 
         return 0;
     }
 
     int dimensions = 0;
-    std::string firstLevelNames[1000]; // company limit is 1000, please don't go over 1000 Dr.Anderson
-    bool flag = false;
+    // company limit is 1000, please don't go over 1000 Dr. Anderson
+    std::string firstLevelNames[1000]; 
     while(inFile.peek() != EOF){
         std::cout << BOLDRED << "First Level: " << RESET << std::endl;
         std::cout << std::endl;

@@ -30,7 +30,6 @@ Matrix::Matrix(long int row, long int col){
   rows = row;
   cols = col;
   mat = new double*[rows];
-  srand(time(NULL));
   for(long int i = 0; i < rows; i++){
     mat[i] = new double[cols];
   }
@@ -44,13 +43,16 @@ Matrix::Matrix(long int row, long int col){
 Matrix::Matrix(const Matrix& m){
   rows = m.rows;
   cols = m.cols;
+  // initializes rows of Matrix
   double** arr = new double*[rows];
   for(long int i = 0; i < rows; i++){
+    // for every row in a Matrix make a column
     arr[i] = new double[cols];
   }
   mat = arr;
   for(long int i = 0; i < m.rows; i++){
     for(long int j = 0; j < cols; j++){
+      // fills array with contents from the rhs Matrix
       mat[i][j] = m.mat[i][j];
     }
   }
@@ -61,8 +63,10 @@ Matrix::Matrix(const Matrix& m){
 
 Matrix::~Matrix(){
   for(long int i = 0; i < this->rows; i++){
+    // deletes every individual index in array
     delete[] mat[i];
   }
+  // deletes the entire array
   delete[] mat;
 }
 
@@ -70,6 +74,7 @@ Matrix::~Matrix(){
 // shown below
 
 Matrix Matrix::fillMatrix(){
+    // creates a Matrix and fills it with preset numbers 
   Matrix A = Matrix(rows, cols);
   A.mat[0][0] = 8.0;
 	A.mat[0][1] = 3.0;
@@ -87,6 +92,7 @@ Matrix Matrix::fillMatrix(){
 // shown below
 
 Matrix Matrix::fillMatrix2(){
+    // creates a Matrix and fills it with preset numbers
   Matrix A = Matrix(rows, cols);
   A.mat[0][0] = 5.0;
 	A.mat[0][1] = 2.0;
@@ -104,22 +110,23 @@ Matrix Matrix::fillMatrix2(){
 // shown below
 
 Matrix Matrix::fillMatrix3(){
+  // creates a Matrix and fills it with preset numbers
   Matrix A = Matrix(rows, cols);
   A.mat[0][0] = 5.0;
-	A.mat[0][1] = 2.0;
-	A.mat[0][2] = 3.0;
+  A.mat[0][1] = 2.0;
+  A.mat[0][2] = 3.0;
   A.mat[0][3] = 9.0;
-	A.mat[1][0] = 2.0;
-	A.mat[1][1] = 6.0;
-	A.mat[1][2] = 2.0;
+  A.mat[1][0] = 2.0;
+  A.mat[1][1] = 6.0;
+  A.mat[1][2] = 2.0;
   A.mat[1][3] = 8.0;
-	A.mat[2][0] = 3.0;
-	A.mat[2][1] = 2.0;
-	A.mat[2][2] = 6.0;
+  A.mat[2][0] = 3.0;
+  A.mat[2][1] = 2.0;
+  A.mat[2][2] = 6.0;
   A.mat[2][3] = 5.0;
   A.mat[3][0] = 9.0;
-	A.mat[3][1] = 5.0;
-	A.mat[3][2] = 7.0;
+  A.mat[3][1] = 5.0;
+  A.mat[3][2] = 7.0;
   A.mat[3][3] = 3.0;
   return A;
 }
@@ -146,6 +153,49 @@ double Matrix::getVal(int i, int j){
   return this->mat[i][j];
 }
 
+// Function that calculates the determinant of Matrix 
+// testing whether it is invertible or not "for extra credit"
+
+void Matrix::determinant(){
+	int det = 0;
+	if(rows != cols){
+	  std::cout << "Matrix is not square, cannot be invertible" << std::endl;
+  }
+	if(rows == 2 && cols == 2){
+		det = (mat[0][0] * mat[1][1]) - (mat[0][1] * mat[1][0]);
+		if(det == 0){
+			std::cout << "Matrix is not invertible" << std::endl;
+    }
+		else{
+			std::cout << "Matrix is invertible" << std::endl;
+    }
+	} else if (rows == 3 && cols == 3){
+		  det = mat[0][0] * mat[1][1] * mat[2][2] + mat[0][1] * mat[1][2] * mat[2][0]
+			    + mat[0][2] * mat[1][0] * mat[2][1] - (mat[0][2] * mat[1][1] * mat[2][0]
+			    +  mat[0][0] * mat[1][2] * mat[2][1] +  mat[0][1] * mat[1][0] * mat[2][2]);
+		if(det == 0){
+			std::cout << "Matrix is not invertible" << std::endl;
+    }
+		else{
+			std::cout << "Matrix is invertible" << std::endl;
+    }
+	} else {
+		int count = 0;
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				det += mat[i][j];
+				
+			}
+			if(det == 0)
+				std::cout << "Matrix is not invertible" << std::endl;
+			else
+				count++;
+		}
+		if(count == rows -1)
+			std::cout << "Matrix is invertible" << std::endl;
+	}
+}
+
 // Function that checks whether a Matrix is symmetrical or not
 // Meaning whether the values reflected across the main diagonal
 // are the same or not.
@@ -162,7 +212,8 @@ bool Matrix::isSymmetric(){
   Matrix b = this->transpose();
   for(long int i = 0; i < rows; i++){
     for(int j = 0; j < cols; j++){
-      if(a.mat[i][j] != b.mat[i][j]){ // if the original is not the same as the tranpose, shows symmetry
+      // if the original is not the same as the tranpose, shows symmetry
+      if(a.mat[i][j] != b.mat[i][j]){ 
         return false;
       }
     }
@@ -188,7 +239,7 @@ Matrix Matrix::transpose(){
     }
   }
   counter::count++;
-	return transpose;
+  return transpose;
 }
 
 // Function that pads a Matrix to become a 2^N x 2^N
@@ -203,11 +254,13 @@ Matrix Matrix::transpose(){
 //                                                        0 0 0 0] in order to use inverse function 
 
 Matrix Matrix::padMatrix(int d){
-	int size = 0;
-  while(log2(d + size) - (int)log2(d + size) != 0){ // finds the next highest 2^N value "power of 2"
+  int size = 0;
+  // finds the next highest 2^N value "power of 2"
+  while(log2(d + size) - (int)log2(d + size) != 0){ 
     size++;
   }
-  Matrix rtn(d+size, d+size); // creates new Matrix with the new padded size
+  // creates new Matrix with the new padded size
+  Matrix rtn(d+size, d+size); 
   Matrix id(size, size);
   id.identityMatrix();
   for(long int i = 0; i < rtn.rows; i++){
@@ -227,11 +280,13 @@ Matrix Matrix::padMatrix(int d){
 }
 
 Matrix Matrix::inverse(){
-  if(rows != cols){ // if not a square Matrix
+  // if not a square Matrix
+  if(rows != cols){ 
     throw "Not a square matrix!";
   }
 
-  if(rows == 1 || cols == 1){ // if Matrix is a 1x1
+  // if Matrix is a 1x1
+  if(rows == 1 || cols == 1){ 
     Matrix rtn(1,1);
     if(mat[0][0] != 0){
       rtn.mat[0][0] = 1.0/mat[0][0];
@@ -243,23 +298,30 @@ Matrix Matrix::inverse(){
   }
 
   int holdRows = rows;
-  if(log2(rows) - (int)log2(rows) != 0){ // check to see if Matrix is a 2^n x 2^n
-    Matrix fixCurr = padMatrix(rows);
-    Matrix rtn = fixCurr.inverse();
-    Matrix newRtn(holdRows, holdRows);
+  // checks to see if Matrix is a 2^Nx2^N "a power of 2"
+  if(log2(rows) - (int)log2(rows) != 0){ 
+    Matrix temp = padMatrix(rows);
+    Matrix curr = temp.inverse();
+    Matrix rtn(holdRows, holdRows);
     for(long int i = 0; i < holdRows; i++){
       for(long int j = 0; j < holdRows; j++){
-        newRtn.mat[i][j] = rtn.mat[i][j];
+        rtn.mat[i][j] = curr.mat[i][j];
       }
     }
-    return newRtn;
+    return rtn;
   }
 
-  if(!isSymmetric()){ // check to see if Matrix is symmetric
-    Matrix op1 = *this; // takes Matrix
-    Matrix op2 = op1.transpose(); // transposes Matrix
-    Matrix op3 = op2 * op1; // multiplies Matrix by its transpose
-    Matrix op4 = op3.inverse() * op2; // inverses that and multiplies by its transpose again
+  // checks to see if the Matrix is symmetric
+  if(!isSymmetric()){ 
+    // Takes another Matrix to hold the current one
+    Matrix op1 = *this; 
+    // transposes Matrix
+    Matrix op2 = op1.transpose();
+    // multiplies Matrix by it's transpose
+    Matrix op3 = op2 * op1; 
+    // inverses that entire operation and multiplies by it's tranpose once again
+    Matrix op4 = op3.inverse() * op2; 
+
     return op4;
   }
 
@@ -345,6 +407,7 @@ void Matrix::identityMatrix(){
 
 void Matrix::diagonalMatrix(){
   for(long int i = 0; i < this->rows; i++){
+    // 9 for visual purposes
     this->mat[i][i] = 9;
   }
 }
@@ -360,10 +423,13 @@ void Matrix::triangularMatrix(bool up){
     for(long int i = 0; i < this->rows; i++){
       for(long int j = 0; j < this->rows; j++){
         if(i < j){
-          this->mat[i][j] = 9; // creates 9's in the upper quadrant of the triangle
+          // 9 for visual purposes
+          // creates 9's in the upper quadrant of the triangle
+          this->mat[i][j] = 9;
         }
         else{
-          this->mat[i][j] = 0; // else put 0's in the lower quadrant of the triangle
+          // else put 0's in the lower quadrant of the triangle
+          this->mat[i][j] = 0; 
         }
       }
     }
@@ -372,10 +438,13 @@ void Matrix::triangularMatrix(bool up){
     for(long int i = 0; i < this->rows; i++){
       for(long int j = 0; j < this->rows; j++){
         if(i > j){
-          this->mat[i][j] = 9; // creates 9's in the lower quadrant of the triangle
+          // 9 for visual purposes
+          // creates 9's in the lower quadrant of the triangle
+          this->mat[i][j] = 9; 
         }
         else{
-          this->mat[i][j] = 0; // else put 0's in the upper quadrant of the triangle
+          // else put 0's in the upper quadrant of the triangle
+          this->mat[i][j] = 0; 
         }
       }
     }
@@ -440,23 +509,26 @@ int Matrix::printCounter(){
 // B = A;
 
 Matrix& Matrix::operator=(const Matrix& m){
-  if(this == &m){ // when matrices are already the same
+  // when matrices are already the same
+  if(this == &m){ 
     return *this; 
   }
+  // else delete old
   for(long int i = 0; i < rows; i++){
     delete[] mat[i];
   }
-
   delete[] mat;
+  // create new
   mat = new double*[m.rows];
-
   for(long int i = 0; i < m.rows; i++){
     mat[i] = new double[m.cols];
   }
 
+  // assign rows and cols from previous
   rows = m.rows;
   cols = m.cols;
 
+  // copy over content
   for(long int i = 0; i < rows; i++){
     for(long int j = 0; j < cols; j++){
       mat[i][j] = m.mat[i][j];
