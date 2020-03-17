@@ -1,6 +1,5 @@
-#include <iostream>
-#include <math.h>
 #include <iomanip>
+#include <iostream>
 
 int findLargestPrime(int a){
     int factor = 0;
