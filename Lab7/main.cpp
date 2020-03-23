@@ -1,36 +1,44 @@
 #include <iomanip>
 #include <iostream>
+#include <math.h>
 
-int findLargestPrime(int a){
-    int factor = 0;
-    for(int i = a; i >=2; --i){
-        for(int j = 2; j < i; ++j){
-            if(i % j == 0){
-                ++factor;
-            }
-        }
-        if(factor == 0){
-            return i;
-            break;
-        }
-        factor = 0;
-    }
-    return 0;
-}
+size_t hash(size_t);
+void printHash(size_t);
+size_t hashTest1(std::string);
+size_t hashTest2(std::string);
 
 size_t hash(size_t x){
-    int w = pow(3, 64);
-    int p = w - 1;
-    int m = findLargestPrime(p);
-    int a = findLargestPrime(100);
-    int rtn = floor((a * x % w)/pow(2, w-p));
+    size_t w = pow(2, 64);
+    size_t p = 53;
+    size_t a = 3533;
+    size_t rtn = floor((a * x % w)/pow(2, w-p));
     return rtn;
 }
 
+void printHash(size_t num){
+  std::cout << "Hash: " << std::hex << num << std::endl;
+}
+
+size_t hashTest1(std::string str){
+  size_t temp = 0;
+  for(int i = 0; i < str.length(); i++){
+    temp += (int)str[i];
+  }
+}
+
+size_t hastTest2(std::string str){
+  size_t oddNum = 151;
+  unsigned long int rtn = 0;
+  for(int i = 0; i < str.length(); i++){
+    rtn = (rtn * oddNum) + str[i];
+  }
+  return rtn % 531;
+}
 
 int main(){
-    int a = findLargestPrime(a);
-    std::cout << a << std::endl;
-    return 0;
+  std::cout << "Testing integer hashing:" << std::endl;
+  std::cout << "-> Int: " << 5 << std::endl;
+  printHash(hash(5));
+  return 0;
 }
 
