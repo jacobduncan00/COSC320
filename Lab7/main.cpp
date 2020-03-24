@@ -55,11 +55,10 @@ int main(){
 }
 
 size_t hash(size_t x){
-    size_t w = 64;
-    size_t W = (size_t)pow(2, w);
+    size_t W = pow(2, 64);
     size_t p = 47;
     size_t a = 2971215073;
-    size_t rtn = floor(((a * x) % w)/pow(2, 64-p));
+    size_t rtn = floor(((a * x) % W)/pow(2, 64-p));
     return rtn;
 }
 
@@ -77,7 +76,7 @@ size_t hashTest1(const std::string& str){
 }
 
 size_t hashTest2(const std::string& str){
-  size_t oddNum = 151;
+  size_t oddNum = 191;
   size_t tableSize = 531;
   unsigned long long hashVal = 0;
   for(int i = 0; i < str.length(); i++){
