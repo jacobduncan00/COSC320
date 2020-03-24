@@ -4,8 +4,8 @@
 
 size_t hash(size_t);
 void printHash(size_t);
-size_t hashTest1(std::string);
-size_t hashTest2(std::string);
+size_t hashTest1(const std::string&);
+size_t hashTest2(const std::string&);
 
 int main(){
   std::cout << "---------------------" << std::endl;
@@ -55,9 +55,9 @@ int main(){
 }
 
 size_t hash(size_t x){
-    size_t w = size_t(pow(2, 64));
-    size_t p = 53;
-    size_t a = 3533;
+    size_t w = (size_t)pow(2, 64);
+    size_t p = 47;
+    size_t a = (size_t)pow(2,47);
     size_t rtn = floor((a * x % w)/pow(2, 64-p));
     return rtn;
 }
@@ -66,19 +66,21 @@ void printHash(size_t num){
   std::cout << "Hash: " << std::hex << num << std::endl;
 }
 
-size_t hashTest1(std::string str){
-  size_t temp = 0;
+size_t hashTest1(const std::string& str){
+  size_t hashVal = 0;
+  size_t tableSize = 531;
   for(int i = 0; i < str.length(); i++){
-    temp += (int)str[i];
+    hashVal += (int)str[i];
   }
-  return temp % 531;
+  return hashVal % tableSize;
 }
 
-size_t hashTest2(std::string str){
+size_t hashTest2(const std::string& str){
   size_t oddNum = 151;
-  unsigned long long rtn = 0;
+  size_t tableSize = 531;
+  unsigned long long hashVal = 0;
   for(int i = 0; i < str.length(); i++){
-    rtn = (rtn * oddNum) + str[i];
+    hashVal = hashVal * oddNum + (int)str[i];
   }
-  return rtn % 531;
+  return hashVal % tableSize;
 }
