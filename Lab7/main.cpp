@@ -74,7 +74,7 @@ size_t hashTest1(std::string str){
   return temp % 531;
 }
 
-size_t hastTest2(std::string str){
+size_t hashTest2(std::string str){
   size_t oddNum = 151;
   unsigned long long rtn = 0;
   for(int i = 0; i < str.length(); i++){
