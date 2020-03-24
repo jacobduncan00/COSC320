@@ -55,10 +55,11 @@ int main(){
 }
 
 size_t hash(size_t x){
-    size_t w = (size_t)pow(2, 64);
+    size_t w = 64;
+    size_t W = (size_t)pow(2, w);
     size_t p = 47;
-    size_t a = (size_t)pow(2,47);
-    size_t rtn = floor((a * x % w)/pow(2, 64-p));
+    size_t a = 2971215073;
+    size_t rtn = floor(((a * x) % w)/pow(2, 64-p));
     return rtn;
 }
 
