@@ -2,6 +2,9 @@
 #include <iostream>
 #include <math.h>
 
+// Lab 7 for COSC-320 by Jacob Duncan @ Salisbury University
+// Completed 3/24/20 
+
 size_t hash(size_t);
 void printHash(size_t);
 size_t hashTest1(const std::string&);
@@ -54,17 +57,31 @@ int main(){
   return 0;
 }
 
+// Hash function that computes a hash for a given
+// integer using the 'multiplication method'
+
 size_t hash(size_t x){
     size_t W = pow(2, 64);
+    // Prime number smaller than 64, but
+    // not too small
     size_t p = 47;
+    // 10 digit prime number
     size_t a = 2971215073;
     size_t rtn = floor(((a * x) % W)/pow(2, 64-p));
+    // Using the shift operator we would just
+    // floor(((a*w)%W)>>64-p); ?
     return rtn;
 }
+
+// Function that takes in a size_t and returns it's
+// hex value in order to display to the user
 
 void printHash(size_t num){
   std::cout << "Hash: " << std::hex << num << std::endl;
 }
+
+// Function that takes a string and returns a size_t hash 
+// way #1
 
 size_t hashTest1(const std::string& str){
   size_t hashVal = 0;
@@ -74,6 +91,9 @@ size_t hashTest1(const std::string& str){
   }
   return hashVal % tableSize;
 }
+
+// Function that takes a string and returns a size_t hash
+// way #2
 
 size_t hashTest2(const std::string& str){
   size_t oddNum = 191;
