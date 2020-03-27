@@ -9,4 +9,4 @@
 
 ##### Projects:
 1. Matrix Operations in C++
-2. Language Spell Checker using Hash Tables
+2. Language Spell Checker using Hash Table
