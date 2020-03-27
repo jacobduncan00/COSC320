@@ -6,6 +6,7 @@
 2. Time/Space Complexity of Sorts
 3. Heaps (Heap Sort)
 4. Hashing
+5. Where K came from
 
 ##### Projects:
 1. Matrix Operations in C++
