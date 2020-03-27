@@ -22,6 +22,7 @@ class HashTable {
     HashTable(const HashTable&);
     ~HashTable();
     HashTable& operator=(const HashTable&);
+    HashNode* genNode(std::string);
     void insertWord(std::string);
     void print();
 

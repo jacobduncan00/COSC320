@@ -57,12 +57,17 @@ HashTable& HashTable::operator=(const HashTable& rhs){
   return *this;
 }
 
+HashTable::HashNode* HashTable::genNode(std::string str){
+  HashNode* rtn = new HashNode();
+  rtn->word = str;
+  rtn->next = nullptr;
+  rtn->prev = nullptr;
+  return rtn;
+}
+
 void HashTable::insertWord(std::string str){
   // Make function to generate node
-  HashNode* newNode = new HashNode();
-  newNode->word = str;
-  newNode->next = nullptr;
-  newNode->prev = nullptr;
+  HashNode* newNode = genNode(str);
   if(head == nullptr){
     head = newNode;
     tail = newNode;
