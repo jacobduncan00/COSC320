@@ -11,8 +11,8 @@
  for Dr. Joseph Anderson's 320 class. This code rigirously
  tests the time complexity of three different sorting algorithms:
  Bubble Sort, Insertion Sort, and Selection Sort. Along with
- time complexity being recorded, I also aggregated that data into 
- a Google sheets file and have attached images of the graphs 
+ time complexity being recorded, I also aggregated that data into
+ a Google sheets file and have attached images of the graphs
  showing trends between each of them relating to the type of sort
  and the amount of input in the array.
 */
