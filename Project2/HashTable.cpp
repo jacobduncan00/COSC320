@@ -66,7 +66,6 @@ HashTable::HashNode* HashTable::genNode(std::string str){
 }
 
 void HashTable::insertWord(std::string str){
-  // Make function to generate node
   HashNode* newNode = genNode(str);
   if(head == nullptr){
     head = newNode;
