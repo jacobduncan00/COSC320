@@ -78,20 +78,18 @@ size_t Dictionary::multHash(std::string str){
 }
 
 void Dictionary::insertBucket(std::string text){
-  arr[multHash(text) > 9999 ? 0 : multHash(text)].insertWord(text);
-  used[multHash(text) > 9999 ? 0 : multHash(text)]++;
 }
 
 void Dictionary::print(){
   // 10 for testing
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < tableSize; i++){
     arr[i].print();
   }
 }
 
 void Dictionary::printUsed(){
   // 10 for testing
-  for(int i = 0; i < 10; i++){
+  for(int i = 0; i < tableSize; i++){
     std::cout << used[i] << std::endl;
   }
 }
