@@ -77,18 +77,24 @@ class BinaryTree {
 
   public:
     BinaryTree();
+    void copy(TreeNode*);
     BinaryTree(const BinaryTree&);
+    void delMem(TreeNode*);
     ~BinaryTree();
     BinaryTree& operator=(const BinaryTree&);
+    TreeNode* genNode(int);
     void insert(int);
     bool search(int);
+    TreeNode* masterSearch(int);
     int minimum();
     int maximum();
     int successor(int);
+    TreeNode* masterSuccessor(int);
     void inorder();
+    void masterInorder(TreeNode*);
     void remove(int);
     void print();
-    void printNode(TreeNode*);
+    void masterPrint(TreeNode*);
 };
 
 #endif
