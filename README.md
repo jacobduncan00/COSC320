@@ -1,5 +1,6 @@
 # COSC 320 - Advanced Data Structures and Algorithms
 ## with Joseph Anderson @ Salisbury University
+## Spring 2020
 
 ##### What did I learn?
 1. Asymptotic Analysis
