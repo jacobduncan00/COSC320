@@ -4,13 +4,13 @@
 #include "Matrix.h"
 
 // keeps track of arithmetic operations
-namespace counter{ 
+namespace counter{
     int count = 0;
 }
 
-// default constructor forms a new 2D Array "Matrix" 3x3 
+// default constructor forms a new 2D Array "Matrix" 3x3
 
-Matrix::Matrix(){ 
+Matrix::Matrix(){
     mat = new double*[3];
     for(int i = 0; i < 3; i++){
       mat[i] = new double[3];
@@ -26,7 +26,7 @@ Matrix::Matrix(){
 Matrix::Matrix(long int row, long int col){
   if (row <= 0 || col <= 0){
     throw "Invalid Matrix Size";
-  } 
+  }
   rows = row;
   cols = col;
   mat = new double*[rows];
@@ -35,7 +35,7 @@ Matrix::Matrix(long int row, long int col){
   }
 }
 
-// Copy Constructor that takes in a constant Matrix by and assigns into 
+// Copy Constructor that takes in a constant Matrix by and assigns into
 // to a new Matrix that will be returned from the function
 // Ex. Matrix b(Matrix a), therefore Matrix b would have the same contents
 // as Matrix a
@@ -74,7 +74,7 @@ Matrix::~Matrix(){
 // shown below
 
 Matrix Matrix::fillMatrix(){
-    // creates a Matrix and fills it with preset numbers 
+    // creates a Matrix and fills it with preset numbers
   Matrix A = Matrix(rows, cols);
   A.mat[0][0] = 8.0;
 	A.mat[0][1] = 3.0;
@@ -153,7 +153,7 @@ double Matrix::getVal(int i, int j){
   return this->mat[i][j];
 }
 
-// Function that calculates the determinant of Matrix 
+// Function that calculates the determinant of Matrix
 // testing whether it is invertible or not "for extra credit"
 
 void Matrix::determinant(){
@@ -184,7 +184,7 @@ void Matrix::determinant(){
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < cols; j++){
 				det += mat[i][j];
-				
+
 			}
 			if(det == 0)
 				std::cout << "Matrix is not invertible" << std::endl;
@@ -199,10 +199,10 @@ void Matrix::determinant(){
 // Function that checks whether a Matrix is symmetrical or not
 // Meaning whether the values reflected across the main diagonal
 // are the same or not.
-// Ex. Matrix A = [1 2 3 
+// Ex. Matrix A = [1 2 3
 //                 2 4 5
 //                 3 5 8] is symmetric
-// 
+//
 // where as Matrix B = [1 2 3
 //                      4 5 6
 //                      7 8 9] is not symmetric
@@ -213,7 +213,7 @@ bool Matrix::isSymmetric(){
   for(long int i = 0; i < rows; i++){
     for(int j = 0; j < cols; j++){
       // if the original is not the same as the tranpose, shows symmetry
-      if(a.mat[i][j] != b.mat[i][j]){ 
+      if(a.mat[i][j] != b.mat[i][j]){
         return false;
       }
     }
@@ -221,17 +221,17 @@ bool Matrix::isSymmetric(){
   return true;
 }
 
-// Function that creates a new Matrix which is the transpose of 
+// Function that creates a new Matrix which is the transpose of
 // the Matrix that called the function.
 // Ex. Matrix A = [1 2 3
 //                 4 5 6
 //                 7 8 9];
 // A.transpose();
-// A now looks like [1 4 7 
-//                   2 5 8 
+// A now looks like [1 4 7
+//                   2 5 8
 //                   3 6 9];
 
-Matrix Matrix::transpose(){ 
+Matrix Matrix::transpose(){
 	Matrix transpose(cols, rows);
 	for(long int i = 0; i < rows; i++){
 		for(long int j = 0; j < cols; j++){
@@ -250,17 +250,17 @@ Matrix Matrix::transpose(){
 //
 //                                                       [1 2 3 0
 //                                                        4 5 6 0
-//                                                        7 8 9 0 
-//                                                        0 0 0 0] in order to use inverse function 
+//                                                        7 8 9 0
+//                                                        0 0 0 0] in order to use inverse function
 
 Matrix Matrix::padMatrix(int d){
   int size = 0;
   // finds the next highest 2^N value "power of 2"
-  while(log2(d + size) - (int)log2(d + size) != 0){ 
+  while(log2(d + size) - (int)log2(d + size) != 0){
     size++;
   }
   // creates new Matrix with the new padded size
-  Matrix rtn(d+size, d+size); 
+  Matrix rtn(d+size, d+size);
   Matrix id(size, size);
   id.identityMatrix();
   for(long int i = 0; i < rtn.rows; i++){
@@ -281,12 +281,12 @@ Matrix Matrix::padMatrix(int d){
 
 Matrix Matrix::inverse(){
   // if not a square Matrix
-  if(rows != cols){ 
+  if(rows != cols){
     throw "Not a square matrix!";
   }
 
   // if Matrix is a 1x1
-  if(rows == 1 || cols == 1){ 
+  if(rows == 1 || cols == 1){
     Matrix rtn(1,1);
     if(mat[0][0] != 0){
       rtn.mat[0][0] = 1.0/mat[0][0];
@@ -299,7 +299,7 @@ Matrix Matrix::inverse(){
 
   int holdRows = rows;
   // checks to see if Matrix is a 2^Nx2^N "a power of 2"
-  if(log2(rows) - (int)log2(rows) != 0){ 
+  if(log2(rows) - (int)log2(rows) != 0){
     Matrix temp = padMatrix(rows);
     Matrix curr = temp.inverse();
     Matrix rtn(holdRows, holdRows);
@@ -312,15 +312,15 @@ Matrix Matrix::inverse(){
   }
 
   // checks to see if the Matrix is symmetric
-  if(!isSymmetric()){ 
+  if(!isSymmetric()){
     // Takes another Matrix to hold the current one
-    Matrix op1 = *this; 
+    Matrix op1 = *this;
     // transposes Matrix
     Matrix op2 = op1.transpose();
     // multiplies Matrix by it's transpose
-    Matrix op3 = op2 * op1; 
+    Matrix op3 = op2 * op1;
     // inverses that entire operation and multiplies by it's tranpose once again
-    Matrix op4 = op3.inverse() * op2; 
+    Matrix op4 = op3.inverse() * op2;
 
     return op4;
   }
@@ -429,7 +429,7 @@ void Matrix::triangularMatrix(bool up){
         }
         else{
           // else put 0's in the lower quadrant of the triangle
-          this->mat[i][j] = 0; 
+          this->mat[i][j] = 0;
         }
       }
     }
@@ -440,11 +440,11 @@ void Matrix::triangularMatrix(bool up){
         if(i > j){
           // 9 for visual purposes
           // creates 9's in the lower quadrant of the triangle
-          this->mat[i][j] = 9; 
+          this->mat[i][j] = 9;
         }
         else{
           // else put 0's in the upper quadrant of the triangle
-          this->mat[i][j] = 0; 
+          this->mat[i][j] = 0;
         }
       }
     }
@@ -454,10 +454,10 @@ void Matrix::triangularMatrix(bool up){
 // Function that addresses the floating point rounding error in C++
 // This function will round numbers between 0.9 ~ 1 to 1
 // and will round numbers between -.1 ~ 0 to 0
-// I do this because this will truly show that A * A.inverse() is indeed the 
+// I do this because this will truly show that A * A.inverse() is indeed the
 // identity Matrix
 
-void Matrix::inversePrint(){ 
+void Matrix::inversePrint(){
   for(long int i = 0; i < this->rows; i++){
         if(i != 0){
             std::cout << std::endl;
@@ -494,7 +494,7 @@ void Matrix::printMatrix(){
     std::cout << std::endl;
 }
 
-// For any given Matrix, this function will print 
+// For any given Matrix, this function will print
 // the number of arithmetical operations that Matrix
 // had applied to itself
 
@@ -510,8 +510,8 @@ int Matrix::printCounter(){
 
 Matrix& Matrix::operator=(const Matrix& m){
   // when matrices are already the same
-  if(this == &m){ 
-    return *this; 
+  if(this == &m){
+    return *this;
   }
   // else delete old
   for(long int i = 0; i < rows; i++){
@@ -622,7 +622,7 @@ Matrix operator* (const Matrix& matrixa, const Matrix& matrixb){
 // double B = 5;
 // Matrix C = A * B; or Matrix C = A * 5;
 
-Matrix operator* (const Matrix& matrixa, const double& c){ 
+Matrix operator* (const Matrix& matrixa, const double& c){
 	Matrix matrixb(matrixa.rows, matrixa.cols);
 	for(long int i = 0; i < matrixa.rows; i++){
 		for(long int k = 0; k < matrixa.cols; k++){

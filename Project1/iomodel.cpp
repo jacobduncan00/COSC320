@@ -4,21 +4,21 @@
 #include "Matrix.h"
 
 #define RESET   "\033[0m"
-#define BLACK   "\033[30m"      
-#define RED     "\033[31m"     
-#define GREEN   "\033[32m"      
-#define YELLOW  "\033[33m"      
-#define BLUE    "\033[34m"      
-#define MAGENTA "\033[35m"      
-#define CYAN    "\033[36m"      
-#define BOLDBLACK   "\033[1m\033[30m"      
-#define BOLDRED     "\033[1m\033[31m"     
-#define BOLDGREEN   "\033[1m\033[32m"      
-#define BOLDYELLOW  "\033[1m\033[33m"      
-#define BOLDBLUE    "\033[1m\033[34m"     
-#define BOLDMAGENTA "\033[1m\033[35m"     
-#define BOLDCYAN    "\033[1m\033[36m"    
-#define BOLDWHITE   "\033[1m\033[37m"   
+#define BLACK   "\033[30m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define BOLDBLACK   "\033[1m\033[30m"
+#define BOLDRED     "\033[1m\033[31m"
+#define BOLDGREEN   "\033[1m\033[32m"
+#define BOLDYELLOW  "\033[1m\033[33m"
+#define BOLDBLUE    "\033[1m\033[34m"
+#define BOLDMAGENTA "\033[1m\033[35m"
+#define BOLDCYAN    "\033[1m\033[36m"
+#define BOLDWHITE   "\033[1m\033[37m"
 
 Matrix calcDemand(Matrix& in, Matrix& dem){
     Matrix id = in;
@@ -53,16 +53,16 @@ int main(int argc, char** argv){
 
     try{
         // attempts to open file
-        inFile.open(argv[1]); 
+        inFile.open(argv[1]);
     } catch (...){
         // if cannot be opened print error and end program, cannot run with no data
-        std::perror("ERROR: Input file not opened."); 
+        std::perror("ERROR: Input file not opened.");
         return 0;
     }
 
     int dimensions = 0;
     // company limit is 1000, please don't go over 1000 Dr. Anderson
-    std::string firstLevelNames[1000]; 
+    std::string firstLevelNames[1000];
     while(inFile.peek() != EOF){
         std::cout << BOLDRED << "First Level: " << RESET << std::endl;
         std::cout << std::endl;
@@ -99,7 +99,7 @@ int main(int argc, char** argv){
         std::cout << "Amount of each producted needed:" << std::endl;
         Matrix result;
         try{
-            result = calcDemand(fileMatrix, demand); 
+            result = calcDemand(fileMatrix, demand);
         }
         catch(std::string errorMessage){
             std::cout << errorMessage << std::endl;

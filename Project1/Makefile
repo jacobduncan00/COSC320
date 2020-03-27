@@ -1,4 +1,4 @@
-all: iomodel driver 
+all: iomodel driver
 
 iomodel: iomodel.o Matrix.o
 	g++ -o iomodel iomodel.o Matrix.o
