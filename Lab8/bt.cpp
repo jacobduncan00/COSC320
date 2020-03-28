@@ -1,46 +1,65 @@
-#include <queue>
 #include "bt.h"
+
+// Default Constructor
 
 BinaryTree::BinaryTree(){
   root = nullptr;
 }
 
-void BinaryTree::copy(TreeNode* node){
+// Function that performs a deep copy
+// Wrapper function for copy constructor
+
+void BinaryTree::masterCopy(TreeNode* node){
   if(node){
     insert(node->key);
-    copy(node->left);
-    copy(node->right);
+    masterCopy(node->left);
+    masterCopy(node->right);
   }
 }
 
+// Copy Constructor 
+
 BinaryTree::BinaryTree(const BinaryTree& old){
   root = nullptr;
-  copy(old.root);
+  masterCopy(old.root);
 }
 
-void BinaryTree::delMem(TreeNode* node){
+// Deallocates memory that was assigned
+// Wrapper function for destructor
+
+void BinaryTree::masterDelMem(TreeNode* node){
   if(node){
-    delMem(node->left);
-    delMem(node->right);
+    masterDelMem(node->left);
+    masterDelMem(node->right);
     delete node;
   }
 }
 
+// Destructor
+
 BinaryTree::~BinaryTree(){
-  delMem(root);
+  masterDelMem(root);
 }
+
+// Overloaded Assignment Operator
+// Uses destructor wrapper and copy constructor
+// wrapper in order to perform a copy of a binary
+// tree to another binary tree and deallocate 
+// necessary memory from previous
 
 BinaryTree& BinaryTree::operator=(const BinaryTree& rhs){
   if(this == &rhs){
     return *this;
   }
-  delMem(root);
+  masterDelMem(root);
   root = nullptr;
-  copy(rhs.root);
+  masterCopy(rhs.root);
   return *this;
 }
 
-BinaryTree::TreeNode* BinaryTree::genNode(int num){
+// Function that generates a TreeNode
+
+BinaryTree::TreeNode* BinaryTree::masterGenNode(int num){
   TreeNode* rtn = new TreeNode();
   rtn->key = num;
   rtn->left = nullptr;
@@ -49,9 +68,11 @@ BinaryTree::TreeNode* BinaryTree::genNode(int num){
   return rtn;
 }
 
+// Function that inserts a new TreeNode into
+// the binary tree with a given key
 
 void BinaryTree::insert(int num){
-  TreeNode* newNode = genNode(num);
+  TreeNode* newNode = masterGenNode(num);
   TreeNode* curr = root;
   TreeNode* prev = nullptr;
   while(curr){
@@ -78,13 +99,22 @@ void BinaryTree::insert(int num){
   newNode->parent = prev;
 }
 
-bool BinaryTree::search(int num){
+// Wrapper function for the master search
+// function
+
+int BinaryTree::search(int num){
   TreeNode* rtn = masterSearch(num);
   if(rtn == nullptr){
-    return false;
+    std::cout << num << " was not found in the Binary Tree" << std::endl;
+    // std::cout << "Returning -1" << std::endl;
+    return -1;
   }
-  return true;
+  return rtn->key;
 }
+
+// Function that searches through the BinaryTree
+// for a specific key and returns the node with 
+// that key
 
 BinaryTree::TreeNode* BinaryTree::masterSearch(int num){
   if(root == nullptr){
@@ -106,47 +136,86 @@ BinaryTree::TreeNode* BinaryTree::masterSearch(int num){
   return nullptr;
 }
 
+// Wrapper function for the master 
+// minimum function 
+
 int BinaryTree::minimum(){
-  TreeNode* curr = root;
-  if(curr == nullptr){
-    std::cout << "minimum: Binary Tree is empty!" << std::endl;
-    std::cout << "minimum: Returning -1" << std::endl;
-    return -1;
-  }
-  while(curr->left){
-    curr = curr->left;
-  }
-  return curr->key;
-}
-
-int BinaryTree::maximum(){
-  TreeNode* curr = root;
-  if(curr == nullptr){
-    std::cout << "maximum: Binary Tree is empty!" << std::endl;
-    std::cout << "maximum: Returning -1" << std::endl;
-    return -1;
-  }
-  while(curr->right){
-    curr = curr->right;
-  }
-  return curr->key;
-}
-
-int BinaryTree::successor(int num){
-  TreeNode* rtn = masterSuccessor(num);
+  TreeNode* rtn = masterMin();
   if(rtn == nullptr){
-    std::cout << "successor: Successor not found" << std::endl;
-    std::cout << "successor: Returning -1" << std::endl;
+    std::cout << "minimum: Tree is empty" << std::endl;
+    // std::cout << "minimum: Returning -1" << std::endl;
     return -1;
   }
   return rtn->key;
 }
 
+// Function that searches the entire Binary Tree
+// for the node with the smallest key
+
+BinaryTree::TreeNode* BinaryTree::masterMin(){
+  TreeNode* rtn = root;
+  if(rtn == nullptr){
+    std::cout << "masterMinimum: Binary Tree is empty!" << std::endl;
+    std::cout << "masterMinimum: Returning nullptr" << std::endl;
+    return nullptr;
+  }
+  while(rtn->left){
+    rtn = rtn->left;
+  }
+  return rtn;
+}
+
+// Wrapper function for the master
+// maximum function 
+
+int BinaryTree::maximum(){
+  TreeNode* rtn = masterMax();
+  if(rtn == nullptr){
+    std::cout << "maximum: Tree is empty" << std::endl;
+    // std::cout << "maximum: Returning -1" << std::endl;
+    return -1;
+  }
+  return rtn->key;
+}
+
+// Function that searches the entire Binary Tree
+// for the node with the largest key
+
+BinaryTree::TreeNode* BinaryTree::masterMax(){
+  TreeNode* rtn = root;
+  if(rtn == nullptr){
+    std::cout << "masterMax: Binary Tree is empty!" << std::endl;
+    std::cout << "masterMax: Returning nullptr" << std::endl;
+    return nullptr;
+  }
+  while(rtn->right){
+    rtn = rtn->right;
+  }
+  return rtn;
+}
+
+// Wrapper functionm for the master
+// successor function
+
+int BinaryTree::successor(int num){
+  TreeNode* rtn = masterSuccessor(num);
+  if(rtn == nullptr){
+    std::cout << "successor: Successor not found" << std::endl;
+    // std::cout << "successor: Returning -1" << std::endl;
+    return -1;
+  }
+  return rtn->key;
+}
+
+// Function that returns the next node
+// in the tree, after the node with the key passed
+// to the function
+
 BinaryTree::TreeNode* BinaryTree::masterSuccessor(int num){
   TreeNode* key = masterSearch(num);
   if(key == nullptr){
-    std::cout << "masterSearch: key not found" << std::endl;
-    std::cout << "masterSearch: returning nullptr to successor" << std::endl;
+    std::cout << "masterSearch: key is not in BT" << std::endl;
+    std::cout << "masterSearch: returning nullptr" << std::endl;
     return nullptr;
   }
   if(key->right == nullptr){
@@ -167,9 +236,16 @@ BinaryTree::TreeNode* BinaryTree::masterSuccessor(int num){
   return curr;
 }
 
+// Wrapper function for master
+// inorder function
+
 void BinaryTree::inorder(){
   masterInorder(root);
 }
+
+// Function that prints the Binary Tree
+// in 'inorder' form
+// ascending order
 
 void BinaryTree::masterInorder(TreeNode* node){
   if(node){
@@ -179,9 +255,16 @@ void BinaryTree::masterInorder(TreeNode* node){
   }
 }
 
+// Wrapper function for master
+// print function
+
 void BinaryTree::print(){
   masterPrint(root);
 }
+
+// Function that prints the binary
+// tree in its normal tree form
+// cannot understand from line view
 
 void BinaryTree::masterPrint(TreeNode* node){
   if(node){

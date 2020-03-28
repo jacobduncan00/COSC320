@@ -1,6 +1,12 @@
 #include<iostream>
 #include "bt.h"
 
+// Lab 8 by Jacob Duncan @ Salisbury University
+// Completed 3/28/2020
+// Program that uses Binary Trees
+// and the print, inorder, insert, search,
+// max, min, and successor function
+
 int main(){
   BinaryTree t;
   std::cout << "Testing Insert: " << std::endl;
@@ -55,21 +61,19 @@ int main(){
   a.inorder();
   std::cout << std::endl;
   std::cout << "Is 4 in BT? ";
-  if(a.search(4) == true){
+  if(a.search(4) == 4){
     std::cout << "Yes" << std::endl;
   }
-  else{
-    std::cout << "No" << std::endl;
-  }
+  a.search(4);
   std::cout << "Is 9 in BT? ";
-  if(a.search(9) == true){
-    std::cout << "Yes" << std::endl;
-  }
-  else{
-    std::cout << "No" << std::endl;
+  if(a.search(9) == 9){
+    std::cout << "Yes" << std::endl;  
   }
   std::cout << std::endl;
   std::cout << "Testing Successor" << std::endl;
+  a.insert(9);
+  a.insert(8);
+  a.insert(2);
   std::cout << "Current BT: ";
   a.inorder();
   std::cout << std::endl;
