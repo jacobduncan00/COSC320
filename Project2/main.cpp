@@ -20,6 +20,19 @@
 #define BOLDCYAN    "\033[1m\033[36m"
 #define BOLDWHITE   "\033[1m\033[37m"
 
+void welcomeScreen(){
+    std::cout << BOLDRED << "**************************************" << RESET << std::endl;
+    std::cout << BOLDRED << "**************************************" << RESET << std::endl;
+    std::cout << BOLDRED << "**                                  **" << RESET << std::endl;
+    std::cout << BOLDRED << "**             WELCOME              **" << RESET << std::endl;
+    std::cout << BOLDRED << "**             TO YOUR              **" << RESET << std::endl;
+    std::cout << BOLDRED << "**         SPELL CHECKER BY         **" << RESET << std::endl;
+    std::cout << BOLDRED << "**           JACOB DUNCAN           **" << RESET << std::endl;
+    std::cout << BOLDRED << "**                                  **" << RESET << std::endl;
+    std::cout << BOLDRED << "**************************************" << RESET << std::endl;
+    std::cout << BOLDRED << "**************************************" << RESET << std::endl;
+}
+
 Dictionary* init_dictionary(std::string fileName){
 
   Dictionary* ogdict;
@@ -29,7 +42,7 @@ Dictionary* init_dictionary(std::string fileName){
 
   if(wordFile.is_open()){
 
-    std::cout << "Opened file" << std::endl;
+    std::cout << BOLDGREEN << "OPENED FILE" << RESET << std::endl;
     auto start = std::chrono::system_clock::now();
 
     while(getline(wordFile, word)){
@@ -39,7 +52,7 @@ Dictionary* init_dictionary(std::string fileName){
 
     wordFile.clear();
     wordFile.seekg(0, std::ios::beg);
-    Dictionary* dict = new Dictionary(lineNum);
+    Dictionary* dict = new Dictionary();
     std::string buffer = "";
 
     while(wordFile.peek() != EOF){
@@ -52,19 +65,15 @@ Dictionary* init_dictionary(std::string fileName){
 
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double>elapsed_seconds = end-start;
-    std::cout << "Total words in table: " << lineNum << std::endl;
-    // Need to figure this out
-    std::cout << "Largest bucket size: ";
-    std::cout << "Smallest bucket size: ";
-    std::cout << "Total # of buckets: ";
-    std::cout << "Average # of items in bucket: ";
-    std::cout << "Time to load buckets: " << elapsed_seconds.count() << "s" << std::endl;
-    // dict.time_to_load= elapsed_seconds.count();
-    // Print stats for loading
-    // Make this a public Dictionary function
+    std::cout << "Total words in table: " << BOLDGREEN << lineNum << RESET << std::endl;
+    std::cout << "Total # of buckets: " << BOLDGREEN << ogdict->getTableSize() << RESET << std::endl;
+    std::cout << "# of buckets used: " << BOLDGREEN << ogdict->usedBuckets() << RESET << std::endl;
+    std::cout << "Average # of items in bucket: " << BOLDGREEN <<  ogdict->averageBucket() << RESET <<  std::endl;
+    std::cout << "Smallest bucket size: " << BOLDGREEN << ogdict->smallestBucket() << RESET << std::endl;
+    std::cout << "Largest bucket size: " << BOLDGREEN << ogdict->largestBucket() << RESET << std::endl;
+    std::cout << "Time to load buckets: " << BOLDGREEN << elapsed_seconds.count() << "s" << RESET << std::endl;
     wordFile.close();
-    std::cout << "Closed file" << std::endl;
-
+    std::cout << BOLDGREEN << "CLOSED FILE" << RESET << std::endl;
   }
 
   return ogdict;
@@ -77,7 +86,7 @@ int main(int argc, char** argv){
     std::cout << "This program requires 2 arguments!" << std::endl;
     exit(1);
   }
+  welcomeScreen();
   Dictionary* master = init_dictionary(argv[1]);
-  master->print();
   return 0;
 }

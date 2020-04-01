@@ -15,18 +15,30 @@ class Dictionary{
     int tableSize;
     int* used;
 
+    // manipulating the word after spell checking
+    void manipulate(HashTable&, std::string, std::string);
+
   public:
 
     Dictionary();
-    Dictionary(int);
     Dictionary(const Dictionary&);
     ~Dictionary();
     Dictionary& operator=(const Dictionary&);
 
     size_t multHash(std::string);
-    void insertBucket(std::string);
+
     void print();
     void printUsed();
+
+    void insertBucket(std::string);
+    int smallestBucket();
+    int largestBucket();
+    int usedBuckets();
+    int getTableSize();
+    double averageBucket();
+
+    bool inTable(std::string);
+    HashTable suggestions(std::string);
 
 };
 
