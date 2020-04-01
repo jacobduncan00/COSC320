@@ -124,13 +124,77 @@ int Dictionary::getTableSize() {
   return tableSize;
 }
 
-double Dictionary::averageBucket(){
-  double sum = 0;
+int Dictionary::averageBucket(){
+  int sum = 0;
   for(int i = 0; i < tableSize; i++){
     sum += used[i];
   }
-  double rtn = sum / (double)tableSize;
+  double rtn = sum / tableSize;
+  return (int)rtn;
+}
+
+bool Dictionary::inHash(std::string str){
+  bool rtn = arr[multHash(str)].inTable(str);
   return rtn;
 }
 
+HashTable Dictionary::suggest(std::string str){
+  HashTable suggestions;
+  replace(suggestions, str);
+  add(suggestions, str);
+  del(suggestions, str);
+  swap(suggestions, str);
+  return suggestions;
+}
 
+void Dictionary::add(HashTable& suggestions, std::string str){
+  std::string holdWord = str;
+  for(int i = 0; i < str.length(); i++){
+    for(char j = 'a'; j <= 'z'; j++){
+      str = str.substr(0,i) + j + str.substr(i,holdWord.length());
+      if(inHash(str)){
+        suggestions.insertWord(str);
+      }
+      str = holdWord;
+    }
+  }
+}
+
+void Dictionary::del(HashTable& suggestions, std::string str){
+  std::string holdWord = str;
+  for(int i = 0; i < str.length(); i++){
+    str.erase(i, 1);
+    if(inHash(str)){
+      suggestions.insertWord(str);
+    }
+    str = holdWord;
+  }
+}
+
+void Dictionary::swap(HashTable& suggestions, std::string str){
+  std::string holdWord = str;
+  for(int i = 0; i < holdWord.length(); i++){
+    for(int j = i + 1; j < holdWord.length(); j++){
+      if(i != j){
+        std::swap(str[i], str[j]);
+        if(inHash(str)){
+          suggestions.insertWord(str);
+        }
+        str = holdWord;
+      }
+    }
+  }
+}
+
+void Dictionary::replace(HashTable& suggestions, std::string str){
+  std::string holdWord = str;
+  for(int i = 0; i < holdWord.length(); i++){
+    for(char j = 'a'; j <= 'z'; j++){
+      str[i] = j;
+      if(inHash(str)){
+        suggestions.insertWord(str);
+      }
+      str = holdWord;
+    }
+  }
+}

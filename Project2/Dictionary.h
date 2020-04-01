@@ -35,10 +35,14 @@ class Dictionary{
     int largestBucket();
     int usedBuckets();
     int getTableSize();
-    double averageBucket();
+    int averageBucket();
 
-    bool inTable(std::string);
-    HashTable suggestions(std::string);
+    bool inHash(std::string);
+    HashTable suggest(std::string);
+    void add(HashTable&, std::string);
+    void del(HashTable&, std::string);
+    void swap(HashTable&, std::string);
+    void replace(HashTable&, std::string);
 
 };
 

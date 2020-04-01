@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <chrono>
+#include <sstream>
+#include <algorithm>
 #include "Dictionary.h"
 
 #define RESET   "\033[0m"
@@ -41,8 +43,6 @@ Dictionary* init_dictionary(std::string fileName){
   std::ifstream wordFile(fileName);
 
   if(wordFile.is_open()){
-
-    std::cout << BOLDGREEN << "OPENED FILE" << RESET << std::endl;
     auto start = std::chrono::system_clock::now();
 
     while(getline(wordFile, word)){
@@ -56,28 +56,71 @@ Dictionary* init_dictionary(std::string fileName){
     std::string buffer = "";
 
     while(wordFile.peek() != EOF){
-      wordFile >> buffer;
-      // std::cout << "Word: " << buffer << std::endl;
+      std::getline(wordFile, buffer);
+      transform(buffer.begin(), buffer.end(), buffer.begin(), ::tolower);
       dict->insertBucket(buffer);
     }
+    wordFile.close();
 
     ogdict = dict;
 
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double>elapsed_seconds = end-start;
-    std::cout << "Total words in table: " << BOLDGREEN << lineNum << RESET << std::endl;
-    std::cout << "Total # of buckets: " << BOLDGREEN << ogdict->getTableSize() << RESET << std::endl;
-    std::cout << "# of buckets used: " << BOLDGREEN << ogdict->usedBuckets() << RESET << std::endl;
-    std::cout << "Average # of items in bucket: " << BOLDGREEN <<  ogdict->averageBucket() << RESET <<  std::endl;
-    std::cout << "Smallest bucket size: " << BOLDGREEN << ogdict->smallestBucket() << RESET << std::endl;
-    std::cout << "Largest bucket size: " << BOLDGREEN << ogdict->largestBucket() << RESET << std::endl;
-    std::cout << "Time to load buckets: " << BOLDGREEN << elapsed_seconds.count() << "s" << RESET << std::endl;
-    wordFile.close();
-    std::cout << BOLDGREEN << "CLOSED FILE" << RESET << std::endl;
+    std::cout << "Total words = " << BOLDGREEN << lineNum << RESET << std::endl;
+    std::cout << "Biggest bucket size = " << BOLDGREEN << ogdict->largestBucket() << RESET << std::endl;
+    std::cout << "Smallest bucket size = " << BOLDGREEN << ogdict->smallestBucket() << RESET << std::endl;
+    std::cout << "Total number of buckets = " << BOLDGREEN << ogdict->getTableSize() << RESET << std::endl;
+    std::cout << "Number of used buckets = " << BOLDGREEN << ogdict->usedBuckets() << RESET << std::endl;
+    std::cout << "Average number of nodes in each bucket = " << BOLDGREEN <<  ogdict->averageBucket() << RESET <<  std::endl;
+    std::cout << "Total time taken = " << BOLDGREEN << elapsed_seconds.count() << RESET << std::endl;
+    std::cout << std::endl;
   }
 
   return ogdict;
 
+}
+
+void stringParsing(Dictionary* dict){
+  std::cout << "Please enter some text: " << std::endl;
+  std::cout << "--------------------------------------" << std::endl;
+  std::cout << std::endl;
+  std::string word;
+  std::string line;
+  int misspelledWords = 0;
+  int num_of_suggestions = 0;
+
+  std::getline(std::cin, line);
+  std::istringstream iss(line);
+  while(iss >> word){
+    for(int i = 0, len = word.length(); i < word.length(); i++){
+      if(ispunct(word[i])){
+        word.erase(i--, 1);
+        len = word.length();
+      }
+    }
+    transform(word.begin(), word.end(), word.begin(), ::tolower);
+    if(!dict->inHash(word)){
+      misspelledWords++;
+      std::cout << std::endl;
+      std::cout << BOLDRED << word << RESET << " is misspelled! Below are the words within one edit distance" << std::endl;
+      std::cout << "---------------------------------------------------------------" << std::endl;
+      std::cout << std::endl;
+
+      HashTable suggestions = dict->suggest(word);
+      num_of_suggestions += suggestions.getLen();
+
+      std::cout << "Suggestions for " << word << ": ";
+      suggestions.print();
+    }
+    // Time end here
+  }
+  std::cout << std::endl;
+  std::cout << "--------------------------------------" << std::endl;
+  std::cout << "Summary" << std::endl;
+  std::cout << "--------------------------------------" << std::endl;
+  std::cout << "Number of misspelled words = " << misspelledWords << std::endl;
+  std::cout << "Number of suggestions = " << num_of_suggestions << std::endl;
+  std::cout << "Time required to find suggestions = ";
 }
 
 
@@ -87,6 +130,13 @@ int main(int argc, char** argv){
     exit(1);
   }
   welcomeScreen();
+  std::cout << "Welcome to the Spell Checker!" << std::endl;
+	std::cout << "--------------------------------------" << std::endl;
+	std::cout << "Loading the database..." << std::endl;
+	std::cout << "--------------------------------------" << std::endl;
+  std::cout << std::endl;
   Dictionary* master = init_dictionary(argv[1]);
+  std::cout << "--------------------------------------" << std::endl;
+  stringParsing(master);
   return 0;
 }
