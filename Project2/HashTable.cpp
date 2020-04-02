@@ -83,13 +83,39 @@ void HashTable::print(){
     std::cout << "List is empty!" << std::endl;
     return;
   }
-  HashNode* curr = new HashNode();
-  std::cout << std::endl;
+  HashNode* curr = head;
   while(curr){
-    std::cout << curr->word << " -> ";
+    std::cout << curr->word << " ";
     curr = curr->next;
   }
   std::cout << std::endl;
+}
+
+bool HashTable::inTable(std::string str){
+  if(head == nullptr){
+    return false;  
+  }
+  HashNode* curr = head;
+  while(curr){
+    if(curr->word == str){
+      return true;
+    }
+    curr = curr -> next;
+  }
+  return false;
+}
+
+int HashTable::getLen(){
+  int nodes = 0;
+  if(head == nullptr){
+    return nodes;
+  }
+  HashNode* curr = head;
+  while(curr){
+    nodes++;
+    curr = curr->next;
+  }
+  return nodes;
 }
 
 
