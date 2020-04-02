@@ -17,7 +17,7 @@ void BinaryTree::masterCopy(TreeNode* node){
   }
 }
 
-// Copy Constructor 
+// Copy Constructor
 
 BinaryTree::BinaryTree(const BinaryTree& old){
   root = nullptr;
@@ -44,7 +44,7 @@ BinaryTree::~BinaryTree(){
 // Overloaded Assignment Operator
 // Uses destructor wrapper and copy constructor
 // wrapper in order to perform a copy of a binary
-// tree to another binary tree and deallocate 
+// tree to another binary tree and deallocate
 // necessary memory from previous
 
 BinaryTree& BinaryTree::operator=(const BinaryTree& rhs){
@@ -59,7 +59,7 @@ BinaryTree& BinaryTree::operator=(const BinaryTree& rhs){
 
 // Function that generates a TreeNode
 
-BinaryTree::TreeNode* BinaryTree::masterGenNode(int num){
+BinaryTree::TreeNode* BinaryTree::genNode(int num){
   TreeNode* rtn = new TreeNode();
   rtn->key = num;
   rtn->left = nullptr;
@@ -72,7 +72,7 @@ BinaryTree::TreeNode* BinaryTree::masterGenNode(int num){
 // the binary tree with a given key
 
 void BinaryTree::insert(int num){
-  TreeNode* newNode = masterGenNode(num);
+  TreeNode* newNode = genNode(num);
   TreeNode* curr = root;
   TreeNode* prev = nullptr;
   while(curr){
@@ -113,7 +113,7 @@ int BinaryTree::search(int num){
 }
 
 // Function that searches through the BinaryTree
-// for a specific key and returns the node with 
+// for a specific key and returns the node with
 // that key
 
 BinaryTree::TreeNode* BinaryTree::masterSearch(int num){
@@ -136,8 +136,8 @@ BinaryTree::TreeNode* BinaryTree::masterSearch(int num){
   return nullptr;
 }
 
-// Wrapper function for the master 
-// minimum function 
+// Wrapper function for the master
+// minimum function
 
 int BinaryTree::minimum(){
   TreeNode* rtn = masterMin();
@@ -166,7 +166,7 @@ BinaryTree::TreeNode* BinaryTree::masterMin(){
 }
 
 // Wrapper function for the master
-// maximum function 
+// maximum function
 
 int BinaryTree::maximum(){
   TreeNode* rtn = masterMax();
@@ -234,6 +234,59 @@ BinaryTree::TreeNode* BinaryTree::masterSuccessor(int num){
     curr = curr->left;
   }
   return curr;
+}
+
+// Function that replaces a subtree with another subtree
+// Keeping the Binary Tree properties
+
+void BinaryTree::transplant(TreeNode* from, TreeNode* to){
+  if(from == root && from->parent == nullptr){
+    root = to;
+  }
+  else if(from->parent->right == from){
+    from->parent->right = to;
+  }
+  else{
+    from->parent->left = to;
+  }
+  if(to != nullptr){
+    to->parent = from->parent;
+  }
+}
+
+// Function that removes a node from the Binary Tree
+// and keeps the properties of the Binary Tree
+
+void BinaryTree::removeNode(int num){
+  TreeNode* temp = masterSearch(num);
+  if(temp == nullptr){
+    std::cout << "Node with that key was not found!" << std::endl;
+    return;
+  }
+  if(temp->left == nullptr){
+    transplant(temp, temp->right);
+    delete temp;
+  }
+  else if(temp->right == nullptr){
+    transplant(temp, temp->left);
+    delete temp;
+  }
+  else{
+    TreeNode* curr = temp->right;
+    while(curr->left){
+      curr = curr->left;
+    }
+    TreeNode* add = curr;
+    if(add != temp->right){
+      transplant(add, add->right);
+      add->right = temp->right;
+      add->right->parent = add;
+    }
+    transplant(temp, add);
+    add->left = temp->left;
+    add->left->parent = add;
+    delete temp;
+  }
 }
 
 // Wrapper function for master
