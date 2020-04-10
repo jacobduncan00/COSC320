@@ -71,14 +71,12 @@ void Dictionary::insertBucket(std::string str){
 }
 
 void Dictionary::print(){
-  // 10 for testing
   for(int i = 0; i < 10; i++){
     arr[i].print();
   }
 }
 
 void Dictionary::printUsed(){
-  // 10 for testing
   for(int i = 0; i < 10; i++){
     std::cout << used[i] << std::endl;
   }
@@ -145,6 +143,26 @@ HashTable Dictionary::suggest(std::string str){
   del(suggestions, str);
   swap(suggestions, str);
   return suggestions;
+}
+
+// Make array that gets the total number of suggestions, sum that with the one from the main
+// And update total number of suggestions counter
+
+void Dictionary::suggest(HashTable ext) {
+	std::string* oneEditWords = ext.getList();
+	for (int i = 0; i < ext.getLen(); i++) {
+    HashTable moreSuggestions;
+    std::cout << "Suggestions for " << BOLDRED << oneEditWords[i] << RESET << ": ";
+		replace(moreSuggestions, oneEditWords[i]);
+		add(moreSuggestions, oneEditWords[i]);
+		del(moreSuggestions, oneEditWords[i]);
+		swap(moreSuggestions, oneEditWords[i]);
+    moreSuggestions.print();
+    moreSuggestions.clear();
+    std::cout << std::endl;
+	}
+	delete [] oneEditWords;
+	// return moreSuggestions;
 }
 
 void Dictionary::add(HashTable& suggestions, std::string str){

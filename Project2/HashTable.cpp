@@ -85,7 +85,7 @@ void HashTable::print(){
   }
   HashNode* curr = head;
   while(curr){
-    std::cout << curr->word << " ";
+    std::cout << BOLDGREEN << curr->word << RESET << " ";
     curr = curr->next;
   }
   std::cout << std::endl;
@@ -100,7 +100,7 @@ bool HashTable::inTable(std::string str){
     if(curr->word == str){
       return true;
     }
-    curr = curr -> next;
+    curr = curr->next;
   }
   return false;
 }
@@ -116,6 +116,32 @@ int HashTable::getLen(){
     curr = curr->next;
   }
   return nodes;
+}
+
+std::string* HashTable::getList() {
+	if(head == nullptr){
+		return nullptr;
+	}
+	HashNode* curr = head;
+	std::string* rtn = new std::string[this->getLen()];
+	for (int i = 0; curr; i++) {
+		rtn[i] = curr->word;	
+		curr = curr->next;
+	}
+	return rtn;
+}
+
+void HashTable::clear(){
+  if(head == nullptr){
+    return;
+  }
+  while(head->next){
+    head = head->next;
+    delete head->prev;
+  }
+  delete head;
+  head = nullptr;
+  tail = nullptr;
 }
 
 
