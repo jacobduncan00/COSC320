@@ -151,6 +151,7 @@ int main(int argc, char **argv)
   if (argc != 2)
   {
     std::cout << "This program requires 2 arguments!" << std::endl;
+    std::cout << "Looks like you are missing the english.txt file..." << std::endl;
     exit(1);
   }
   welcomeScreen();
