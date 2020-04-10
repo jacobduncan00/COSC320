@@ -1,5 +1,4 @@
-# Project 1
-
+# Project 1 📈
 ## How to run?
 First type <code>make</code>
 Then this will create two executables
