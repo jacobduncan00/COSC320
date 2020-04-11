@@ -1,6 +1,8 @@
 #include "Dictionary.h"
 
 // Default Constructor
+// Creates an array "Dictionary" size of 10000
+// and assigns each index of the used array to zero
 
 Dictionary::Dictionary()
 {
@@ -13,7 +15,8 @@ Dictionary::Dictionary()
   }
 }
 
-// Copy Constructor
+// Copy Constructor that copies the contents of one Dictionary to
+// another
 
 Dictionary::Dictionary(const Dictionary &out)
 {
@@ -30,13 +33,15 @@ Dictionary::Dictionary(const Dictionary &out)
   }
 }
 
-// Destructor
+// Destructor, deletes the arr array and used array
 
 Dictionary::~Dictionary()
 {
   delete[] arr;
   delete[] used;
 }
+
+// Overloaded operator function that assisgns one Dictionary to another
 
 Dictionary &Dictionary::operator=(const Dictionary &rhs)
 {
@@ -63,6 +68,9 @@ Dictionary &Dictionary::operator=(const Dictionary &rhs)
   return *this;
 }
 
+// Function that uses multiplicative hashing to turn a string into a
+// size_t which can then be put into the HashTable as an index
+
 size_t Dictionary::multHash(std::string str)
 {
   size_t w = pow(2, 32);
@@ -77,11 +85,15 @@ size_t Dictionary::multHash(std::string str)
   return rtn % tableSize;
 }
 
+// Function that inserts a bucket into the HashTable using multHash
+
 void Dictionary::insertBucket(std::string str)
 {
   arr[multHash(str)].insertWord(str);
   used[multHash(str)]++;
 }
+
+// Function that prints the HashTable nodes
 
 void Dictionary::print()
 {
@@ -91,6 +103,8 @@ void Dictionary::print()
   }
 }
 
+// Function that prints the used array of the HashTable
+
 void Dictionary::printUsed()
 {
   for (int i = 0; i < 10; i++)
@@ -98,6 +112,9 @@ void Dictionary::printUsed()
     std::cout << used[i] << std::endl;
   }
 }
+
+// Function that iterates through the used Dictionary nodes
+// and finds the one with the smallest used arr
 
 int Dictionary::smallestBucket()
 {
@@ -112,8 +129,8 @@ int Dictionary::smallestBucket()
   return min;
 }
 
-// Iterates through used Dictionary nodes
-// and finds the one with the biggest tableSize
+// Function that iterates through used Dictionary nodes
+// and finds the one with the largest used arr
 
 int Dictionary::largestBucket()
 {
@@ -128,7 +145,7 @@ int Dictionary::largestBucket()
   return max;
 }
 
-// iterates through used Dictionary nodes
+// Function that iterates through used Dictionary nodes
 // and counts which nodes hold more than 0 elements
 
 int Dictionary::usedBuckets()
@@ -144,10 +161,14 @@ int Dictionary::usedBuckets()
   return count;
 }
 
+// Function that returns the HashTable size
+
 int Dictionary::getTableSize()
 {
   return tableSize;
 }
+
+// Function that returns the number of average buckets used in the HashTable
 
 int Dictionary::averageBucket()
 {
@@ -160,11 +181,18 @@ int Dictionary::averageBucket()
   return (int)rtn;
 }
 
+// Function that checks whether a specfici word is in the HashTable
+// or not and returns a boolean
+
 bool Dictionary::inHash(std::string str)
 {
   bool rtn = arr[multHash(str)].inTable(str);
   return rtn;
 }
+
+// Function that takes in a word and creates a HashTable of suggestions for
+// the word passed in by checking replace, add, del, and swap suggestions
+// Function returns a HashTable of suggestions
 
 HashTable Dictionary::suggest(std::string str)
 {
@@ -176,8 +204,9 @@ HashTable Dictionary::suggest(std::string str)
   return suggestions;
 }
 
-// Make array that gets the total number of suggestions, sum that with the one from the main
-// And update total number of suggestions counter
+// Function that suggests two edit distance words from the previous HashTable of
+// suggestions. This function returns an integer to the main to be added with the
+// suggestionCounter to display total number of suggestions the program generates.
 
 int Dictionary::suggest(HashTable ext)
 {
@@ -209,10 +238,13 @@ int Dictionary::suggest(HashTable ext)
     }
   }
   // If something went wrong
-  std::cout << "ERROR: Suggestion counter was not counter properly" << std::endl;
-  std::cout << "Returning -1" << std::endl;
-  return -1;
+  // std::cout << "No Suggestions" << std::endl;
+  // std::cout << "Returning 0" << std::endl;
+  return 0;
 }
+
+// Function that loops through alphabet and attempts to add letters in different
+// locations of the word in order to form a suggestion
 
 void Dictionary::add(HashTable &suggestions, std::string str)
 {
@@ -231,19 +263,27 @@ void Dictionary::add(HashTable &suggestions, std::string str)
   }
 }
 
+// Function that attempts to generate suggestion words by deleting
+// characters from different positions in the word
+
 void Dictionary::del(HashTable &suggestions, std::string str)
 {
   std::string holdWord = str;
   for (int i = 0; i < str.length(); i++)
   {
     str.erase(i, 1);
+    // If word with character deleted is in HashTable
     if (inHash(str))
     {
+      // Insert that word into the HashTable
       suggestions.insertWord(str);
     }
     str = holdWord;
   }
 }
+
+// Function that attempts to generate suggestion words by swapping characters
+// from different positions in the word
 
 void Dictionary::swap(HashTable &suggestions, std::string str)
 {
@@ -264,6 +304,9 @@ void Dictionary::swap(HashTable &suggestions, std::string str)
     }
   }
 }
+
+// Function that attempts to generate suggestion words by replacing certain
+// characters in the word with different characters
 
 void Dictionary::replace(HashTable &suggestions, std::string str)
 {

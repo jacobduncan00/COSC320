@@ -1,103 +1,153 @@
 #include "HashTable.h"
 
-HashTable::HashTable(){
+// Default constructor
+
+HashTable::HashTable()
+{
   head = nullptr;
   tail = nullptr;
 }
 
-HashTable::HashTable(const HashTable& out){
+// Copy Constructor
+
+HashTable::HashTable(const HashTable &out)
+{
   head = nullptr;
   tail = nullptr;
-  HashNode* curr = out.tail;
-  if(curr == nullptr){
+  HashNode *curr = out.tail;
+  if (curr == nullptr)
+  {
     // Need throw and except
-    std::cout << "ERROR" << std::endl;
+    std::cout << "ERROR, HashTable empty" << std::endl;
     return;
   }
-  while(curr){
+  while (curr)
+  {
     insertWord(curr->word);
     curr = curr->prev;
   }
 }
 
-HashTable::~HashTable(){
-  if(head == nullptr){
+// Destructor, deletes all nodes in LL
+
+HashTable::~HashTable()
+{
+  if (head == nullptr)
+  {
     // Nothing to delete
     return;
   }
-  while(head->next){
+  while (head->next)
+  {
     head = head->next;
     delete head->prev;
   }
   delete head;
 }
 
-HashTable& HashTable::operator=(const HashTable& rhs){
+// Overloaded Assignment Operator
+
+HashTable &HashTable::operator=(const HashTable &rhs)
+{
   // If HashTables are the same
-  if(this == &rhs){
+  if (this == &rhs)
+  {
     return *this;
   }
-  if(head){
-    while(head->next){
+  // Destruct old
+  if (head)
+  {
+    while (head->next)
+    {
       head = head->next;
       delete head->prev;
     }
     delete head;
   }
+  // Copy contents
   head = nullptr;
   tail = nullptr;
-  HashNode* curr = rhs.tail;
-  if(curr == nullptr){
+  HashNode *curr = rhs.tail;
+  if (curr == nullptr)
+  {
     return *this;
   }
-  while(curr){
+  while (curr)
+  {
     insertWord(curr->word);
     curr = curr->prev;
   }
   return *this;
 }
 
-HashTable::HashNode* HashTable::genNode(std::string str){
-  HashNode* rtn = new HashNode();
+// Function that generates a new node to be entered into the HashTable
+// given a word parameter
+
+HashTable::HashNode *HashTable::genNode(std::string str)
+{
+  HashNode *rtn = new HashNode();
   rtn->word = str;
   rtn->next = nullptr;
   rtn->prev = nullptr;
   return rtn;
 }
 
-void HashTable::insertWord(std::string str){
-  HashNode* newNode = genNode(str);
-  if(head == nullptr){
+// Function that takes a word inserts it into the correct place in the
+// HashTable
+
+void HashTable::insertWord(std::string str)
+{
+  // Gen Node with word
+  HashNode *newNode = genNode(str);
+  // If head is empty, place node at head
+  if (head == nullptr)
+  {
     head = newNode;
     tail = newNode;
     return;
   }
+  // Place in head and shift
   newNode->next = head;
   head = newNode;
   head->next->prev = head;
 }
 
-void HashTable::print(){
-  if(head == nullptr){
+// Function that prints the words in the LL
+
+void HashTable::print()
+{
+  if (head == nullptr)
+  {
     // Need to add throw and catch exception
     std::cout << "List is empty!" << std::endl;
     return;
   }
-  HashNode* curr = head;
-  while(curr){
+  HashNode *curr = head;
+  // Traverse linked list and print words in each node
+  while (curr)
+  {
     std::cout << BOLDGREEN << curr->word << RESET << " ";
     curr = curr->next;
   }
   std::cout << std::endl;
 }
 
-bool HashTable::inTable(std::string str){
-  if(head == nullptr){
-    return false;  
+// Function that determines whether a string is in the
+// HashTable / Linked List and returns a boolean
+
+bool HashTable::inTable(std::string str)
+{
+  // If list is empty, string cannot be in list
+  if (head == nullptr)
+  {
+    return false;
   }
-  HashNode* curr = head;
-  while(curr){
-    if(curr->word == str){
+  HashNode *curr = head;
+  // Traverse list and look for word
+  while (curr)
+  {
+    if (curr->word == str)
+    {
       return true;
     }
     curr = curr->next;
@@ -105,37 +155,57 @@ bool HashTable::inTable(std::string str){
   return false;
 }
 
-int HashTable::getLen(){
+// Function that traverses the linked list and
+// counts the number of nodes, returning the length of the LL
+
+int HashTable::getLen()
+{
   int nodes = 0;
-  if(head == nullptr){
+  // If LL is empty, return 0
+  if (head == nullptr)
+  {
     return nodes;
   }
-  HashNode* curr = head;
-  while(curr){
+  HashNode *curr = head;
+  // Traverse linked list and increment node counter
+  while (curr)
+  {
     nodes++;
     curr = curr->next;
   }
   return nodes;
 }
 
-std::string* HashTable::getList() {
-	if(head == nullptr){
-		return nullptr;
-	}
-	HashNode* curr = head;
-	std::string* rtn = new std::string[this->getLen()];
-	for (int i = 0; curr; i++) {
-		rtn[i] = curr->word;	
-		curr = curr->next;
-	}
-	return rtn;
+// Function that returns an array of strings of the words in
+// the HashTable
+
+std::string *HashTable::getList()
+{
+  if (head == nullptr)
+  {
+    return nullptr;
+  }
+  HashNode *curr = head;
+  std::string *rtn = new std::string[this->getLen()];
+  for (int i = 0; curr; i++)
+  {
+    rtn[i] = curr->word;
+    curr = curr->next;
+  }
+  return rtn;
 }
 
-void HashTable::clear(){
-  if(head == nullptr){
+// Function that "clears" the HashTable by deleting
+// all the nodes in the HashTable
+
+void HashTable::clear()
+{
+  if (head == nullptr)
+  {
     return;
   }
-  while(head->next){
+  while (head->next)
+  {
     head = head->next;
     delete head->prev;
   }
@@ -143,5 +213,3 @@ void HashTable::clear(){
   head = nullptr;
   tail = nullptr;
 }
-
-
