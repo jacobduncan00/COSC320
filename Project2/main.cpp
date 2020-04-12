@@ -76,6 +76,7 @@ Dictionary *init_dictionary(std::string fileName)
     // Scoping the return requires this, also shows Overloaded Assignment Operator
     // works properly
     ogdict = dict;
+    delete dict;
 
     // Print Statistics
     auto end = std::chrono::system_clock::now();
