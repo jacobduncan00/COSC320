@@ -36,10 +36,10 @@ void welcomeScreen()
   std::cout << BOLDRED << "**************************************" << RESET << std::endl;
 }
 
-Dictionary *init_dictionary(std::string fileName)
+Dictionary init_dictionary(std::string fileName)
 {
 
-  Dictionary *ogdict;
+  Dictionary ogdict;
   std::string word = "";
   int lineNum = 0;
   std::ifstream wordFile(fileName);
@@ -57,7 +57,7 @@ Dictionary *init_dictionary(std::string fileName)
     // Reset the reading of the file back to the top
     wordFile.clear();
     wordFile.seekg(0, std::ios::beg);
-    Dictionary *dict = new Dictionary();
+    Dictionary dict;
     std::string buffer = "";
 
     // While the current line we are on is not the end of the file
@@ -69,24 +69,23 @@ Dictionary *init_dictionary(std::string fileName)
       // geeks for geeks, idk if this is the best way to do it ?
       transform(buffer.begin(), buffer.end(), buffer.begin(), ::tolower);
       // insert that word into the Dictionary
-      dict->insertBucket(buffer);
+      dict.insertBucket(buffer);
     }
     wordFile.close();
 
     // Scoping the return requires this, also shows Overloaded Assignment Operator
     // works properly
     ogdict = dict;
-    delete dict;
 
     // Print Statistics
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     std::cout << "Total words = " << BOLDGREEN << lineNum << RESET << std::endl;
-    std::cout << "Biggest bucket size = " << BOLDGREEN << ogdict->largestBucket() << RESET << std::endl;
-    std::cout << "Smallest bucket size = " << BOLDGREEN << ogdict->smallestBucket() << RESET << std::endl;
-    std::cout << "Total number of buckets = " << BOLDGREEN << ogdict->getTableSize() << RESET << std::endl;
-    std::cout << "Number of used buckets = " << BOLDGREEN << ogdict->usedBuckets() << RESET << std::endl;
-    std::cout << "Average number of nodes in each bucket = " << BOLDGREEN << ogdict->averageBucket() << RESET << std::endl;
+    std::cout << "Biggest bucket size = " << BOLDGREEN << ogdict.largestBucket() << RESET << std::endl;
+    std::cout << "Smallest bucket size = " << BOLDGREEN << ogdict.smallestBucket() << RESET << std::endl;
+    std::cout << "Total number of buckets = " << BOLDGREEN << ogdict.getTableSize() << RESET << std::endl;
+    std::cout << "Number of used buckets = " << BOLDGREEN << ogdict.usedBuckets() << RESET << std::endl;
+    std::cout << "Average number of nodes in each bucket = " << BOLDGREEN << ogdict.averageBucket() << RESET << std::endl;
     std::cout << "Total time taken = " << BOLDGREEN << elapsed_seconds.count() << "s" << RESET << std::endl;
     std::cout << std::endl;
   }
@@ -94,7 +93,7 @@ Dictionary *init_dictionary(std::string fileName)
   return ogdict;
 }
 
-void stringParsing(Dictionary *dict)
+void stringParsing(Dictionary dict)
 {
   std::string word;
   std::string line;
@@ -129,7 +128,7 @@ void stringParsing(Dictionary *dict)
     // and manipulation of the string
     transform(word.begin(), word.end(), word.begin(), ::tolower);
     // If the word is not already in the HashTable
-    if (!dict->inHash(word))
+    if (!dict.inHash(word))
     {
       misspelledWords++;
       std::cout << std::endl;
@@ -137,7 +136,7 @@ void stringParsing(Dictionary *dict)
       std::cout << "-----------------------------------------------------------------" << std::endl;
       std::cout << std::endl;
 
-      HashTable suggestions = dict->suggest(word);
+      HashTable suggestions = dict.suggest(word);
       suggestionCounter += suggestions.getLen();
 
       std::cout << "Suggestions for " << BOLDRED << word << RESET << ": ";
@@ -149,7 +148,7 @@ void stringParsing(Dictionary *dict)
       std::cout << std::endl;
 
       // Two-edit distance suggestions printed
-      suggestionCounter += dict->suggest(suggestions);
+      suggestionCounter += dict.suggest(suggestions);
     }
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
@@ -178,7 +177,7 @@ int main(int argc, char **argv)
   std::cout << BOLDGREEN << "Loading the database..." << RESET << std::endl;
   std::cout << BOLDRED << "--------------------------------------" << RESET << std::endl;
   std::cout << std::endl;
-  Dictionary *master = init_dictionary(fileName);
+  Dictionary master = init_dictionary(fileName);
   std::cout << "--------------------------------------" << std::endl;
   stringParsing(master);
   return 0;
