@@ -10,20 +10,20 @@ HashTable::HashTable()
 
 // Copy Constructor
 
-HashTable::HashTable(const HashTable &out)
+HashTable::HashTable(const HashTable &param)
 {
   head = nullptr;
   tail = nullptr;
-  HashNode *curr = out.tail;
+  HashNode *curr = param.tail;
   if (curr == nullptr)
   {
-    // Need throw and except
-    std::cout << "ERROR, HashTable empty" << std::endl;
+    std::cout << "[ERROR] Parameters tail is nullptr, list passed in could be empty" << std::endl;
     return;
   }
-  while (curr)
+  while (curr != nullptr)
   {
     insertWord(curr->word);
+    // insert backwards to keep HashTable property
     curr = curr->prev;
   }
 }
@@ -55,9 +55,9 @@ HashTable &HashTable::operator=(const HashTable &rhs)
     return *this;
   }
   // Destruct old
-  if (head)
+  if (head != nullptr)
   {
-    while (head->next)
+    while (head->next != nullptr)
     {
       head = head->next;
       delete head->prev;
@@ -72,9 +72,10 @@ HashTable &HashTable::operator=(const HashTable &rhs)
   {
     return *this;
   }
-  while (curr)
+  while (curr != nullptr)
   {
     insertWord(curr->word);
+    // Insert backwards to keep HashTable property
     curr = curr->prev;
   }
   return *this;
@@ -124,7 +125,7 @@ void HashTable::print()
   }
   HashNode *curr = head;
   // Traverse linked list and print words in each node
-  while (curr)
+  while (curr != nullptr)
   {
     std::cout << BOLDGREEN << curr->word << RESET << " ";
     curr = curr->next;
@@ -144,14 +145,16 @@ bool HashTable::inTable(std::string str)
   }
   HashNode *curr = head;
   // Traverse list and look for word
-  while (curr)
+  while (curr != nullptr)
   {
     if (curr->word == str)
     {
+      // if words is in HashTable return true
       return true;
     }
     curr = curr->next;
   }
+  // else return false if it cannot be found
   return false;
 }
 
@@ -168,7 +171,7 @@ int HashTable::getLen()
   }
   HashNode *curr = head;
   // Traverse linked list and increment node counter
-  while (curr)
+  while (curr != nullptr)
   {
     nodes++;
     curr = curr->next;
@@ -179,7 +182,7 @@ int HashTable::getLen()
 // Function that returns an array of strings of the words in
 // the HashTable
 
-std::string *HashTable::getList()
+std::string *HashTable::getWords()
 {
   if (head == nullptr)
   {
@@ -187,7 +190,7 @@ std::string *HashTable::getList()
   }
   HashNode *curr = head;
   std::string *rtn = new std::string[this->getLen()];
-  for (int i = 0; curr; i++)
+  for (int i = 0; curr != nullptr; i++)
   {
     rtn[i] = curr->word;
     curr = curr->next;
@@ -204,7 +207,7 @@ void HashTable::clear()
   {
     return;
   }
-  while (head->next)
+  while (head->next != nullptr)
   {
     head = head->next;
     delete head->prev;

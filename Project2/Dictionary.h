@@ -2,6 +2,7 @@
 #define DICTIONARY_H
 
 #include <iostream>
+#include <string.h>
 #include <iomanip>
 #include <math.h>
 #include "HashTable.h"
@@ -44,15 +45,10 @@ public:
   ~Dictionary();
   // Overloaded Assignment Operator
   Dictionary &operator=(const Dictionary &);
-
   // Multiplicative string hashing
   size_t multHash(std::string);
-
   // Prints HashTable
   void print();
-  // Prints used buckets of HashTable
-  void printUsed();
-
   // Insert bucket into HashTable
   void insertBucket(std::string);
   // Returns bucket with smallest size
@@ -65,20 +61,19 @@ public:
   int getTableSize();
   // Returns the average of bucket sizes
   int averageBucket();
-
   // Function that determines whether a certain word is in the HashTable or not
   bool inHash(std::string);
   // One-edit distance suggestion function
   HashTable suggest(std::string);
   // Two-edit distance suggestion function
   int suggest(HashTable);
-  // Suggestion by adding characters
+  // Suggestion by adding characters to string
   void add(HashTable &, std::string);
-  // Suggestion by deleting characters
+  // Suggestion by deleting characters in string
   void del(HashTable &, std::string);
-  // Suggestion by swapping characters
+  // Suggestion by swapping characters in string
   void swap(HashTable &, std::string);
-  // Suggestion by replacing characters
+  // Suggestion by replacing characters in string
   void replace(HashTable &, std::string);
 };
 

@@ -48,9 +48,6 @@ public:
   ~HashTable();
   // Overloaded Assignment Operator
   HashTable &operator=(const HashTable &);
-
-  // Function to clear the HashTable of all nodes
-  void clear();
   // Function to generate a new node to be inserted into the HashTable
   HashNode *genNode(std::string);
   // Function that inserts a word into the HashTable
@@ -61,8 +58,10 @@ public:
   bool inTable(std::string);
   // Function that returns the length of the HashTable
   int getLen();
-  // Function that returns the 
-  std::string *getList();
+  // Function that returns the linked list of strings
+  std::string *getWords();
+  // Function to clear the HashTable of all nodes
+  void clear();
 };
 
 #endif

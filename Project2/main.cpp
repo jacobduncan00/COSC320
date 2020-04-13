@@ -1,8 +1,8 @@
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <chrono>
 #include <sstream>
-#include <algorithm>
 #include "Dictionary.h"
 
 #define RESET "\033[0m"
@@ -24,16 +24,16 @@
 
 void welcomeScreen()
 {
-  std::cout << BOLDRED << "**************************************" << RESET << std::endl;
-  std::cout << BOLDRED << "**************************************" << RESET << std::endl;
-  std::cout << BOLDRED << "**                                  **" << RESET << std::endl;
-  std::cout << BOLDRED << "**             WELCOME              **" << RESET << std::endl;
-  std::cout << BOLDRED << "**             TO YOUR              **" << RESET << std::endl;
-  std::cout << BOLDRED << "**         SPELL CHECKER BY         **" << RESET << std::endl;
-  std::cout << BOLDRED << "**           JACOB DUNCAN           **" << RESET << std::endl;
-  std::cout << BOLDRED << "**                                  **" << RESET << std::endl;
-  std::cout << BOLDRED << "**************************************" << RESET << std::endl;
-  std::cout << BOLDRED << "**************************************" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**************************************" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**************************************" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**                                  **" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**" << BOLDMAGENTA << "             WELCOME              " << BOLDBLUE << "**" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**" << BOLDMAGENTA << "             TO YOUR              " << BOLDBLUE << "**" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**" << BOLDMAGENTA << "         SPELL CHECKER BY         " << BOLDBLUE << "**" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**" << BOLDMAGENTA << "           JACOB DUNCAN           " << BOLDBLUE << "**" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**                                  **" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**************************************" << RESET << std::endl;
+  std::cout << BOLDBLUE << "**************************************" << RESET << std::endl;
 }
 
 Dictionary init_dictionary(std::string fileName)
@@ -80,13 +80,13 @@ Dictionary init_dictionary(std::string fileName)
     // Print Statistics
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
-    std::cout << "Total words = " << BOLDGREEN << lineNum << RESET << std::endl;
-    std::cout << "Biggest bucket size = " << BOLDGREEN << ogdict.largestBucket() << RESET << std::endl;
-    std::cout << "Smallest bucket size = " << BOLDGREEN << ogdict.smallestBucket() << RESET << std::endl;
-    std::cout << "Total number of buckets = " << BOLDGREEN << ogdict.getTableSize() << RESET << std::endl;
-    std::cout << "Number of used buckets = " << BOLDGREEN << ogdict.usedBuckets() << RESET << std::endl;
-    std::cout << "Average number of nodes in each bucket = " << BOLDGREEN << ogdict.averageBucket() << RESET << std::endl;
-    std::cout << "Total time taken = " << BOLDGREEN << elapsed_seconds.count() << "s" << RESET << std::endl;
+    std::cout << BOLDBLUE << "Total words" << RESET << " = " << BOLDMAGENTA << lineNum << RESET << std::endl;
+    std::cout << BOLDBLUE << "Biggest bucket size" << RESET << " = " << BOLDMAGENTA << ogdict.largestBucket() << RESET << std::endl;
+    std::cout << BOLDBLUE << "Smallest bucket size" << RESET << " = " << BOLDMAGENTA << ogdict.smallestBucket() << RESET << std::endl;
+    std::cout << BOLDBLUE << "Total number of buckets" << RESET << " = " << BOLDMAGENTA << ogdict.getTableSize() << RESET << std::endl;
+    std::cout << BOLDBLUE << "Number of used buckets" << RESET << " = " << BOLDMAGENTA << ogdict.usedBuckets() << RESET << std::endl;
+    std::cout << BOLDBLUE << "Average number of nodes in each bucket" << RESET << " = " << BOLDMAGENTA << ogdict.averageBucket() << RESET << std::endl;
+    std::cout << BOLDBLUE << "Total time taken" << RESET << " = " << BOLDMAGENTA << elapsed_seconds.count() << "s" << RESET << std::endl;
     std::cout << std::endl;
   }
 
@@ -95,19 +95,17 @@ Dictionary init_dictionary(std::string fileName)
 
 void stringParsing(Dictionary dict)
 {
+  std::cout << BOLDMAGENTA << "Please enter some text: " << RESET << std::endl;
+  std::cout << BOLDBLUE << "-----------------------" << RESET << std::endl;
+  std::cout << std::endl;
+
   std::string word;
   std::string line;
   int misspelledWords = 0;
   int suggestionCounter = 0;
-
-  std::cout << "Please enter some text: " << std::endl;
-  std::cout << "-----------------------" << std::endl;
-  std::cout << std::endl;
-
+  double outerSeconds = 0;
   std::getline(std::cin, line);
   std::istringstream stream(line);
-
-  double outerSeconds = 0;
 
   while (stream >> word)
   {
@@ -127,8 +125,8 @@ void stringParsing(Dictionary dict)
     // Once again, transform the word to lower case, easier for parsing
     // and manipulation of the string
     transform(word.begin(), word.end(), word.begin(), ::tolower);
-    // If the word is not already in the HashTable
-    if (!dict.inHash(word))
+    // If the word is not in the HashTable, meaning it's misspelled in this context
+    if (dict.inHash(word) == false)
     {
       misspelledWords++;
       std::cout << std::endl;
@@ -137,6 +135,7 @@ void stringParsing(Dictionary dict)
       std::cout << std::endl;
 
       HashTable suggestions = dict.suggest(word);
+      // increment suggestionCounter with number of suggestion words returned
       suggestionCounter += suggestions.getLen();
 
       std::cout << "Suggestions for " << BOLDRED << word << RESET << ": ";
@@ -147,19 +146,19 @@ void stringParsing(Dictionary dict)
       std::cout << "---------------------------------------------------------" << std::endl;
       std::cout << std::endl;
 
-      // Two-edit distance suggestions printed
+      // Two-edit distance suggestions printed and increment counter
       suggestionCounter += dict.suggest(suggestions);
     }
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> elapsed_seconds = end - start;
     outerSeconds = elapsed_seconds.count();
   }
-  std::cout << "--------------------------------------" << std::endl;
-  std::cout << "Summary" << std::endl;
-  std::cout << "--------------------------------------" << std::endl;
-  std::cout << "Number of misspelled words = " << BOLDGREEN << misspelledWords << RESET << std::endl;
-  std::cout << "Number of suggestions = " << BOLDGREEN << suggestionCounter << RESET << std::endl;
-  std::cout << "Time required to find suggestions = " << BOLDGREEN << outerSeconds << "s" << RESET << std::endl;
+  std::cout << BOLDBLUE << "-------" << RESET << std::endl;
+  std::cout << BOLDMAGENTA << "Summary" << RESET << std::endl;
+  std::cout << BOLDBLUE << "-------" << RESET << std::endl;
+  std::cout << BOLDBLUE << "Number of misspelled words" << RESET << " = " << BOLDMAGENTA << misspelledWords << RESET << std::endl;
+  std::cout << BOLDBLUE << "Number of suggestions" << RESET << " = " << BOLDMAGENTA << suggestionCounter << RESET << std::endl;
+  std::cout << BOLDBLUE << "Time required to find suggestions" << RESET << " = " << BOLDMAGENTA << outerSeconds << "s" << RESET << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -172,13 +171,13 @@ int main(int argc, char **argv)
     exit(1);
   }
   welcomeScreen();
-  std::cout << BOLDGREEN << "Welcome to the Spell Checker!" << RESET << std::endl;
-  std::cout << BOLDRED << "--------------------------------------" << RESET << std::endl;
-  std::cout << BOLDGREEN << "Loading the database..." << RESET << std::endl;
-  std::cout << BOLDRED << "--------------------------------------" << RESET << std::endl;
+  std::cout << BOLDMAGENTA << "Welcome to the Spell Checker!" << RESET << std::endl;
+  std::cout << BOLDBLUE << "--------------------------------------" << RESET << std::endl;
+  std::cout << BOLDMAGENTA << "Loading the database..." << RESET << std::endl;
+  std::cout << BOLDBLUE << "--------------------------------------" << RESET << std::endl;
   std::cout << std::endl;
   Dictionary master = init_dictionary(fileName);
-  std::cout << "--------------------------------------" << std::endl;
+  std::cout << BOLDBLUE << "-----------------------" << RESET << std::endl;
   stringParsing(master);
   return 0;
 }

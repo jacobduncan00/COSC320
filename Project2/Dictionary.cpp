@@ -9,27 +9,27 @@ Dictionary::Dictionary()
   arr = new HashTable[10000];
   tableSize = 10000;
   used = new int[tableSize];
+  // Set all used to 0 so they are not counted as used buckets
   for (int i = 0; i < tableSize; i++)
   {
     used[i] = 0;
   }
 }
 
-// Copy Constructor that copies the contents of one Dictionary to
-// another
+// Copy Constructor that copies the contents of one Dictionary to another
 
-Dictionary::Dictionary(const Dictionary &out)
+Dictionary::Dictionary(const Dictionary &param)
 {
-  arr = new HashTable[out.tableSize];
-  tableSize = out.tableSize;
-  used = new int[out.tableSize];
+  arr = new HashTable[param.tableSize];
+  tableSize = param.tableSize;
+  used = new int[param.tableSize];
   for (int i = 0; i < tableSize; i++)
   {
-    arr[i] = out.arr[i];
+    arr[i] = param.arr[i];
   }
   for (int i = 0; i < tableSize; i++)
   {
-    used[i] = out.used[i];
+    used[i] = param.used[i];
   }
 }
 
@@ -54,6 +54,7 @@ Dictionary &Dictionary::operator=(const Dictionary &rhs)
   // destructing previous
   delete[] arr;
   delete[] used;
+  // creating new
   arr = new HashTable[rhs.tableSize];
   tableSize = rhs.tableSize;
   used = new int[rhs.tableSize];
@@ -99,17 +100,8 @@ void Dictionary::print()
 {
   for (int i = 0; i < 10; i++)
   {
+    // Calls print from HashTable.cpp to print the LL of strings
     arr[i].print();
-  }
-}
-
-// Function that prints the used array of the HashTable
-
-void Dictionary::printUsed()
-{
-  for (int i = 0; i < 10; i++)
-  {
-    std::cout << used[i] << std::endl;
   }
 }
 
@@ -193,14 +185,15 @@ bool Dictionary::inHash(std::string str)
 // Function that takes in a word and creates a HashTable of suggestions for
 // the word passed in by checking replace, add, del, and swap suggestions
 // Function returns a HashTable of suggestions
+// Don't know if it matters what order the suggestions are in
 
 HashTable Dictionary::suggest(std::string str)
 {
   HashTable suggestions;
-  replace(suggestions, str);
-  add(suggestions, str);
-  del(suggestions, str);
   swap(suggestions, str);
+  replace(suggestions, str);
+  del(suggestions, str);
+  add(suggestions, str);
   return suggestions;
 }
 
@@ -210,16 +203,16 @@ HashTable Dictionary::suggest(std::string str)
 
 int Dictionary::suggest(HashTable ext)
 {
-  std::string *oneEditWords = ext.getList();
+  std::string *oneEditWords = ext.getWords();
   int arr[50];
   for (int i = 0; i < ext.getLen(); i++)
   {
     HashTable moreSuggestions;
     std::cout << "Suggestions for " << BOLDRED << oneEditWords[i] << RESET << ": ";
-    replace(moreSuggestions, oneEditWords[i]);
-    add(moreSuggestions, oneEditWords[i]);
-    del(moreSuggestions, oneEditWords[i]);
     swap(moreSuggestions, oneEditWords[i]);
+    replace(moreSuggestions, oneEditWords[i]);
+    del(moreSuggestions, oneEditWords[i]);
+    add(moreSuggestions, oneEditWords[i]);
     arr[i] = moreSuggestions.getLen();
     moreSuggestions.print();
     moreSuggestions.clear();
@@ -249,15 +242,16 @@ int Dictionary::suggest(HashTable ext)
 void Dictionary::add(HashTable &suggestions, std::string str)
 {
   std::string holdWord = str;
-  for (int i = 0; i < str.length(); i++)
+  for (int i = 0; i < holdWord.length(); i++)
   {
     for (char j = 'a'; j <= 'z'; j++)
     {
       str = str.substr(0, i) + j + str.substr(i, holdWord.length());
-      if (inHash(str))
+      if (inHash(str) && str != holdWord)
       {
         suggestions.insertWord(str);
       }
+      // reset back to original
       str = holdWord;
     }
   }
@@ -269,15 +263,17 @@ void Dictionary::add(HashTable &suggestions, std::string str)
 void Dictionary::del(HashTable &suggestions, std::string str)
 {
   std::string holdWord = str;
-  for (int i = 0; i < str.length(); i++)
+  for (int i = 0; i < holdWord.length(); i++)
   {
+    // removes character at each i index
     str.erase(i, 1);
-    // If word with character deleted is in HashTable
-    if (inHash(str))
+    // If word with character deleted is in HashTable and not the same
+    if (inHash(str) && str != holdWord)
     {
       // Insert that word into the HashTable
       suggestions.insertWord(str);
     }
+    // reset back to original
     str = holdWord;
   }
 }
@@ -292,13 +288,16 @@ void Dictionary::swap(HashTable &suggestions, std::string str)
   {
     for (int j = i + 1; j < holdWord.length(); j++)
     {
+      // if not at the same index
       if (i != j)
       {
+        // swap characters
         std::swap(str[i], str[j]);
-        if (inHash(str))
+        if (inHash(str) && str != holdWord)
         {
           suggestions.insertWord(str);
         }
+        // reset back to original
         str = holdWord;
       }
     }
@@ -315,11 +314,13 @@ void Dictionary::replace(HashTable &suggestions, std::string str)
   {
     for (char j = 'a'; j <= 'z'; j++)
     {
+      // replace with what current character j incrementor is on
       str[i] = j;
-      if (inHash(str))
+      if (inHash(str) && str != holdWord)
       {
         suggestions.insertWord(str);
       }
+      // reset back to original
       str = holdWord;
     }
   }
