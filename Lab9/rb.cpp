@@ -44,6 +44,7 @@ void RBTree::delMem(TreeNode *first)
 RBTree::~RBTree()
 {
   delMem(root);
+  delete nil;
 }
 
 // Overloaded Assignment Operator
