@@ -10,4 +10,4 @@ The theoretical time complexity of my insert, search, and delete functions are O
 Yes
 
 #### D)
-
+The tests are extremely fast so I am not sure how much more efficient code like this can get. I am sure we can condense the code and even use recursion to make it a tad more efficient however, with the current state of my red black tree code, I think this is very robust and efficient code.
