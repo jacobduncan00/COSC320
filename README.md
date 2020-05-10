@@ -1,6 +1,5 @@
 # COSC 320 - Advanced Data Structures and Algorithms
-## with Joseph Anderson @ Salisbury University
-## Spring 2020
+## with Joseph Anderson @ Salisbury University Spring 2020
 
 ## Projects
 
