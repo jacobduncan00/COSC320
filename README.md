@@ -1,6 +1,14 @@
 # COSC 320 - Advanced Data Structures and Algorithms
 ## with Joseph Anderson @ Salisbury University Spring 2020
 
+## Grade - Pending
+
+## Labs - TODO explain each lab
+
+## Homework
+Viewable in the homework folder of this repository is the homework prompts Dr. Anderson
+gave our class for the Spring 2020 semester.
+
 ## Projects
 
 ### Wassily Leontief's Input-Output Model (Applied Linear Algebra)
