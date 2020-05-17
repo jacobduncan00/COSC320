@@ -1,10 +1,6 @@
 # COSC 320 - Advanced Data Structures and Algorithms with Joseph Anderson @ Salisbury University Spring 2020
 
-## Grade - A
-
-## Homework
-Viewable in the homework folder of this repository is the homework prompts Dr. Anderson
-gave our class for the Spring 2020 semester.
+# Grade - A
 
 ## Projects
 
